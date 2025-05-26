@@ -6,13 +6,22 @@ import { PrismaService } from 'src/prisma.service';
 @Injectable()
 export class TasksService {
   constructor(private prisma: PrismaService) {}
-  create(createTaskDto: CreateTaskDto) {
-    return 'This action adds a new task';
+  async create(createTaskDto: CreateTaskDto, userId: string) {
+    await this.prisma.project.findUniqueOrThrow({
+      where: {
+        id: createTaskDto.projectId,
+        userId,
+      },
+    });
+
+    return await this.prisma.task.create({
+      data: {
+        ...createTaskDto,
+      },
+    });
   }
 
-  findAll(session: Record<string, any>) {
-    const userId = session.userId;
-
+  findAll(userId: string) {
     return `This action returns all tasks`;
   }
 
@@ -20,8 +29,11 @@ export class TasksService {
     return `This action returns a #${id} task`;
   }
 
-  update(id: number, updateTaskDto: UpdateTaskDto) {
-    return `This action updates a #${id} task`;
+  async update(userId: string, updateTaskDto: UpdateTaskDto, taskId: string) {
+    return await this.prisma.task.update({
+      data: { ...updateTaskDto },
+      where: { id: taskId, project: { userId } },
+    });
   }
 
   remove(id: number) {

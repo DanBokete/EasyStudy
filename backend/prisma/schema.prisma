@@ -23,6 +23,7 @@ model User {
   projects  Project[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+  Module    Module[]
 }
 
 enum ProjectStatus {
@@ -38,6 +39,17 @@ enum TaskStatus {
   DONE
 }
 
+model Module {
+  id          String    @id @default(cuid())
+  name        String
+  description String?
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
+  projects    Project[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
 model Project {
   id          String        @id @default(cuid())
   name        String
@@ -48,7 +60,11 @@ model Project {
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
   dueDate     DateTime?
+  moduleId    String?
+  module      Module?       @relation(fields: [moduleId], references: [id])
   status      ProjectStatus @default(PENDING)
+
+  @@unique([id, userId])
 }
 
 model Task {
@@ -61,6 +77,8 @@ model Task {
   parentTask   Task?      @relation("SubtaskRelation", fields: [parentTaskId], references: [id])
   parentTaskId String?
   status       TaskStatus @default(TODO)
+  dueDate      DateTime?
+  time         String?
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
 }

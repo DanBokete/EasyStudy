@@ -1,6 +1,6 @@
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
-import { Outlet } from "react-router";
+import { Link, Outlet } from "react-router";
 import { Button } from "./components/ui/button";
 
 export default function Layout() {
@@ -8,15 +8,17 @@ export default function Layout() {
         <>
             <SidebarProvider>
                 <AppSidebar />
-                <main className="grid grid-cols-12 w-full">
-                    {/* <div className="flex justify-between px-10 col-span-full">
-                        <Button variant={"outline"}>Your Name</Button>
-                    </div> */}
+                <div className="container max-w-7xl px-5 lg:mx-auto">
+                    <div className="py-2 flex justify-end">
+                        <Button variant={"outline"} asChild>
+                            <Link to={"/login"}>Login</Link>
+                        </Button>
+                    </div>
 
-                    <div className="col-span-10">
+                    <div>
                         <Outlet />
                     </div>
-                </main>
+                </div>
             </SidebarProvider>
         </>
     );

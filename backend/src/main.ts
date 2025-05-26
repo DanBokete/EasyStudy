@@ -11,10 +11,15 @@ async function bootstrap() {
       resave: false,
       saveUninitialized: false,
       cookie: {
+        sameSite: 'lax',
         maxAge: 1000 * 60 * 60 * 24,
       },
     }),
   );
+  app.enableCors({
+    origin: 'http://localhost:5173',
+    credentials: true,
+  });
   app.useGlobalPipes(new ValidationPipe());
   await app.listen(process.env.PORT ?? 3000);
 }

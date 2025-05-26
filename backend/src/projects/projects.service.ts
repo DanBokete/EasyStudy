@@ -15,16 +15,30 @@ export class ProjectsService {
   }
 
   findAll(userId: string) {
-    const projects = this.prisma.project.findMany({ where: { userId } });
+    const projects = this.prisma.project.findMany({
+      where: { userId },
+      include: { tasks: { orderBy: { dueDate: 'asc' } } },
+    });
     return projects;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} project`;
+  findOne(id: string) {
+    return this.prisma.project.findUnique({
+      where: { id },
+      include: { tasks: true },
+    });
   }
 
-  update(id: number, updateProjectDto: UpdateProjectDto) {
-    return `This action updates a #${id} project`;
+  async update(
+    userId: string,
+    updateProjectDto: UpdateProjectDto,
+    projectId: string,
+  ) {
+    return await this.prisma.project.update({
+      data: { ...updateProjectDto },
+      where: { userId, id: projectId },
+      include: { tasks: true },
+    });
   }
 
   remove(id: number) {

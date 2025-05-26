@@ -1,4 +1,5 @@
-import { IsOptional, IsString } from 'class-validator';
+import { Module, ProjectStatus } from '@prisma/client';
+import { IsDateString, IsOptional, IsString } from 'class-validator';
 
 export class CreateProjectDto {
   @IsString()
@@ -8,11 +9,15 @@ export class CreateProjectDto {
   @IsOptional()
   description: string;
 
-  @IsString()
+  @IsDateString()
   @IsOptional()
   dueDate: string;
 
   @IsString()
   @IsOptional()
-  status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | 'ARCHIVED';
+  status: ProjectStatus;
+
+  @IsString()
+  @IsOptional()
+  moduleId: string;
 }

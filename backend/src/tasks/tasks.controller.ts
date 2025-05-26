@@ -17,15 +17,22 @@ import { SessionAuthGuard } from 'src/auth/auth.guard';
 @Controller('tasks')
 export class TasksController {
   constructor(private readonly tasksService: TasksService) {}
+
+  @UseGuards(SessionAuthGuard)
   @Post()
-  create(@Body() createTaskDto: CreateTaskDto) {
-    return this.tasksService.create(createTaskDto);
+  create(
+    @Body() createTaskDto: CreateTaskDto,
+    @Session() session: Record<string, any>,
+  ) {
+    const userId = session.userId as string;
+    return this.tasksService.create(createTaskDto, userId);
   }
 
   @UseGuards(SessionAuthGuard)
   @Get()
   findAll(@Session() session: Record<string, any>) {
-    return this.tasksService.findAll(session);
+    const userId = session.userId as string;
+    return this.tasksService.findAll(userId);
   }
 
   @UseGuards(SessionAuthGuard)
@@ -34,9 +41,15 @@ export class TasksController {
     return this.tasksService.findOne(+id);
   }
 
+  @UseGuards(SessionAuthGuard)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTaskDto: UpdateTaskDto) {
-    return this.tasksService.update(+id, updateTaskDto);
+  update(
+    @Param('id') taskId: string,
+    @Body() updateTaskDto: UpdateTaskDto,
+    @Session() session: Record<string, any>,
+  ) {
+    const userId = session.userId as string;
+    return this.tasksService.update(userId, updateTaskDto, taskId);
   }
 
   @Delete(':id')

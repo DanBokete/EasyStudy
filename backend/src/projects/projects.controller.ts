@@ -24,25 +24,31 @@ export class ProjectsController {
     @Body() createProjectDto: CreateProjectDto,
     @Session() session: Record<string, any>,
   ) {
-    const userId: string = session.userId;
+    const userId = session.userId as string;
     return this.projectsService.create(createProjectDto, userId);
   }
 
   @UseGuards(SessionAuthGuard)
   @Get()
   findAll(@Session() session: Record<string, any>) {
-    const userId: string = session.userId;
+    const userId = session.userId as string;
     return this.projectsService.findAll(userId);
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.projectsService.findOne(+id);
+    return this.projectsService.findOne(id);
   }
 
+  @UseGuards(SessionAuthGuard)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateProjectDto: UpdateProjectDto) {
-    return this.projectsService.update(+id, updateProjectDto);
+  update(
+    @Param('id') projectId: string,
+    @Body() updateProjectDto: UpdateProjectDto,
+    @Session() session: Record<string, any>,
+  ) {
+    const userId = session.userId as string;
+    return this.projectsService.update(userId, updateProjectDto, projectId);
   }
 
   @Delete(':id')

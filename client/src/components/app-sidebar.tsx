@@ -1,4 +1,4 @@
-import { Calendar, Home, Inbox, Search, Settings } from "lucide-react";
+import { Calendar, FolderOpen, Home, Inbox, Settings } from "lucide-react";
 
 import {
     Sidebar,
@@ -10,6 +10,9 @@ import {
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
+    SidebarMenuSub,
+    SidebarMenuSubButton,
+    SidebarMenuSubItem,
     SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { Link } from "react-router";
@@ -27,14 +30,15 @@ const items = [
         icon: Inbox,
     },
     {
-        title: "Boards",
-        url: "/boards",
+        title: "...",
+        url: "/",
         icon: Calendar,
     },
     {
         title: "Projects",
         url: "/projects",
-        icon: Search,
+        icon: FolderOpen,
+        subMenu: [{ title: "Amazing", url: "" }],
     },
     {
         title: "Settings",
@@ -59,6 +63,21 @@ export function AppSidebar() {
                                             <span>{item.title}</span>
                                         </Link>
                                     </SidebarMenuButton>
+
+                                    {item.subMenu &&
+                                        item.subMenu.map((subItem) => (
+                                            <SidebarMenuSub key={subItem.title}>
+                                                <SidebarMenuSubItem>
+                                                    <SidebarMenuSubButton
+                                                        asChild
+                                                    >
+                                                        <Link to={subItem.url}>
+                                                            {subItem.title}
+                                                        </Link>
+                                                    </SidebarMenuSubButton>
+                                                </SidebarMenuSubItem>
+                                            </SidebarMenuSub>
+                                        ))}
                                 </SidebarMenuItem>
                             ))}
                         </SidebarMenu>
