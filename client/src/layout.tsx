@@ -11,7 +11,11 @@ export default function Layout() {
                 <div className="container max-w-7xl px-5 lg:mx-auto">
                     <div className="py-2 flex justify-end">
                         <Button variant={"outline"} asChild>
-                            <Link to={"/login"}>Login</Link>
+                            {sessionStorage.getItem("isLoggedIn") ? (
+                                <Link to={"logout"}>Logout</Link>
+                            ) : (
+                                <Link to={"/login"}>Login</Link>
+                            )}
                         </Button>
                     </div>
 

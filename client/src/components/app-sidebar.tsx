@@ -1,4 +1,4 @@
-import { Calendar, FolderOpen, Home, Inbox, Settings } from "lucide-react";
+import { Clock4, FolderOpen, LayoutDashboard, Settings } from "lucide-react";
 
 import {
     Sidebar,
@@ -10,9 +10,6 @@ import {
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
-    SidebarMenuSub,
-    SidebarMenuSubButton,
-    SidebarMenuSubItem,
     SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { Link } from "react-router";
@@ -20,25 +17,24 @@ import { Link } from "react-router";
 // Menu items.
 const items = [
     {
-        title: "Home",
+        title: "Dashboard",
         url: "/",
-        icon: Home,
+        icon: LayoutDashboard,
     },
+    // {
+    //     title: "Tasks",
+    //     url: "/tasks",
+    //     icon: Inbox,
+    // },
     {
-        title: "Tasks",
-        url: "/tasks",
-        icon: Inbox,
-    },
-    {
-        title: "...",
-        url: "/",
-        icon: Calendar,
+        title: "Time Tracker",
+        url: "/time-tracker",
+        icon: Clock4,
     },
     {
         title: "Projects",
         url: "/projects",
         icon: FolderOpen,
-        subMenu: [{ title: "Amazing", url: "" }],
     },
     {
         title: "Settings",
@@ -52,7 +48,7 @@ export function AppSidebar() {
         <Sidebar collapsible="icon" variant="floating">
             <SidebarContent>
                 <SidebarGroup>
-                    <SidebarGroupLabel>Application</SidebarGroupLabel>
+                    <SidebarGroupLabel>Study Stack</SidebarGroupLabel>
                     <SidebarGroupContent>
                         <SidebarMenu>
                             {items.map((item) => (
@@ -64,7 +60,7 @@ export function AppSidebar() {
                                         </Link>
                                     </SidebarMenuButton>
 
-                                    {item.subMenu &&
+                                    {/* {item.subMenu &&
                                         item.subMenu.map((subItem) => (
                                             <SidebarMenuSub key={subItem.title}>
                                                 <SidebarMenuSubItem>
@@ -77,20 +73,20 @@ export function AppSidebar() {
                                                     </SidebarMenuSubButton>
                                                 </SidebarMenuSubItem>
                                             </SidebarMenuSub>
-                                        ))}
+                                        ))} */}
                                 </SidebarMenuItem>
                             ))}
                         </SidebarMenu>
                     </SidebarGroupContent>
                 </SidebarGroup>
-                <SidebarFooter>
-                    <SidebarMenu>
-                        <SidebarMenuItem>
-                            <SidebarTrigger />
-                        </SidebarMenuItem>
-                    </SidebarMenu>
-                </SidebarFooter>
             </SidebarContent>
+            <SidebarFooter>
+                <SidebarMenu>
+                    <SidebarMenuItem>
+                        <SidebarTrigger />
+                    </SidebarMenuItem>
+                </SidebarMenu>
+            </SidebarFooter>
         </Sidebar>
     );
 }

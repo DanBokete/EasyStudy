@@ -10,7 +10,7 @@ export class CreateTaskDto {
 
   @IsString()
   @IsOptional()
-  description: string;
+  description: string | null;
 
   @IsString()
   @IsOptional()
@@ -18,9 +18,9 @@ export class CreateTaskDto {
 
   @IsDateString()
   @IsOptional()
-  dueDate: string;
+  dueDate: string | null;
 
   @IsString()
   @IsOptional()
-  time: string;
+  time: string | null;
 }

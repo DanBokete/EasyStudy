@@ -8,6 +8,7 @@ import { getProject } from "./api/projects";
 import ProjectPage from "./pages/projects/[projectId]/project-page";
 import LoginPage from "./pages/auth/login-page";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import TimeTracker from "./pages/time-tracker/time-tracker-page";
 
 const router = createBrowserRouter([
     {
@@ -44,6 +45,7 @@ const router = createBrowserRouter([
                 },
                 Component: ProjectPage,
             },
+            { path: "time-tracker", Component: TimeTracker },
         ],
     },
 ]);

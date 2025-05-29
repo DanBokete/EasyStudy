@@ -8,3 +8,12 @@ export async function editTask(taskId: string, data: Partial<Task>) {
     const task: Task = response.data;
     return task;
 }
+
+export async function createTask(data: Partial<Task>) {
+    console.log(data);
+
+    const response = await api.post(`/tasks`, data);
+    const project: Task = response.data;
+
+    return project;
+}

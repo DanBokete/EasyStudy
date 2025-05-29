@@ -1,6 +1,5 @@
 import { editTask } from "@/api/task";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
     Dialog,
@@ -10,7 +9,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
-import type { Task, TaskStatus } from "@/types/types";
+import type { Task } from "@/types/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { useState } from "react";
@@ -35,7 +34,7 @@ function Task({ task }: { task: Task }) {
     return (
         <Dialog onOpenChange={setOpen} open={open}>
             <div
-                className={`flex items-center gap-x-2.5 ${
+                className={`flex items-center gap-x-2.5 p-2 ${
                     mutateTaskDone.isPending || task.status === "DONE"
                         ? "bg-muted"
                         : ""
@@ -50,9 +49,10 @@ function Task({ task }: { task: Task }) {
                         })
                     }
                 />
+
                 <DialogTrigger asChild>
                     <button
-                        className={`text-left w-full hover:outline rounded px-2.5 ${
+                        className={`text-left w-full hover:cursor-pointer rounded px-2.5 ${
                             task.status === "DONE" ? "line-through" : ""
                         }`}
                     >

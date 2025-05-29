@@ -14,7 +14,7 @@ function Task() {
                         et!
                     </div>
                     <div className="flex flex-wrap gap-x-2.5 text-sm">
-                        <span>Due Date: 12.10.25</span>
+                            <span>Due Date: 12.10.25</span>
                         <span>Module Name</span>
                     </div>
                 </button>
