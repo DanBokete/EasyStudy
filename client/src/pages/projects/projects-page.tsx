@@ -3,7 +3,7 @@ import { Separator } from "@/components/ui/separator";
 import { useQuery } from "@tanstack/react-query";
 import ProjectForm from "./project-form";
 import Task from "./task";
-import NewTask from "./new-task-form";
+import NewTask from "./new-task";
 import Project from "./project";
 
 function ProjectsPage() {
@@ -26,14 +26,18 @@ function ProjectsPage() {
                 </Button> */}
                 <ProjectForm />
             </div>
-            <Separator className="mb-2" />
+            <Separator className="my-2" />
 
-            <NewTask projects={data} />
+            <NewTask projects={data} project={undefined} />
 
             <ul className="space-y-2">
                 {data &&
                     data.map((project) => (
-                        <Project key={project.id} project={project} />
+                        <Project
+                            key={project.id}
+                            project={project}
+                            projects={data}
+                        />
                     ))}
             </ul>
         </div>

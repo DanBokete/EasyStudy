@@ -1,4 +1,4 @@
-import { Module, ProjectStatus } from '@prisma/client';
+import { ProjectStatus } from '@prisma/client';
 import { IsDateString, IsOptional, IsString } from 'class-validator';
 
 export class CreateProjectDto {

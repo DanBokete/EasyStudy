@@ -17,3 +17,9 @@ export async function createTask(data: Partial<Task>) {
 
     return project;
 }
+
+export async function deleteTask(id: string) {
+    const response = await api.delete(`/tasks/${id}`);
+    const project: Task = response.data;
+    return project;
+}

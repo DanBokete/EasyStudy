@@ -16,7 +16,7 @@ export class ProjectsService {
 
   findAll(userId: string) {
     const projects = this.prisma.project.findMany({
-      where: { userId },
+      where: { userId, archived: false },
       include: { tasks: { orderBy: { dueDate: 'asc' } } },
     });
     return projects;
@@ -24,7 +24,7 @@ export class ProjectsService {
 
   findOne(id: string) {
     return this.prisma.project.findUnique({
-      where: { id },
+      where: { id, archived: false },
       include: { tasks: true },
     });
   }
@@ -41,7 +41,10 @@ export class ProjectsService {
     });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} project`;
+  async remove(userId: string, projectId: string) {
+    return await this.prisma.project.update({
+      data: { archived: true, archivedAt: new Date() },
+      where: { userId, id: projectId },
+    });
   }
 }

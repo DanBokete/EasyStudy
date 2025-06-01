@@ -3,14 +3,18 @@ import { useLoaderData } from "react-router";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
+import type { Project } from "@/types/types";
 
 function ProjectPage() {
-    const project = useLoaderData();
+    const project: Project = useLoaderData();
     return (
         <div>
             <h1 className="font-extrabold text-xl">{project.name}</h1>
             <div className="text-sm font-bold">
-                Due Date: {format(project.dueDate, "MMM dd, yyyy")}
+                Due Date:{" "}
+                {project.dueDate
+                    ? format(project.dueDate, "MMM dd, yyyy")
+                    : "Not set"}
             </div>
             <p className="text-sm">{project.description}</p>
             <Separator className="mb-2" />
@@ -24,11 +28,9 @@ function ProjectPage() {
             <div>
                 <h2>Todo</h2>
                 <ul>
-                    <li></li>
-                    <li></li>
-                    <li></li>
-                    <li></li>
-                    <li></li>
+                    {project.tasks.map((task) => (
+                        <li>{task.title}</li>
+                    ))}
                 </ul>
             </div>
         </div>

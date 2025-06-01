@@ -51,8 +51,13 @@ export class ProjectsController {
     return this.projectsService.update(userId, updateProjectDto, projectId);
   }
 
+  @UseGuards(SessionAuthGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.projectsService.remove(+id);
+  remove(
+    @Param('id') projectId: string,
+    @Session() session: Record<string, any>,
+  ) {
+    const userId = session.userId as string;
+    return this.projectsService.remove(userId, projectId);
   }
 }

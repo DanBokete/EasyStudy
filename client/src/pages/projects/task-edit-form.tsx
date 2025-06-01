@@ -9,6 +9,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import type { Task, TaskStatus } from "@/types/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
@@ -71,13 +72,19 @@ function EditTaskForm({
 
             <section className="space-y-2">
                 <Label htmlFor="description">Description</Label>
-                <Input
+                <Textarea
+                    id="description"
+                    name="description"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                />
+                {/* <Input
                     id="description"
                     name="description"
                     type="text"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
-                />
+                /> */}
             </section>
             <div className="flex gap-x-2">
                 <section className="space-y-2 flex-1">

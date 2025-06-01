@@ -2,9 +2,41 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { FolderClosed, MoreHorizontal, Play } from "lucide-react";
+import { FolderClosed, MoreHorizontal, Pause, Play } from "lucide-react";
+import { useEffect, useState } from "react";
 
 function TimeTrackerPage() {
+    const [isPlaying, setIsPlaying] = useState(false);
+    const [startTime, setStartTime] = useState<number | null>(null);
+    const [timer, setTimer] = useState(0);
+
+    useEffect(() => {
+        let intervalId: string | number | NodeJS.Timeout | undefined;
+
+        if (isPlaying) {
+            intervalId = setInterval(() => {
+                const time = (Date.now() - startTime) / 1000;
+                console.log(startTime);
+
+                if (time) setTimer(time);
+            }, 1000);
+        }
+        return () => clearInterval(intervalId);
+    }, [isPlaying, startTime]);
+
+    function onPlay() {
+        setStartTime(Date.now());
+        setIsPlaying(true);
+    }
+
+    const seconds = Math.floor(timer);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const displayedSeconds = (seconds % 60).toString().padStart(2, "0");
+    const displayedMinutes = (minutes % 60).toString().padStart(2, "0");
+    const displayedHours = hours.toString().padStart(2, "0");
+    const displayedTimer = `${displayedHours}:${displayedMinutes}:${displayedSeconds}`;
+
     return (
         <div>
             <div className="border p-2.5 rounded-lg">
@@ -13,9 +45,11 @@ function TimeTrackerPage() {
                     <Button variant={"ghost"}>
                         <FolderClosed />
                     </Button>
-                    <span>00:00:00</span>
-                    <Button variant={"outline"}>
-                        <Play />
+                    <span className="w-36 text-center border py-1 rounded-lg">
+                        {displayedTimer}
+                    </span>
+                    <Button variant={"outline"} onClick={onPlay}>
+                        {isPlaying ? <Pause /> : <Play />}
                     </Button>
                 </div>
             </div>

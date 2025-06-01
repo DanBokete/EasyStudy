@@ -26,3 +26,9 @@ export async function createProject(data: Partial<Project>) {
     const project: Project = response.data;
     return project;
 }
+
+export async function deleteProject(projectId: string) {
+    const response = await api.delete(`/projects/${projectId}`);
+    const deletedProject: Project = response.data;
+    return deletedProject;
+}

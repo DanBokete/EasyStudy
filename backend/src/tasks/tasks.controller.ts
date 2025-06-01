@@ -52,8 +52,10 @@ export class TasksController {
     return this.tasksService.update(userId, updateTaskDto, taskId);
   }
 
+  @UseGuards(SessionAuthGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.tasksService.remove(+id);
+  remove(@Param('id') taskId: string, @Session() session: Record<string, any>) {
+    const userId = session.userId as string;
+    return this.tasksService.remove(userId, taskId);
   }
 }

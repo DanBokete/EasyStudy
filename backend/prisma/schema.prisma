@@ -16,14 +16,15 @@ datasource db {
 }
 
 model User {
-  id        String    @id @default(cuid())
-  email     String    @unique
-  name      String?
-  password  String
-  projects  Project[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  Module    Module[]
+  id           String         @id @default(cuid())
+  email        String         @unique
+  name         String?
+  password     String
+  projects     Project[]
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  Module       Module[]
+  StudySession StudySession[]
 }
 
 enum ProjectStatus {
@@ -40,14 +41,15 @@ enum TaskStatus {
 }
 
 model Module {
-  id          String    @id @default(cuid())
-  name        String
-  description String?
-  userId      String
-  user        User      @relation(fields: [userId], references: [id])
-  projects    Project[]
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id           String         @id @default(cuid())
+  name         String
+  description  String?
+  userId       String
+  user         User           @relation(fields: [userId], references: [id])
+  projects     Project[]
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  StudySession StudySession[]
 }
 
 model Project {
@@ -63,6 +65,8 @@ model Project {
   moduleId    String?
   module      Module?       @relation(fields: [moduleId], references: [id])
   status      ProjectStatus @default(PENDING)
+  archivedAt  DateTime?
+  archived    Boolean       @default(false)
 
   @@unique([id, userId])
 }
@@ -81,4 +85,20 @@ model Task {
   time         String?
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
+}
+
+model StudySession {
+  id          String    @id @default(cuid())
+  activity    String
+  description String?
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
+  moduleId    String
+  module      Module    @relation(fields: [moduleId], references: [id])
+  startTime   DateTime  @default(now())
+  endTime     DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([userId, moduleId])
 }

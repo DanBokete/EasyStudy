@@ -1,4 +1,4 @@
-import { editTask } from "@/api/task";
+import { deleteTask, editTask } from "@/api/task";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -14,6 +14,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { useState } from "react";
 import EditTaskForm from "./task-edit-form";
+import { Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 function Task({ task }: { task: Task }) {
     const [open, setOpen] = useState(false);
@@ -27,6 +29,15 @@ function Task({ task }: { task: Task }) {
         onSuccess: () => {
             setOpen(false);
             // Invalidate and refetch
+            queryClient.invalidateQueries({ queryKey: ["projects"] });
+        },
+    });
+
+    const onDelete = useMutation({
+        mutationFn: () => {
+            return deleteTask(task.id);
+        },
+        onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["projects"] });
         },
     });
@@ -57,13 +68,29 @@ function Task({ task }: { task: Task }) {
                         }`}
                     >
                         <b className="font-medium">{task.title}</b>
+
                         {task.dueDate && task.status !== "DONE" && (
                             <Badge variant={"outline"} className="ml-2">
                                 {format(task.dueDate, "dd-MM-yyyy")}
                             </Badge>
                         )}
+
+                        {task.status !== "DONE" && (
+                            <Badge className="ml-2" variant={"outline"}>
+                                {task.status}
+                            </Badge>
+                        )}
                     </button>
                 </DialogTrigger>
+                <Button
+                    variant={"ghost"}
+                    disabled={onDelete.isPending}
+                    onClick={() => {
+                        onDelete.mutate();
+                    }}
+                >
+                    <Trash2 />
+                </Button>
             </div>
             <DialogContent>
                 <DialogHeader>

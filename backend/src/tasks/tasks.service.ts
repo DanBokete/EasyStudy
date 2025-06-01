@@ -36,7 +36,9 @@ export class TasksService {
     });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} task`;
+  remove(userId: string, taskId: string) {
+    return this.prisma.task.delete({
+      where: { id: taskId, project: { userId } },
+    });
   }
 }
