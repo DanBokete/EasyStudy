@@ -1,14 +1,25 @@
+import { useGetAllStudySessions } from "@/api/study-session";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { FolderClosed, MoreHorizontal, Pause, Play } from "lucide-react";
+import { format } from "date-fns";
+import {
+    FolderClosed,
+    MoreHorizontal,
+    Pause,
+    Play,
+    StopCircle,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 
 function TimeTrackerPage() {
     const [isPlaying, setIsPlaying] = useState(false);
     const [startTime, setStartTime] = useState<number | null>(null);
     const [timer, setTimer] = useState(0);
+    const [title, setTitle] = useState("");
+
+    const studySessions = useGetAllStudySessions();
 
     useEffect(() => {
         let intervalId: string | number | NodeJS.Timeout | undefined;
@@ -29,6 +40,11 @@ function TimeTrackerPage() {
         setIsPlaying(true);
     }
 
+    function onStop() {
+        console.log({ timer, title });
+        setIsPlaying(false);
+    }
+
     const seconds = Math.floor(timer);
     const minutes = Math.floor(seconds / 60);
     const hours = Math.floor(minutes / 60);
@@ -37,20 +53,38 @@ function TimeTrackerPage() {
     const displayedHours = hours.toString().padStart(2, "0");
     const displayedTimer = `${displayedHours}:${displayedMinutes}:${displayedSeconds}`;
 
+    if (studySessions.isPending) {
+        return "Loading...";
+    }
+
+    if (!studySessions.data) {
+        return "You have not study sessions";
+    }
+
     return (
         <div>
             <div className="border p-2.5 rounded-lg">
                 <div className="flex items-center gap-x-2.5">
-                    <Input placeholder="What are you doing?" />
+                    <Input
+                        placeholder="What are you doing?"
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                    />
                     <Button variant={"ghost"}>
                         <FolderClosed />
                     </Button>
                     <span className="w-36 text-center border py-1 rounded-lg">
                         {displayedTimer}
                     </span>
-                    <Button variant={"outline"} onClick={onPlay}>
-                        {isPlaying ? <Pause /> : <Play />}
-                    </Button>
+                    {isPlaying ? (
+                        <Button variant={"outline"} onClick={onStop}>
+                            <StopCircle />
+                        </Button>
+                    ) : (
+                        <Button variant={"outline"} onClick={onPlay}>
+                            <Play />
+                        </Button>
+                    )}
                 </div>
             </div>
 
@@ -58,6 +92,38 @@ function TimeTrackerPage() {
                 <h2 className="font-bold mb-2">This week: 05:56 min</h2>
                 <Separator className="mb-2" />
                 <ul>
+                    {studySessions.data.map((studySession) => {
+                        return (
+                            <li
+                                key={studySession.id}
+                                className="grid grid-cols-11 items-center"
+                            >
+                                <div className="col-span-6">
+                                    {studySession.activity}
+                                </div>
+                                <Badge
+                                    variant={"outline"}
+                                    className="space-x-0.5 col-span-2"
+                                >
+                                    <FolderClosed />
+                                    <span>{studySession.moduleId}</span>
+                                </Badge>
+                                <div className="mx-auto">
+                                    {format(studySession.startTime, "HH:mm")} -
+                                    {studySession.endTime
+                                        ? format(studySession.endTime, "HH:mm")
+                                        : "--:--"}
+                                </div>
+                                <span className="mx-auto">00:24:14</span>
+                                <Button
+                                    variant={"ghost"}
+                                    className="w-fit mx-auto"
+                                >
+                                    <MoreHorizontal />
+                                </Button>
+                            </li>
+                        );
+                    })}
                     <li className="grid grid-cols-11 items-center">
                         <div className="col-span-6">
                             Studying how to create my own models{" "}

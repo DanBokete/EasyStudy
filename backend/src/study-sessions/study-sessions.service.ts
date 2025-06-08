@@ -8,6 +8,8 @@ export class StudySessionsService {
   constructor(private prisma: PrismaService) {}
 
   async create(createStudySessionDto: CreateStudySessionDto, userId: string) {
+    console.log({ createStudySessionDto, userId });
+
     const studySession = await this.prisma.studySession.create({
       data: { ...createStudySessionDto, userId },
     });
@@ -22,15 +24,28 @@ export class StudySessionsService {
     return studySessions;
   }
 
-  findOne(userId: string, studySessionId: string) {
-    return `This action returns a #${userId} studySession`;
+  async findOne(userId: string, studySessionId: string) {
+    const studySession = await this.prisma.studySession.findUnique({
+      where: { userId, id: studySessionId },
+    });
+    return studySession;
   }
 
-  update(userId: string, updateStudySessionDto: UpdateStudySessionDto) {
-    return `This action updates a #${userId} studySession`;
+  async update(
+    userId: string,
+    updateStudySessionDto: UpdateStudySessionDto,
+    studySessionId: string,
+  ) {
+    const studySession = await this.prisma.studySession.update({
+      where: { userId, id: studySessionId },
+      data: updateStudySessionDto,
+    });
+    return studySession;
   }
 
-  remove(userId: string) {
-    return `This action removes a #${userId} studySession`;
+  async remove(userId: string, studySessionId: string) {
+    return await this.prisma.studySession.delete({
+      where: { userId, id: studySessionId },
+    });
   }
 }

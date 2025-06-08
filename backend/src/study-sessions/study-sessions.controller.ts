@@ -48,17 +48,24 @@ export class StudySessionsController {
   @UseGuards(SessionAuthGuard)
   @Patch(':id')
   update(
-    @Param('id') id: string,
+    @Param('id') studySessionId: string,
     @Body() updateStudySessionDto: UpdateStudySessionDto,
     @Session() session: Record<string, any>,
   ) {
     const userId = session.userId as string;
-    return this.studySessionsService.update(userId, updateStudySessionDto);
+    return this.studySessionsService.update(
+      userId,
+      updateStudySessionDto,
+      studySessionId,
+    );
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string, @Session() session: Record<string, any>) {
+  remove(
+    @Param('id') studySessionId: string,
+    @Session() session: Record<string, any>,
+  ) {
     const userId = session.userId as string;
-    return this.studySessionsService.remove(userId);
+    return this.studySessionsService.remove(userId, studySessionId);
   }
 }

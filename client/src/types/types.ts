@@ -25,3 +25,15 @@ export type Task = {
     projectId: string;
     parentTaskId: string | null;
 };
+
+export type StudySession = {
+    id: string;
+    activity: string;
+    description: string | null;
+    userId: string;
+    moduleId: string;
+    startTime: Date;
+    endTime: Date | null;
+    createdAt: Date;
+    updatedAt: Date;
+};

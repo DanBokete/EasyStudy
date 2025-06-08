@@ -6,6 +6,7 @@ import { PrismaService } from 'src/prisma.service';
 @Injectable()
 export class TasksService {
   constructor(private prisma: PrismaService) {}
+
   async create(createTaskDto: CreateTaskDto, userId: string) {
     await this.prisma.project.findUniqueOrThrow({
       where: {
