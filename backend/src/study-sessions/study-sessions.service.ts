@@ -20,6 +20,7 @@ export class StudySessionsService {
   async findAll(userId: string) {
     const studySessions = await this.prisma.studySession.findMany({
       where: { userId },
+      include: { module: true },
     });
     return studySessions;
   }

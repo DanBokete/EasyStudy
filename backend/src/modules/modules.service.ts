@@ -11,7 +11,9 @@ export class ModulesService {
   }
 
   findAll(userId: string) {
-    return this.prisma.module.findMany({ where: { userId } });
+    return this.prisma.module.findMany({
+      where: { userId },
+    });
   }
 
   findOne(id: number) {

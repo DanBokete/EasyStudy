@@ -2,7 +2,8 @@ import { IsOptional, IsString } from 'class-validator';
 
 export class CreateStudySessionDto {
   @IsString()
-  activity: string;
+  @IsOptional()
+  activity: string | null;
 
   @IsString()
   @IsOptional()
