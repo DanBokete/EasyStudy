@@ -18,14 +18,9 @@ import { Link } from "react-router";
 const items = [
     {
         title: "Dashboard",
-        url: "/",
+        url: "/dashboard",
         icon: LayoutDashboard,
     },
-    // {
-    //     title: "Tasks",
-    //     url: "/tasks",
-    //     icon: Inbox,
-    // },
     {
         title: "Time Tracker",
         url: "/time-tracker",

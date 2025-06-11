@@ -69,9 +69,19 @@ export const useUpdateStudySession = () => {
     return useMutation({
         mutationFn: updateStudySession,
         onSuccess: (data, variables) => {
-            queryClient.invalidateQueries({
-                queryKey: ["studySessions", variables.id],
-            });
+            // queryClient.invalidateQueries({
+            //     queryKey: ["studySessions"],
+            // });
+            queryClient.setQueryData<StudySession[]>(
+                ["studySessions"],
+                (oldData) => {
+                    return (
+                        oldData?.map((session) =>
+                            session.id === data.id ? data : session
+                        ) || []
+                    );
+                }
+            );
         },
     });
 };
@@ -116,8 +126,24 @@ export const useCreateStudySession = () => {
     });
 };
 
-export async function useDeleteStudySession(projectId: string) {
-    const response = await api.delete(`/study-session/${projectId}`);
+export async function deleteStudySession(data: { projectId: string }) {
+    const { projectId } = data;
+    const response = await api.delete(`/study-sessions/${projectId}`);
     const deletedProject: Project = response.data;
     return deletedProject;
 }
+
+export const useDeleteStudySession = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: deleteStudySession,
+        onSuccess: (deletedStudySession) => {
+            // queryClient.invalidateQueries({ queryKey: ["studySessions"] });
+
+            queryClient.setQueryData(["studySessions"], (old: StudySession[]) =>
+                old.filter((session) => session.id !== deletedStudySession.id)
+            );
+        },
+    });
+};

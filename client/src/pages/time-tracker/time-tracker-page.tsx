@@ -1,6 +1,7 @@
 import { useCreateModule, useGetAllModules } from "@/api/modules";
 import {
     useCreateStudySession,
+    useDeleteStudySession,
     useGetAllStudySessions,
     useUpdateStudySession,
 } from "@/api/study-session";
@@ -14,18 +15,36 @@ import {
     CommandItem,
     CommandList,
 } from "@/components/ui/command";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import {
     Popover,
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { groupStudySessionByDate } from "@/helpers/helpers";
+import {
+    getDisplayedDuration,
+    groupStudySessionByDate,
+} from "@/helpers/helpers";
 import { cn } from "@/lib/utils";
 import type { Module, StudySession } from "@/types/types";
 import type { UseQueryResult } from "@tanstack/react-query";
-import { format } from "date-fns";
+import { format, setHours, setMinutes } from "date-fns";
 import {
     Check,
     ChevronsUpDown,
@@ -42,6 +61,9 @@ function TimeTrackerPage() {
     const [timer, setTimer] = useState(0);
     const [title, setTitle] = useState<string>("");
     const [moduleId, setModuleId] = useState<string | null>("");
+
+    // Selecting Modules
+    const [value, setValue] = useState("");
 
     const studySessions = useGetAllStudySessions();
     const modules = useGetAllModules();
@@ -83,6 +105,7 @@ function TimeTrackerPage() {
         setTitle("");
         setTimer(0);
         setModuleId("");
+        setValue("");
     }
 
     const seconds = Math.floor(timer);
@@ -121,7 +144,11 @@ function TimeTrackerPage() {
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
                     />
-                    <ModuleCombobox setModuleId={setModuleId} />
+                    <ModuleCombobox
+                        setModuleId={setModuleId}
+                        value={value}
+                        setValue={setValue}
+                    />
 
                     <span className="w-36 text-center border py-1 rounded-lg">
                         {displayedTimer}
@@ -160,22 +187,13 @@ function TimeTrackerPage() {
                         totalTimeInSeconds += totalSeconds;
                     }
                 });
-                const hours = String(
-                    Math.floor(totalTimeInSeconds / 3600)
-                ).padStart(2, "0");
-                const minutes = String(
-                    Math.floor((totalTimeInSeconds % 3600) / 60)
-                ).padStart(2, "0");
-                const seconds = String(totalTimeInSeconds % 60).padStart(
-                    2,
-                    "0"
-                );
 
-                const formattedDisplayedDuration = `${hours}:${minutes}:${seconds}`;
+                const formattedDisplayedDuration =
+                    getDisplayedDuration(totalTimeInSeconds);
                 return (
                     <section
                         key={date}
-                        className="p-5 border my-2.5 rounded-xl"
+                        className="p-5 border my-2.5 rounded-xl text-sm"
                     >
                         <div className="flex justify-between">
                             <div className="flex gap-x-1">
@@ -192,10 +210,7 @@ function TimeTrackerPage() {
                         <ul>
                             {orderedGroupedStudySession.map((studySession) => {
                                 return (
-                                    <li
-                                        key={studySession.id}
-                                        className="grid grid-cols-11 items-center"
-                                    >
+                                    <li key={studySession.id}>
                                         {" "}
                                         <StudySession
                                             studySession={studySession}
@@ -221,33 +236,73 @@ function StudySession({
 }) {
     const [isEditingTitle, setIsEditingTitle] = useState(false);
     const [isEditingStartTime, setIsEditingStartTime] = useState(false);
+    const [isEditingEndTime, setIsEditingEndTime] = useState(false);
     const [title, setTitle] = useState(studySession.activity ?? "");
     const [startTime, setStartTime] = useState(
         format(studySession.startTime, "HH:mm")
     );
+    const [endTime, setEndTime] = useState(
+        studySession.endTime ? format(studySession.endTime, "HH:mm") : "00:00"
+    );
+
     const updateStudySession = useUpdateStudySession();
+    const deleteStudySession = useDeleteStudySession();
 
     let formatted;
     if (studySession.endTime) {
-        const ms =
-            new Date(studySession.endTime).getTime() -
-            new Date(studySession.startTime).getTime();
-        const totalSeconds = Math.floor(ms / 1000);
-        const hours = String(Math.floor(totalSeconds / 3600)).padStart(2, "0");
-        const minutes = String(Math.floor((totalSeconds % 3600) / 60)).padStart(
-            2,
-            "0"
-        );
-        const seconds = String(totalSeconds % 60).padStart(2, "0");
+        const totalSeconds =
+            (new Date(studySession.endTime).getTime() -
+                new Date(studySession.startTime).getTime()) /
+            1000;
 
-        formatted = `${hours}:${minutes}:${seconds}`;
+        formatted = getDisplayedDuration(totalSeconds);
+    }
+
+    function editStartTime(startTime: string) {
+        const timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
+        setIsEditingStartTime(false);
+
+        if (!timeRegex.test(startTime)) {
+            return setStartTime(format(studySession.startTime, "HH:mm"));
+        }
+        const [hours, minutes] = startTime.split(":").map(Number);
+        const newDateTime = setHours(
+            setMinutes(new Date(studySession.startTime), minutes),
+            hours
+        );
+        const isoString = newDateTime.toISOString();
+        updateStudySession.mutate({
+            id: studySession.id,
+            startTime: isoString,
+        });
+    }
+
+    function editEndTime(endTime: string) {
+        const timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
+        setIsEditingEndTime(false);
+
+        if (!timeRegex.test(endTime)) {
+            return studySession.endTime
+                ? setEndTime(format(studySession.endTime, "HH:mm"))
+                : setEndTime("00:00");
+        }
+        const [hours, minutes] = endTime.split(":").map(Number);
+        const newDateTime = setHours(
+            setMinutes(new Date(studySession.startTime), minutes),
+            hours
+        );
+        const isoString = newDateTime.toISOString();
+        updateStudySession.mutate({
+            id: studySession.id,
+            endTime: isoString,
+        });
     }
 
     return (
-        <>
+        <div className="grid grid-cols-11 items-center">
             {isEditingTitle ? (
                 <Input
-                    className="col-span-6"
+                    className="col-span-5"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     onBlur={() => {
@@ -270,39 +325,50 @@ function StudySession({
                     autoFocus
                 />
             ) : (
-                <button
-                    className="col-span-6 text-left"
+                <Input
+                    value={title ? title : "Untitled"}
+                    className="col-span-5 border-white shadow-none"
                     onClick={() => setIsEditingTitle(true)}
-                >
-                    {title ? title : "Untitled"}
-                </button>
+                    onKeyDown={(e) => {
+                        if (e.key !== "Enter") return;
+                        setIsEditingTitle(true);
+                    }}
+                    readOnly
+                />
             )}
-            <Badge variant={"outline"} className="space-x-0.5 col-span-2">
-                <FolderClosed />
-                <span>
-                    {
-                        modules.data?.find(
-                            (module) => module.id === studySession.moduleId
-                        )?.name
-                    }
-                </span>
-            </Badge>
-            <div className="mx-auto flex">
+
+            <div className="col-span-2">
+                <Select
+                    defaultValue={studySession.moduleId}
+                    onValueChange={(value) => {
+                        updateStudySession.mutate({
+                            id: studySession.id,
+                            moduleId: value,
+                        });
+                    }}
+                >
+                    <SelectTrigger className="w-full" size="sm" hideIcon={true}>
+                        <SelectValue placeholder="Status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {modules.data?.map((module) => (
+                            <SelectItem key={module.id} value={module.id}>
+                                {module.name}
+                            </SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+            </div>
+
+            <div className="mx-auto flex col-span-2 items-center text-center">
                 {isEditingStartTime ? (
                     <Input
                         onBlur={(e) => {
-                            const time = e.target.value;
-                            const [hours] = time.split(":");
-                            if (Number(hours) >= 24)
-                                setStartTime(
-                                    format(studySession.startTime, "HH:mm")
-                                );
-
-                            setIsEditingStartTime(false);
+                            editStartTime(e.target.value);
                         }}
                         onKeyDown={(e) => {
                             if (e.key !== "Enter") return;
-                            setIsEditingStartTime(false);
+                            editStartTime(e.target.value);
                         }}
                         value={startTime}
                         onChange={(e) => {
@@ -311,35 +377,76 @@ function StudySession({
                         autoFocus
                     />
                 ) : (
-                    <button
-                        className="text-left"
+                    <Input
+                        className="border-white shadow-none"
+                        value={startTime}
+                        readOnly
                         onClick={() => setIsEditingStartTime(true)}
-                    >
-                        {startTime}
-                    </button>
+                    />
                 )}
                 -
-                <div>
-                    {studySession.endTime
-                        ? format(studySession.endTime, "HH:mm")
-                        : "--"}
-                </div>
+                {isEditingEndTime ? (
+                    <Input
+                        onBlur={(e) => {
+                            editEndTime(e.target.value);
+                        }}
+                        onKeyDown={(e) => {
+                            if (e.key !== "Enter") return;
+                            editEndTime(e.target.value);
+                        }}
+                        value={endTime}
+                        onChange={(e) => {
+                            setEndTime(e.target.value);
+                        }}
+                        autoFocus
+                    />
+                ) : (
+                    <Input
+                        className="border-white shadow-none"
+                        value={endTime}
+                        readOnly
+                        onClick={() => setIsEditingEndTime(true)}
+                    />
+                )}
             </div>
             <span className="mx-auto">{formatted ?? "--"}</span>
-            <Button variant={"ghost"} className="w-fit mx-auto">
-                <MoreHorizontal />
-            </Button>
-        </>
+
+            <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <Button variant={"ghost"} className="w-fit mx-auto">
+                        <MoreHorizontal />
+                    </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                    <DropdownMenuLabel>Options</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                        variant="destructive"
+                        onClick={() =>
+                            deleteStudySession.mutate({
+                                projectId: studySession.id,
+                            })
+                        }
+                    >
+                        Delete
+                    </DropdownMenuItem>
+                </DropdownMenuContent>
+            </DropdownMenu>
+        </div>
     );
 }
 
 function ModuleCombobox({
     setModuleId,
+    setValue,
+    value,
 }: {
     setModuleId: React.Dispatch<React.SetStateAction<string | null>>;
+    setValue: React.Dispatch<React.SetStateAction<string>>;
+    value: string;
 }) {
     const [open, setOpen] = useState(false);
-    const [value, setValue] = useState("");
+
     const [name, setName] = useState("");
     const modules = useGetAllModules();
     const createModule = useCreateModule();

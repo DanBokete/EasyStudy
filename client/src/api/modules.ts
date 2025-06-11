@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 async function getAllModules() {
     const response = await api.get(`/modules`);
-    const modules: Module[] = response.data;
+    const modules: Module[] | [] = response.data;
     return modules;
 }
 

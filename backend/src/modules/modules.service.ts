@@ -24,7 +24,9 @@ export class ModulesService {
     return `This action updates a #${id} module`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} module`;
+  remove(userId: string, moduleId: string) {
+    return this.prisma.module.delete({
+      where: { userId, id: moduleId },
+    });
   }
 }

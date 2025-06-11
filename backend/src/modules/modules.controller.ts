@@ -47,8 +47,13 @@ export class ModulesController {
     return this.modulesService.update(+id, updateModuleDto);
   }
 
+  @UseGuards(SessionAuthGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.modulesService.remove(+id);
+  remove(
+    @Param('id') moduleId: string,
+    @Session() session: Record<string, any>,
+  ) {
+    const userId = session.userId as string;
+    return this.modulesService.remove(userId, moduleId);
   }
 }

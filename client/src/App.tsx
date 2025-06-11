@@ -9,6 +9,7 @@ import ProjectPage from "./pages/projects/[projectId]/project-page";
 import LoginPage from "./pages/auth/login-page";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import TimeTracker from "./pages/time-tracker/time-tracker-page";
+import DashboardPage from "./pages/dashboard/dashboard-page";
 
 const router = createBrowserRouter([
     {
@@ -16,24 +17,12 @@ const router = createBrowserRouter([
         Component: Layout,
         children: [
             { index: true, Component: HomePage },
+            { path: "dashboard", Component: DashboardPage },
             { path: "login", Component: LoginPage },
             { path: "tasks", Component: TasksPage },
-            // { path: "boards", Component: BoardPage },
             {
                 path: "projects",
                 Component: ProjectsPage,
-                // children: [
-                //     {
-                //         path: ":projectId",
-                //         loader: async ({ params }) => {
-                //             if (!params?.projectId)
-                //                 throw new Error("Missing projectId");
-                //             const data = await getProject(params.projectId);
-                //             return data;
-                //         },
-                //         Component: ProjectPage,
-                //     },
-                // ],
             },
             {
                 path: "projects/:projectId",
