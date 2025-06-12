@@ -22,8 +22,8 @@ const items = [
         icon: LayoutDashboard,
     },
     {
-        title: "Time Tracker",
-        url: "/time-tracker",
+        title: "Study",
+        url: "/study",
         icon: Clock4,
     },
     {

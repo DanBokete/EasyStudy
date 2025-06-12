@@ -34,7 +34,7 @@ const router = createBrowserRouter([
                 },
                 Component: ProjectPage,
             },
-            { path: "time-tracker", Component: TimeTracker },
+            { path: "study", Component: TimeTracker },
         ],
     },
 ]);

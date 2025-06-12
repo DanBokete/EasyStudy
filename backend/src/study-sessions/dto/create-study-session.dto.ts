@@ -1,4 +1,4 @@
-import { IsOptional, IsString } from 'class-validator';
+import { IsDateString, IsOptional, IsString } from 'class-validator';
 
 export class CreateStudySessionDto {
   @IsString()
@@ -12,10 +12,9 @@ export class CreateStudySessionDto {
   @IsString()
   moduleId: string;
 
-  @IsString()
+  @IsDateString()
   startTime: string;
 
-  @IsString()
-  @IsOptional()
-  endTime: string | null;
+  @IsDateString()
+  endTime: string;
 }

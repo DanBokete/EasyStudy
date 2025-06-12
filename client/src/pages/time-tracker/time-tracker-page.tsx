@@ -39,6 +39,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import {
     getDisplayedDuration,
+    getDisplayedDurationFromDate,
     groupStudySessionByDate,
 } from "@/helpers/helpers";
 import { cn } from "@/lib/utils";
@@ -48,7 +49,6 @@ import { format, setHours, setMinutes } from "date-fns";
 import {
     Check,
     ChevronsUpDown,
-    FolderClosed,
     MoreHorizontal,
     Play,
     StopCircle,
@@ -250,12 +250,10 @@ function StudySession({
 
     let formatted;
     if (studySession.endTime) {
-        const totalSeconds =
-            (new Date(studySession.endTime).getTime() -
-                new Date(studySession.startTime).getTime()) /
-            1000;
-
-        formatted = getDisplayedDuration(totalSeconds);
+        formatted = getDisplayedDurationFromDate(
+            studySession.startTime,
+            studySession.endTime
+        );
     }
 
     function editStartTime(startTime: string) {

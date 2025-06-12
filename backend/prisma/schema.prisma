@@ -88,15 +88,15 @@ model Task {
 }
 
 model StudySession {
-  id          String    @id @default(cuid())
+  id          String   @id @default(cuid())
   activity    String?
   description String?
   userId      String
-  user        User      @relation(fields: [userId], references: [id])
+  user        User     @relation(fields: [userId], references: [id])
   moduleId    String
-  module      Module    @relation(fields: [moduleId], references: [id])
-  startTime   DateTime  @default(now())
-  endTime     DateTime?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  module      Module   @relation(fields: [moduleId], references: [id])
+  startTime   DateTime @default(now())
+  endTime     DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }

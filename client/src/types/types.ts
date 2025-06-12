@@ -33,7 +33,7 @@ export type StudySession = {
     userId: string;
     moduleId: string;
     startTime: Date | string;
-    endTime: Date | string | null;
+    endTime: Date | string;
     createdAt: Date;
     updatedAt: Date;
     module: Module;
