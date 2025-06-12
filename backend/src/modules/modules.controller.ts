@@ -8,46 +8,45 @@ import {
   Delete,
   Session,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import { ModulesService } from './modules.service';
 import { CreateModuleDto } from './dto/create-module.dto';
 import { UpdateModuleDto } from './dto/update-module.dto';
-import { SessionAuthGuard } from 'src/auth/auth.guard';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { Request } from 'express';
 
 @Controller('modules')
 export class ModulesController {
   constructor(private readonly modulesService: ModulesService) {}
 
-  @UseGuards(SessionAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Post()
-  create(
-    @Body() createModuleDto: CreateModuleDto,
-    @Session() session: Record<string, any>,
-  ) {
-    const userId = session.userId as string;
-    return this.modulesService.create(createModuleDto, userId);
+  create(@Body() createModuleDto: CreateModuleDto, @Req() req: Request) {
+    const user = req.user as { userId: string; username: string };
+    return this.modulesService.create(createModuleDto, user.userId);
   }
 
-  @UseGuards(SessionAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Get()
-  findAll(@Session() session: Record<string, any>) {
-    const userId = session.userId as string;
-    return this.modulesService.findAll(userId);
+  findAll(@Req() req: Request) {
+    const user = req.user as { userId: string; username: string };
+    return this.modulesService.findAll(user.userId);
   }
 
-  @UseGuards(SessionAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.modulesService.findOne(+id);
   }
 
-  @UseGuards(SessionAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateModuleDto: UpdateModuleDto) {
     return this.modulesService.update(+id, updateModuleDto);
   }
 
-  @UseGuards(SessionAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   remove(
     @Param('id') moduleId: string,

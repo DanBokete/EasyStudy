@@ -23,31 +23,6 @@ import { format } from "date-fns";
 
 export const description = "A stacked bar chart with a legend";
 
-// const chartData = [
-//     { day: "Mon", maths: 999, french: 80 },
-//     { day: "Tue", duration: 305, mobile: 200 },
-//     { day: "Wed", duration: 237, mobile: 120 },
-//     { day: "Thur", duration: 73, mobile: 190 },
-//     { day: "Fri", duration: 209, mobile: 130 },
-//     { day: "Sat", duration: 209, mobile: 130 },
-//     { day: "Sun", duration: 209, mobile: 130 },
-// ];
-
-// const chartConfig = {
-//     duration: {
-//         label: "Duration",
-//         color: "var(--chart-1)",
-//     },
-//     mobile: {
-//         label: "Mobile",
-//         color: "var(--chart-2)",
-//     },
-//     maths: {
-//         label: "Maths",
-//         color: "var(--chart-3)",
-//     },
-// } satisfies ChartConfig;
-
 export default function ChartBarStacked({
     chartData,
     chartConfig,

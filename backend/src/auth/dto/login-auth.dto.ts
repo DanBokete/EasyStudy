@@ -1,7 +1,8 @@
-import { IsEmail, IsString } from 'class-validator';
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+import { IsString } from 'class-validator';
 
 export class LoginAuthDto {
-  @IsEmail()
+  @IsString()
   username: string;
 
   @IsString()

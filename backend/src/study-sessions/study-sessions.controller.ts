@@ -7,65 +7,61 @@ import {
   Param,
   Delete,
   UseGuards,
-  Session,
+  Req,
 } from '@nestjs/common';
 import { StudySessionsService } from './study-sessions.service';
 import { CreateStudySessionDto } from './dto/create-study-session.dto';
 import { UpdateStudySessionDto } from './dto/update-study-session.dto';
-import { SessionAuthGuard } from 'src/auth/auth.guard';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { Request } from 'express';
 
 @Controller('study-sessions')
 export class StudySessionsController {
   constructor(private readonly studySessionsService: StudySessionsService) {}
 
-  @UseGuards(SessionAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Post()
   create(
     @Body() createStudySessionDto: CreateStudySessionDto,
-    @Session() session: Record<string, any>,
+    @Req() req: Request,
   ) {
-    const userId = session.userId as string;
-    return this.studySessionsService.create(createStudySessionDto, userId);
+    const user = req.user as { userId: string; username: string };
+    return this.studySessionsService.create(createStudySessionDto, user.userId);
   }
 
-  @UseGuards(SessionAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Get()
-  findAll(@Session() session: Record<string, any>) {
-    const userId = session.userId as string;
-    return this.studySessionsService.findAll(userId);
+  findAll(@Req() req: Request) {
+    const user = req.user as { userId: string; username: string };
+    return this.studySessionsService.findAll(user.userId);
   }
 
-  @UseGuards(SessionAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
-  findOne(
-    @Param('id') studySessionsId: string,
-    @Session() session: Record<string, any>,
-  ) {
-    const userId = session.userId as string;
-    return this.studySessionsService.findOne(userId, studySessionsId);
+  findOne(@Param('id') studySessionsId: string, @Req() req: Request) {
+    const user = req.user as { userId: string; username: string };
+    return this.studySessionsService.findOne(user.userId, studySessionsId);
   }
 
-  @UseGuards(SessionAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
   update(
     @Param('id') studySessionId: string,
     @Body() updateStudySessionDto: UpdateStudySessionDto,
-    @Session() session: Record<string, any>,
+    @Req() req: Request,
   ) {
-    const userId = session.userId as string;
+    const user = req.user as { userId: string; username: string };
     return this.studySessionsService.update(
-      userId,
+      user.userId,
       updateStudySessionDto,
       studySessionId,
     );
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  remove(
-    @Param('id') studySessionId: string,
-    @Session() session: Record<string, any>,
-  ) {
-    const userId = session.userId as string;
-    return this.studySessionsService.remove(userId, studySessionId);
+  remove(@Param('id') studySessionId: string, @Req() req: Request) {
+    const user = req.user as { userId: string; username: string };
+    return this.studySessionsService.remove(user.userId, studySessionId);
   }
 }

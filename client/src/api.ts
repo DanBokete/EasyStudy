@@ -12,10 +12,16 @@ api.interceptors.response.use(
         }
         return response;
     },
-    (error) => {
+    async (error) => {
         if (error.response?.status === 401) {
-            localStorage.removeItem("isLoggedIn");
-            window.location.href = "/login";
+            try {
+                await api.post("/auth/refresh");
+                return api(error.config);
+            } catch (err) {
+                alert("Your session has expired. Please log in again.");
+                localStorage.removeItem("isLoggedIn");
+                window.location.href = "/login";
+            }
         }
         return Promise.reject(error);
     }
