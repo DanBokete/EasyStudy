@@ -18,6 +18,7 @@ api.interceptors.response.use(
                 await api.post("/auth/refresh");
                 return api(error.config);
             } catch (err) {
+                console.error(err);
                 alert("Your session has expired. Please log in again.");
                 localStorage.removeItem("isLoggedIn");
                 window.location.href = "/login";

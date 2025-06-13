@@ -2,6 +2,9 @@ import api from "@/api";
 import type { Project } from "@/types/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
+// todo
+// use updated pattern for projects page
+
 export async function getProject(projectId: string) {
     const response = await api.get(`/projects/${projectId}`);
     const project = response.data;
@@ -68,33 +71,23 @@ export function useGetAllProjects() {
     });
 }
 
-// export async function useCreateStudySession(data: Partial<Project>) {
-//     const response = await api.post(`/study-session`, data);
-//     const project: Project = response.data;
-//     return project;
-// }
-
-async function createStudySession(data: Partial<StudySession>) {
-    return api.post("/study-sessions", data).then((response) => response.data);
-}
-
-export const useCreateStudySession = () => {
+export const useCreateProject = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: createStudySession,
-        onSuccess: (newStudySession) => {
-            queryClient.invalidateQueries({ queryKey: ["studySessions"] });
+        mutationFn: createProject,
+        onSuccess: (newProject) => {
+            queryClient.invalidateQueries({ queryKey: ["projects"] });
 
-            queryClient.setQueryData(
-                ["studySessions"],
-                (old: StudySession[]) => [...old, { ...newStudySession }]
-            );
+            queryClient.setQueryData(["projects"], (old: Project[]) => [
+                ...old,
+                { ...newProject },
+            ]);
         },
     });
 };
 
-export async function deleteStudySession(data: { projectId: string }) {
+export async function deleteProjectFunc(data: { projectId: string }) {
     const { projectId } = data;
     const response = await api.delete(`/study-sessions/${projectId}`);
     const deletedProject: Project = response.data;
@@ -105,12 +98,12 @@ export const useDeleteStudySession = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: deleteStudySession,
-        onSuccess: (deletedStudySession) => {
+        mutationFn: deleteProjectFunc,
+        onSuccess: (deletedProject) => {
             // queryClient.invalidateQueries({ queryKey: ["studySessions"] });
 
-            queryClient.setQueryData(["studySessions"], (old: StudySession[]) =>
-                old.filter((session) => session.id !== deletedStudySession.id)
+            queryClient.setQueryData(["studySessions"], (old: Project[]) =>
+                old.filter((session) => session.id !== deletedProject.id)
             );
         },
     });

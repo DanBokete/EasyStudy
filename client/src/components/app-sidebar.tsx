@@ -13,6 +13,7 @@ import {
     SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { Link } from "react-router";
+import { SITE_NAME } from "@/constants";
 
 // Menu items.
 const items = [
@@ -43,7 +44,7 @@ export function AppSidebar() {
         <Sidebar collapsible="icon" variant="floating">
             <SidebarContent>
                 <SidebarGroup>
-                    <SidebarGroupLabel>Study Stack</SidebarGroupLabel>
+                    <SidebarGroupLabel>{SITE_NAME}</SidebarGroupLabel>
                     <SidebarGroupContent>
                         <SidebarMenu>
                             {items.map((item) => (

@@ -7,55 +7,53 @@ import {
   Param,
   Delete,
   UseGuards,
-  Session,
+  Req,
 } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
-import { SessionAuthGuard } from 'src/authv0/auth.guard';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { Request } from 'express';
 
 @Controller('tasks')
 export class TasksController {
   constructor(private readonly tasksService: TasksService) {}
 
-  @UseGuards(SessionAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Post()
-  create(
-    @Body() createTaskDto: CreateTaskDto,
-    @Session() session: Record<string, any>,
-  ) {
-    const userId = session.userId as string;
-    return this.tasksService.create(createTaskDto, userId);
+  create(@Body() createTaskDto: CreateTaskDto, @Req() req: Request) {
+    const user = req.user as { userId: string; username: string };
+    return this.tasksService.create(createTaskDto, user.userId);
   }
 
-  @UseGuards(SessionAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Get()
-  findAll(@Session() session: Record<string, any>) {
-    const userId = session.userId as string;
-    return this.tasksService.findAll(userId);
+  findAll(@Req() req: Request) {
+    const user = req.user as { userId: string; username: string };
+    return this.tasksService.findAll(user.userId);
   }
 
-  @UseGuards(SessionAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.tasksService.findOne(+id);
   }
 
-  @UseGuards(SessionAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
   update(
     @Param('id') taskId: string,
     @Body() updateTaskDto: UpdateTaskDto,
-    @Session() session: Record<string, any>,
+    @Req() req: Request,
   ) {
-    const userId = session.userId as string;
-    return this.tasksService.update(userId, updateTaskDto, taskId);
+    const user = req.user as { userId: string; username: string };
+    return this.tasksService.update(user.userId, updateTaskDto, taskId);
   }
 
-  @UseGuards(SessionAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  remove(@Param('id') taskId: string, @Session() session: Record<string, any>) {
-    const userId = session.userId as string;
-    return this.tasksService.remove(userId, taskId);
+  remove(@Param('id') taskId: string, @Req() req: Request) {
+    const user = req.user as { userId: string; username: string };
+    return this.tasksService.remove(user.userId, taskId);
   }
 }

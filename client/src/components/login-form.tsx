@@ -25,12 +25,12 @@ export function LoginForm({
     return (
         <div className={cn("flex flex-col gap-6", className)} {...props}>
             <Card>
-                <CardHeader className="text-center">
+                {/* <CardHeader className="text-center">
                     <CardTitle className="text-xl">Welcome back</CardTitle>
                     <CardDescription>
                         Login with your Apple or Google account
                     </CardDescription>
-                </CardHeader>
+                </CardHeader> */}
                 <CardContent>
                     <form
                         onSubmit={(e) => {
@@ -40,7 +40,7 @@ export function LoginForm({
                     >
                         <div className="grid gap-6">
                             <div className="flex flex-col gap-4">
-                                <Button variant="outline" className="w-full">
+                                {/* <Button variant="outline" className="w-full">
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
                                         viewBox="0 0 24 24"
@@ -51,8 +51,8 @@ export function LoginForm({
                                         />
                                     </svg>
                                     Login with Apple
-                                </Button>
-                                <Button variant="outline" className="w-full">
+                                </Button> */}
+                                {/* <Button variant="outline" className="w-full">
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
                                         viewBox="0 0 24 24"
@@ -63,13 +63,13 @@ export function LoginForm({
                                         />
                                     </svg>
                                     Login with Google
-                                </Button>
+                                </Button> */}
                             </div>
-                            <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
+                            {/* <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
                                 <span className="relative z-10 bg-background px-2 text-muted-foreground">
                                     Or continue with
                                 </span>
-                            </div>
+                            </div> */}
                             <div className="grid gap-6">
                                 <div className="grid gap-2">
                                     <Label htmlFor="email">Email</Label>

@@ -9,7 +9,7 @@ export function getBarChartData(
     if (!studSessions || studSessions.length === 0) {
         return [];
     }
-    const dateRange = getBarChartDateRange(initialDate, finalDate);
+    const dateRange = getTimeRange(initialDate, finalDate);
     const filteredSessions = studSessions.filter((session) => {
         const sessionDate = new Date(session.startTime)
             .toISOString()
@@ -80,10 +80,7 @@ export function getBarChartConfig(modules: Module[]) {
     return config;
 }
 
-function getBarChartDateRange(
-    initialDate: string,
-    finalDate: string
-): string[] {
+export function getTimeRange(initialDate: string, finalDate: string): string[] {
     const start = new Date(initialDate);
     const end = new Date(finalDate);
     const dateArray: string[] = [];
