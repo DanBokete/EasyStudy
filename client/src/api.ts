@@ -1,6 +1,8 @@
 import axios from "axios";
+import { redirect } from "react-router";
+const BASE_URL = "http://localhost:3000";
 const api = axios.create({
-    baseURL: "http://localhost:3000/",
+    baseURL: BASE_URL,
     withCredentials: true,
 });
 
@@ -8,20 +10,23 @@ api.interceptors.response.use(
     (response) => {
         if (window.location.pathname === "/login" && response.status === 200) {
             sessionStorage.setItem("isLoggedIn", "true");
-            window.location.href = "/";
+            window.location.pathname = "/";
         }
         return response;
     },
     async (error) => {
         if (error.response?.status === 401) {
             try {
-                await api.post("/auth/refresh");
-                return api(error.config);
+                const response = await axios.post(
+                    `${BASE_URL}/auth/refresh`,
+                    {},
+                    { withCredentials: true }
+                );
+                if (response.status !== 401) return api(error.config);
+                return (window.location.pathname = "/login");
             } catch (err) {
-                console.error(err);
-                alert("Your session has expired. Please log in again.");
-                localStorage.removeItem("isLoggedIn");
-                window.location.href = "/login";
+                console.log("error", err);
+                return (window.location.pathname = "/login");
             }
         }
         return Promise.reject(error);

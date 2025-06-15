@@ -37,6 +37,7 @@ export function getBarChartData(
             return {
                 day: date,
                 ...sessions.reduce((acc: Record<string, number>, curr) => {
+                    if (!curr.module) return {};
                     const totalTime = getTimeDifferenceInSeconds(
                         curr.startTime,
                         curr.endTime

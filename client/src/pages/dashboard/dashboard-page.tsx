@@ -108,7 +108,10 @@ function UpcomingProjects({ projects }: UpcomingProjectsProp) {
                         })
                         // .slice(0, 5)
                         .map((project) => (
-                            <li className="grid grid-cols-3 gap-x-2">
+                            <li
+                                key={project.id}
+                                className="grid grid-cols-3 gap-x-2"
+                            >
                                 <div className="col-span-2">{project.name}</div>
                                 <div className="font-bold">
                                     {formatDistanceToNow(
@@ -152,7 +155,7 @@ function ProjectTracker({ projects }: ProjectTrackerProp) {
                             const numberOfOverdueTasks =
                                 getNumberOfOverdueTasks(project);
                             return (
-                                <TableRow>
+                                <TableRow key={project.id}>
                                     <TableCell className="font-medium">
                                         {project.name}
                                     </TableCell>
