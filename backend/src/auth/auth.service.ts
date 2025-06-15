@@ -7,7 +7,7 @@ import {
 import { SignupAuthDto } from './dto/signup-auth.dto';
 // import { UpdateAuthDto } from './dto/update-auth.dto';
 import { LoginAuthDto } from './dto/login-auth.dto';
-import { PrismaService } from 'src/prisma.service';
+import { PrismaService } from '../prisma.service';
 import * as argon2 from 'argon2';
 
 import { JwtService } from '@nestjs/jwt';
