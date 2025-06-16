@@ -133,6 +133,7 @@ describe('AuthService', () => {
       id: 1,
       email: 'test@gmail.com',
       password: 'hashedpassword',
+      name: 'Dan',
     };
     it('should not return password', async () => {
       mockPrismaService.user.create.mockResolvedValue(mockUser);
@@ -140,6 +141,29 @@ describe('AuthService', () => {
 
       const result = await service.signup(mockSignupDto);
       expect(result).not.toHaveProperty('password');
+    });
+
+    it('should hash the password during signup', async () => {
+      const hashedPassword = mockUser.password;
+      const plainPassword = mockSignupDto.password;
+
+      jest.spyOn(argon2, 'hash').mockResolvedValue(hashedPassword);
+
+      mockPrismaService.user.create.mockResolvedValue({
+        mockUser,
+      });
+
+      await service.signup(mockSignupDto);
+
+      expect(argon2.hash).toHaveBeenCalledWith(plainPassword);
+
+      expect(mockPrismaService.user.create).toHaveBeenCalledWith({
+        data: {
+          email: mockSignupDto.username,
+          password: hashedPassword,
+          name: mockSignupDto.name,
+        },
+      });
     });
   });
 });
