@@ -68,7 +68,7 @@ export const useUpdateStudySession = () => {
 
     return useMutation({
         mutationFn: updateStudySession,
-        onSuccess: (data, variables) => {
+        onSuccess: (data) => {
             // queryClient.invalidateQueries({
             //     queryKey: ["studySessions"],
             // });

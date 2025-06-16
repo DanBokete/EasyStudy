@@ -14,11 +14,18 @@ export class ProjectsService {
     return project;
   }
 
-  findAll(userId: string) {
-    const projects = this.prisma.project.findMany({
+  async findAll(userId: string) {
+    const projects = await this.prisma.project.findMany({
       where: { userId, archived: false },
       include: { tasks: { orderBy: { dueDate: 'asc' } } },
     });
+
+    // projects.map((project) => {
+    //   const tasks = project.tasks.map((task) => {
+    //     return formatTasks();
+    //   });
+    //   return { ...project, tasks };
+    // });
     return projects;
   }
 

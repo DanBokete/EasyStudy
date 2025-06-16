@@ -24,6 +24,8 @@ import {
 import ProjectEditForm from "./project-edit-form";
 import NewTask from "./new-task";
 import NewTaskForm from "./new-task-form";
+import { Badge } from "@/components/ui/badge";
+import { format } from "date-fns";
 
 function ProjectContainer({
     projects,
@@ -93,6 +95,18 @@ function ProjectContainer({
                     </span>
                 </div>
                 <div className="space-x-1">
+                    <Badge
+                        variant={
+                            project.dueDate &&
+                            project.dueDate <= new Date().toISOString()
+                                ? "destructive"
+                                : "default"
+                        }
+                    >
+                        {project.dueDate
+                            ? format(project.dueDate, "dd.MM.yyyy")
+                            : "No due date"}
+                    </Badge>
                     <Dialog open={open} onOpenChange={setOpen}>
                         <DialogTrigger asChild>
                             <Button variant={"ghost"}>

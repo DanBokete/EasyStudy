@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateStudySessionDto } from './dto/create-study-session.dto';
 import { UpdateStudySessionDto } from './dto/update-study-session.dto';
 import { PrismaService } from 'src/prisma.service';
+import { formatStudySessions } from 'src/utils/study-sessions';
 
 @Injectable()
 export class StudySessionsService {
@@ -22,7 +23,7 @@ export class StudySessionsService {
       where: { userId },
       include: { module: true },
     });
-    return studySessions;
+    return formatStudySessions(studySessions);
   }
 
   async findOne(userId: string, studySessionId: string) {

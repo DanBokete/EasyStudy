@@ -15,7 +15,7 @@ import { UpdateTaskDto } from './dto/update-task.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { Request } from 'express';
 
-@Controller('tasks')
+@Controller('v1/tasks')
 export class TasksController {
   constructor(private readonly tasksService: TasksService) {}
 

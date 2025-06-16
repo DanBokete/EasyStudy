@@ -137,3 +137,21 @@ export function getNumberOfOverdueTasks(project: Project) {
         (task) => task.dueDate?.toString().split("T")[0] ?? "" < today
     ).length;
 }
+
+export function getComputedTimeIsoString(
+    startTime: string,
+    endTime: string
+): [string, string] {
+    const datePart = startTime.split("T")[0];
+    const startTimeOnly = startTime.split("T")[1];
+    const endTimeOnly = endTime.split("T")[1];
+
+    const start = new Date(`${datePart}T${startTimeOnly}`);
+    const computedEnd = new Date(`${datePart}T${endTimeOnly}`);
+
+    if (computedEnd.getTime() < start.getTime()) {
+        computedEnd.setDate(computedEnd.getDate() + 1);
+    }
+
+    return [start.toISOString(), computedEnd.toISOString()];
+}

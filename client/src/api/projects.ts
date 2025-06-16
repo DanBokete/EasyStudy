@@ -6,19 +6,19 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 // use updated pattern for projects page
 
 export async function getProject(projectId: string) {
-    const response = await api.get(`/projects/${projectId}`);
+    const response = await api.get(`v1/projects/${projectId}`);
     const project = response.data;
     return project;
 }
 
 export async function editProject(projectId: string, data: Partial<Project>) {
-    const response = await api.patch(`/projects/${projectId}`, data);
+    const response = await api.patch(`v1/projects/${projectId}`, data);
     const project: Project = response.data;
     return project;
 }
 
 export async function getAllProjects() {
-    const response = await api.get("/projects");
+    const response = await api.get("v1/projects");
     const projects: Project[] | [] = response.data;
     console.log(response.data);
 
@@ -26,19 +26,19 @@ export async function getAllProjects() {
 }
 
 export async function createProject(data: Partial<Project>) {
-    const response = await api.post(`/projects`, data);
+    const response = await api.post(`v1/projects`, data);
     const project: Project = response.data;
     return project;
 }
 
 export async function deleteProject(projectId: string) {
-    const response = await api.delete(`/projects/${projectId}`);
+    const response = await api.delete(`v1/projects/${projectId}`);
     const deletedProject: Project = response.data;
     return deletedProject;
 }
 
 async function updateProject(data: Partial<Project>) {
-    const response = await api.patch(`/projects/${data.id}`, data);
+    const response = await api.patch(`v1/projects/${data.id}`, data);
 
     const updatedStudySession: Project = response.data;
     return updatedStudySession;

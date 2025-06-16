@@ -16,14 +16,14 @@ import {
     CommandList,
 } from "@/components/ui/command";
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
     Popover,
     PopoverContent,
@@ -38,12 +38,14 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import {
+    getComputedTimeIsoString,
     getDisplayedDuration,
     getDisplayedDurationFromDate,
     groupStudySessionByDate,
 } from "@/helpers/helpers";
 import { cn } from "@/lib/utils";
 import type { Module, StudySession } from "@/types/types";
+import { Dialog } from "@radix-ui/react-dialog";
 import type { UseQueryResult } from "@tanstack/react-query";
 import { format, setHours, setMinutes } from "date-fns";
 import {
@@ -52,6 +54,7 @@ import {
     MoreHorizontal,
     Play,
     StopCircle,
+    Trash2,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -237,17 +240,20 @@ function StudySession({
     const [isEditingTitle, setIsEditingTitle] = useState(false);
     const [isEditingStartTime, setIsEditingStartTime] = useState(false);
     const [isEditingEndTime, setIsEditingEndTime] = useState(false);
-    const [title, setTitle] = useState(studySession.activity ?? "");
-    const [startTime, setStartTime] = useState(
-        format(studySession.startTime, "HH:mm")
-    );
-    const [endTime, setEndTime] = useState(
-        studySession.endTime ? format(studySession.endTime, "HH:mm") : "00:00"
-    );
+    const [title, setTitle] = useState("");
+    const [startTime, setStartTime] = useState("");
+    const [endTime, setEndTime] = useState("");
+
+    useEffect(() => {
+        setTitle(studySession.activity);
+        setStartTime(format(studySession.startTime, "HH:mm"));
+        setEndTime(format(studySession.endTime, "HH:mm"));
+    }, [studySession]);
 
     const updateStudySession = useUpdateStudySession();
     const deleteStudySession = useDeleteStudySession();
 
+    // Doing this from client to reduce server request
     let formatted;
     if (studySession.endTime) {
         formatted = getDisplayedDurationFromDate(
@@ -284,16 +290,23 @@ function StudySession({
                 ? setEndTime(format(studySession.endTime, "HH:mm"))
                 : setEndTime("00:00");
         }
-        const [hours, minutes] = endTime.split(":").map(Number);
-        const newDateTime = setHours(
-            setMinutes(new Date(studySession.startTime), minutes),
-            hours
+        const [hoursEndTime, minutesEndTime] = endTime.split(":").map(Number);
+
+        const [isoStartString, isoEndString] = getComputedTimeIsoString(
+            studySession.startTime.toString(),
+            setHours(
+                setMinutes(new Date(studySession.endTime), minutesEndTime),
+                hoursEndTime
+            ).toISOString()
         );
-        const isoString = newDateTime.toISOString();
+
         updateStudySession.mutate({
             id: studySession.id,
-            endTime: isoString,
+            startTime: isoStartString,
+            endTime: isoEndString,
         });
+
+        console.log(isoEndString);
     }
 
     return (
@@ -408,28 +421,38 @@ function StudySession({
                 )}
             </div>
             <span className="mx-auto">{formatted ?? "--"}</span>
-
-            <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                    <Button variant={"ghost"} className="w-fit mx-auto">
-                        <MoreHorizontal />
-                    </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                    <DropdownMenuLabel>Options</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem
-                        variant="destructive"
-                        onClick={() =>
-                            deleteStudySession.mutate({
-                                projectId: studySession.id,
-                            })
-                        }
-                    >
-                        Delete
-                    </DropdownMenuItem>
-                </DropdownMenuContent>
-            </DropdownMenu>
+            <div className="flex justify-end gap-1">
+                <Dialog>
+                    <DialogTrigger>
+                        <Button variant={"outline"} size={"sm"}>
+                            <MoreHorizontal />
+                        </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle>Session Details</DialogTitle>
+                            <DialogDescription>
+                                Edit your study session
+                            </DialogDescription>
+                        </DialogHeader>
+                        <EditStudySessionForm
+                            studySession={studySession}
+                            modules={modules.data}
+                        />
+                    </DialogContent>
+                </Dialog>
+                <Button
+                    variant={"outline"}
+                    size={"sm"}
+                    onClick={() =>
+                        deleteStudySession.mutate({
+                            projectId: studySession.id,
+                        })
+                    }
+                >
+                    <Trash2 />
+                </Button>
+            </div>
         </div>
     );
 }
@@ -555,5 +578,132 @@ function ModuleCombobox({
 //         </form>
 //     );
 // }
+interface EditStudySessionFormProp {
+    studySession: StudySession;
+    modules: Module[] | undefined;
+}
+function EditStudySessionForm({
+    studySession,
+    modules,
+}: EditStudySessionFormProp) {
+    const [activity, setActivity] = useState(studySession.activity);
+    const [startTime, setStartTime] = useState(
+        new Date(studySession.startTime).toTimeString().slice(0, 5)
+    );
+    const [endTime, setEndTime] = useState(() => {
+        const date = new Date(studySession.endTime);
+        return date.toTimeString().slice(0, 5);
+    });
+    const [moduleId, setModuleId] = useState(studySession.moduleId);
+    const [date, setDate] = useState(
+        studySession.startTime.toString().split("T")[0]
+    );
+    const updateStudySession = useUpdateStudySession();
+
+    function editStudySession() {
+        const [hoursStartTime, minutesStartTime] = startTime
+            .split(":")
+            .map(Number);
+        const [hoursEndTime, minutesEndTime] = endTime.split(":").map(Number);
+        const newDateTime = setHours(
+            setMinutes(new Date(studySession.startTime), minutesStartTime),
+            hoursStartTime
+        );
+        const splitDate = date.split("-");
+        newDateTime.setFullYear(
+            Number(splitDate[0]),
+            Number(splitDate[1]) - 1,
+            Number(splitDate[2])
+        );
+        const _isoStringStartTime = newDateTime.toISOString();
+        const [isoStringStartTime, isoStringEndTime] = getComputedTimeIsoString(
+            _isoStringStartTime,
+            setHours(
+                setMinutes(new Date(studySession.endTime), minutesEndTime),
+                hoursEndTime
+            ).toISOString()
+        );
+
+        updateStudySession.mutate({
+            id: studySession.id,
+            activity,
+            startTime: isoStringStartTime,
+            endTime: isoStringEndTime,
+            moduleId,
+        });
+    }
+
+    return (
+        <form
+            className="space-y-2"
+            onSubmit={(e) => {
+                e.preventDefault();
+                editStudySession();
+            }}
+        >
+            <div className="space-y-2">
+                <Label>Activity</Label>
+                <Input
+                    value={activity}
+                    onChange={(e) => setActivity(e.target.value)}
+                />
+            </div>
+
+            <div className="space-y-2">
+                <Label>Date</Label>
+                <Input
+                    type="date"
+                    value={date}
+                    onChange={(e) => setDate(e.target.value)}
+                />
+            </div>
+
+            <div className="grid grid-cols-2 gap-x-2 space-y-2">
+                <div>
+                    <Label>Start Time</Label>
+                    <Input
+                        type="time"
+                        value={startTime}
+                        onChange={(e) => setStartTime(e.target.value)}
+                    />
+                </div>
+                <div>
+                    <Label>End Time</Label>
+                    <Input
+                        type="time"
+                        value={endTime}
+                        onChange={(e) => setEndTime(e.target.value)}
+                    />
+                </div>
+            </div>
+
+            <div className="space-y-2">
+                <Label>Module</Label>
+                <Select
+                    defaultValue={studySession.moduleId}
+                    onValueChange={(value) => {
+                        setModuleId(value);
+                    }}
+                >
+                    <SelectTrigger className="w-full" size="sm" hideIcon={true}>
+                        <SelectValue placeholder="Status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {modules?.map((module) => (
+                            <SelectItem key={module.id} value={module.id}>
+                                {module.name}
+                            </SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+            </div>
+            <div className="flex justify-end">
+                <Button variant={"outline"} type="submit">
+                    Edit Session
+                </Button>
+            </div>
+        </form>
+    );
+}
 
 export default TimeTrackerPage;

@@ -34,6 +34,9 @@ export type StudySession = {
     moduleId: string;
     startTime: Date | string;
     endTime: Date | string;
+    displayedStartTime: string;
+    displayedEndTime: string;
+    duration: number;
     createdAt: Date;
     updatedAt: Date;
     module: Module;
