@@ -27,9 +27,17 @@ export class AuthService {
 
     try {
       const user = await this.prisma.user.create({
-        data: { ...signupAuthDto, password: hashPassword },
+        data: {
+          email: signupAuthDto.username,
+          password: hashPassword,
+          name: signupAuthDto.name,
+        },
       });
-      return user;
+
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { password, ...sanitizedUser } = user;
+
+      return sanitizedUser;
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
         if (error.code === 'P2002') {

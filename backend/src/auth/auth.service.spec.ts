@@ -16,6 +16,7 @@ describe('AuthService', () => {
   const mockPrismaService = {
     user: {
       findUnique: jest.fn(),
+      create: jest.fn(),
     },
   };
 
@@ -118,6 +119,27 @@ describe('AuthService', () => {
           mockResponse,
         ),
       ).resolves.toBeUndefined();
+    });
+  });
+
+  describe('signup', () => {
+    const mockSignupDto = {
+      username: 'test@gmail.com',
+      password: '#Test123',
+      name: 'Dan',
+    };
+
+    const mockUser = {
+      id: 1,
+      email: 'test@gmail.com',
+      password: 'hashedpassword',
+    };
+    it('should not return password', async () => {
+      mockPrismaService.user.create.mockResolvedValue(mockUser);
+      jest.spyOn(argon2, 'hash').mockResolvedValue('hashedPassword');
+
+      const result = await service.signup(mockSignupDto);
+      expect(result).not.toHaveProperty('password');
     });
   });
 });

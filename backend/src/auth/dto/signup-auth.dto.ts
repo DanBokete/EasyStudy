@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
-import { IsEmail, IsString, IsStrongPassword } from 'class-validator';
+import { IsString, IsStrongPassword, Length } from 'class-validator';
 
 export class SignupAuthDto {
   @IsString()
@@ -8,12 +8,7 @@ export class SignupAuthDto {
   @IsStrongPassword()
   password: string;
 
-  @IsEmail()
-  email: string;
-
   @IsString()
-  firstName: string;
-
-  @IsString()
-  lastName: string;
+  @Length(1)
+  name: string;
 }
