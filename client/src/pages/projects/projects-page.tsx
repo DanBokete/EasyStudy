@@ -1,10 +1,9 @@
 import { getAllProjects } from "@/api/projects";
 import { Separator } from "@/components/ui/separator";
 import { useQuery } from "@tanstack/react-query";
-import ProjectForm from "./project-form";
-import Task from "./task";
-import NewTask from "./new-task";
-import Project from "./project";
+import ProjectForm from "../../features/projects/project-form";
+import Project from "../../features/projects/project";
+import NewTask from "@/features/tasks/new-task";
 
 function ProjectsPage() {
     const { isPending, error, data } = useQuery({

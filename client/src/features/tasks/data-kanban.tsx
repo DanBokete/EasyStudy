@@ -1,4 +1,4 @@
-import type { Task, TaskStatus } from "@/types/types";
+import type { Project, Task, TaskStatus } from "@/types/types";
 import { useCallback, useEffect, useState } from "react";
 import {
     DragDropContext,
@@ -8,6 +8,7 @@ import {
 } from "@hello-pangea/dnd";
 import KanbanColumnHeader from "./kanban-column-header";
 import KanbanCard from "./kanban-card";
+import { useGetAllProjects } from "@/api/projects";
 
 const boards: TaskStatus[] = ["TODO", "IN_PROGRESS", "DONE"];
 
@@ -20,9 +21,11 @@ interface DataKanbanProps {
     onChange: (
         tasks: { id: string; status: TaskStatus; position: number }[]
     ) => void;
+    project: Project;
 }
 
-function DataKanban({ data, onChange }: DataKanbanProps) {
+function DataKanban({ data, onChange, project }: DataKanbanProps) {
+    // const projects = useGetAllProjects();
     const [tasks, setTasks] = useState<TaskState>(() => {
         const initialTasks: TaskState = {
             ["TODO"]: [],
@@ -58,7 +61,8 @@ function DataKanban({ data, onChange }: DataKanbanProps) {
                 (a, b) => a.position - b.position
             );
         });
-    }, [data]);
+        setTasks(newTasks);
+    }, [data, project]);
 
     const onDragEnd = useCallback(
         (result: DropResult) => {
@@ -170,6 +174,7 @@ function DataKanban({ data, onChange }: DataKanbanProps) {
                             <KanbanColumnHeader
                                 board={board}
                                 taskCount={tasks[board].length}
+                                project={project}
                             />
                             <Droppable droppableId={board}>
                                 {(provided) => (

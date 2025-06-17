@@ -6,9 +6,11 @@ import type { Project, TaskStatus } from "@/types/types";
 import DataKanban from "@/features/tasks/data-kanban";
 import { useCallback } from "react";
 import { useUpdateManyTasks } from "@/api/task";
+import { useGetProject } from "@/api/projects";
 
 function ProjectPage() {
-    const project: Project = useLoaderData();
+    const projectId: string = useLoaderData();
+    const { data: project, isLoading } = useGetProject(projectId);
     const useTasks = useUpdateManyTasks();
 
     const onKanbanChange = useCallback(
@@ -18,6 +20,12 @@ function ProjectPage() {
         },
         []
     );
+
+    if (isLoading) return "...";
+    if (!project) return "No project";
+    console.log(project);
+
+    if (!project.tasks) return "There are no tasks";
 
     return (
         <div>
@@ -38,7 +46,11 @@ function ProjectPage() {
             </div> */}
 
             <h2 className="font-medium text-xl">Board</h2>
-            <DataKanban data={project.tasks} onChange={onKanbanChange} />
+            <DataKanban
+                data={project.tasks}
+                onChange={onKanbanChange}
+                project={project}
+            />
 
             {/* <div>
                 <h2>Todo</h2>

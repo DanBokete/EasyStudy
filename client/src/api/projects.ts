@@ -7,7 +7,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export async function getProject(projectId: string) {
     const response = await api.get(`v1/projects/${projectId}`);
-    const project = response.data;
+    const project: Project = response.data;
     return project;
 }
 
@@ -64,6 +64,12 @@ export const useUpdateProjects = () => {
     });
 };
 
+export function useGetProject(projectId: string) {
+    return useQuery({
+        queryKey: ["projects", projectId],
+        queryFn: () => getProject(projectId),
+    });
+}
 export function useGetAllProjects() {
     return useQuery({
         queryKey: ["projects"],
@@ -78,11 +84,19 @@ export const useCreateProject = () => {
         mutationFn: createProject,
         onSuccess: (newProject) => {
             queryClient.invalidateQueries({ queryKey: ["projects"] });
+            queryClient.invalidateQueries({
+                queryKey: ["projects", newProject.id],
+            });
 
-            queryClient.setQueryData(["projects"], (old: Project[]) => [
-                ...old,
-                { ...newProject },
-            ]);
+            // queryClient.setQueryData(["projects"], (old: Project[]) => [
+            //     ...old,
+            //     { ...newProject },
+            // ]);
+
+            // queryClient.setQueryData(
+            //     ["projects", newProject.id],
+            //     () => newProject
+            // );
         },
     });
 };

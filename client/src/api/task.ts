@@ -1,5 +1,5 @@
 import api from "@/api";
-import type { Task } from "@/types/types";
+import type { Project, Task } from "@/types/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export function getTasks() {}
@@ -18,6 +18,37 @@ export async function createTask(data: Partial<Task>) {
 
     return project;
 }
+
+export const useCreateTask = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: createTask,
+        onSuccess: (newTask) => {
+            queryClient.setQueryData(
+                ["projects"],
+                (old: Project[] | undefined) => {
+                    if (!old) return [];
+
+                    return old.map((project) => {
+                        if (project.id === newTask.projectId) {
+                            return {
+                                ...project,
+                                tasks: [...(project.tasks || []), newTask],
+                            };
+                        }
+                        return project;
+                    });
+                }
+            );
+            console.log(newTask);
+            // queryClient.setQueryData(["tasks", newTask.id], () => newTask);
+            queryClient.invalidateQueries({
+                queryKey: ["projects", newTask.projectId],
+            });
+        },
+    });
+};
 
 export async function deleteTask(id: string) {
     const response = await api.delete(`v1/tasks/${id}`);

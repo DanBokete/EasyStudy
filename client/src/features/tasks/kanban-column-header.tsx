@@ -1,10 +1,12 @@
 import { Button } from "@/components/ui/button";
-import type { TaskStatus } from "@/types/types";
+import NewTask from "./new-task";
+import type { Project, TaskStatus } from "@/types/types";
 import { Circle, CircleCheck, CircleDashed, Plus } from "lucide-react";
 
 interface KanbanColumnHeaderProps {
     board: TaskStatus;
     taskCount: number;
+    project: Project;
 }
 
 const statusIconMap: Record<TaskStatus, React.ReactNode> = {
@@ -13,7 +15,11 @@ const statusIconMap: Record<TaskStatus, React.ReactNode> = {
     ["DONE"]: <CircleCheck className="text-emerald-400" />,
 };
 
-function KanbanColumnHeader({ board, taskCount }: KanbanColumnHeaderProps) {
+function KanbanColumnHeader({
+    board,
+    taskCount,
+    project,
+}: KanbanColumnHeaderProps) {
     const icon = statusIconMap[board];
     return (
         <div className="px-2 py-1.5 flex items-center justify-between">
@@ -26,9 +32,14 @@ function KanbanColumnHeader({ board, taskCount }: KanbanColumnHeaderProps) {
                     {taskCount}
                 </div>
             </div>
-            <Button variant={"ghost"} size={"icon"} className="size-5">
-                <Plus className="size-4 text-neutral-500" />
-            </Button>
+            <div>
+                {" "}
+                <NewTask projects={[project]} project={project}>
+                    <Button variant={"ghost"}>
+                        <Plus />
+                    </Button>
+                </NewTask>
+            </div>
         </div>
     );
 }

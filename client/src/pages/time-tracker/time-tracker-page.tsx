@@ -5,7 +5,6 @@ import {
     useGetAllStudySessions,
     useUpdateStudySession,
 } from "@/api/study-session";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
     Command,
@@ -423,7 +422,7 @@ function StudySession({
             <span className="mx-auto">{formatted ?? "--"}</span>
             <div className="flex justify-end gap-1">
                 <Dialog>
-                    <DialogTrigger>
+                    <DialogTrigger asChild>
                         <Button variant={"outline"} size={"sm"}>
                             <MoreHorizontal />
                         </Button>

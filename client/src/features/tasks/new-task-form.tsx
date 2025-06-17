@@ -1,4 +1,4 @@
-import { createTask } from "@/api/task";
+import { useCreateTask } from "@/api/task";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,16 +10,14 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import type { Project, TaskStatus } from "@/types/types";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { useState } from "react";
 
 function NewTaskForm({
     project,
     projects,
-    setOpen,
 }: {
-    project: Project | undefined;
+    project?: Project;
     projects: Project[];
     setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
@@ -32,16 +30,7 @@ function NewTaskForm({
     const [projectId, setProjectId] = useState(project ? project.id : "");
     const [status, setStatus] = useState<TaskStatus>("TODO");
 
-    const queryClient = useQueryClient();
-
-    const mutateTask = useMutation({
-        mutationFn: createTask,
-        onSuccess: () => {
-            setOpen(false);
-            // Invalidate and refetch
-            queryClient.invalidateQueries({ queryKey: ["projects"] });
-        },
-    });
+    const mutateTask = useCreateTask();
 
     return (
         <form

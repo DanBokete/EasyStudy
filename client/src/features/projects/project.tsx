@@ -9,7 +9,7 @@ import {
     Trash2,
 } from "lucide-react";
 import { useState } from "react";
-import Task from "./task";
+import Task from "../tasks/task";
 import { Link } from "react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteProject } from "@/api/projects";
@@ -22,8 +22,8 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 import ProjectEditForm from "./project-edit-form";
-import NewTask from "./new-task";
-import NewTaskForm from "./new-task-form";
+import NewTask from "../../pages/projects/new-task";
+import NewTaskForm from "../tasks/new-task-form";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
 
