@@ -37,6 +37,34 @@ export class TasksService {
     });
   }
 
+  async updateMany(userId: string, updateTaskDto: UpdateTaskDto[]) {
+    const taskIds = updateTaskDto.map((task) => task.id);
+
+    console.log({ updateTaskDto });
+
+    // Ensure the tasks belong to the user
+    const validTasks = await this.prisma.task.findMany({
+      where: {
+        id: { in: taskIds },
+        project: { userId },
+      },
+    });
+
+    const validTaskIds = new Set(validTasks.map((task) => task.id));
+
+    const updates = updateTaskDto
+      .filter((task) => validTaskIds.has(task.id))
+      .map((task) => {
+        const { id, ...taskWithoutId } = task;
+        return this.prisma.task.update({
+          data: { ...taskWithoutId },
+          where: { id },
+        });
+      });
+
+    return await this.prisma.$transaction(updates);
+  }
+
   remove(userId: string, taskId: string) {
     return this.prisma.task.delete({
       where: { id: taskId, project: { userId } },

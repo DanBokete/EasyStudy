@@ -1,5 +1,6 @@
 import api from "@/api";
 import type { Task } from "@/types/types";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export function getTasks() {}
 
@@ -23,3 +24,27 @@ export async function deleteTask(id: string) {
     const project: Task = response.data;
     return project;
 }
+
+async function updateManyTasksFn(data: Partial<Task>[]) {
+    console.log(data);
+
+    const response = await api.patch(`v1/tasks/bulk`, data);
+    const tasks: Task[] = response.data;
+    return tasks;
+}
+
+export const useUpdateManyTasks = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: updateManyTasksFn,
+        onSuccess: (updatedTasks) => {
+            queryClient.setQueryData<Task[]>(["projects"], (oldTasks = []) => {
+                return oldTasks.map((task) => {
+                    const updated = updatedTasks.find((t) => t.id === task.id);
+                    return updated ? { ...task, ...updated } : task;
+                });
+            });
+        },
+    });
+};

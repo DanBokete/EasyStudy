@@ -15,31 +15,35 @@ import { UpdateTaskDto } from './dto/update-task.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { Request } from 'express';
 
+@UseGuards(JwtAuthGuard)
 @Controller('v1/tasks')
 export class TasksController {
   constructor(private readonly tasksService: TasksService) {}
 
-  @UseGuards(JwtAuthGuard)
   @Post()
   create(@Body() createTaskDto: CreateTaskDto, @Req() req: Request) {
     const user = req.user as { userId: string; username: string };
     return this.tasksService.create(createTaskDto, user.userId);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get()
   findAll(@Req() req: Request) {
     const user = req.user as { userId: string; username: string };
     return this.tasksService.findAll(user.userId);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.tasksService.findOne(+id);
   }
+  @Patch('bulk')
+  updateMany(@Body() updateTaskDto: UpdateTaskDto[], @Req() req: Request) {
+    console.log(updateTaskDto);
+    const user = req.user as { userId: string; username: string };
 
-  @UseGuards(JwtAuthGuard)
+    return this.tasksService.updateMany(user.userId, updateTaskDto);
+  }
+
   @Patch(':id')
   update(
     @Param('id') taskId: string,
@@ -50,7 +54,6 @@ export class TasksController {
     return this.tasksService.update(user.userId, updateTaskDto, taskId);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   remove(@Param('id') taskId: string, @Req() req: Request) {
     const user = req.user as { userId: string; username: string };
