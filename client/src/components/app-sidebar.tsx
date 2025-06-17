@@ -1,4 +1,10 @@
-import { Clock4, FolderOpen, LayoutDashboard, Settings } from "lucide-react";
+import {
+    BrickWall,
+    Clock4,
+    FolderOpen,
+    LayoutDashboard,
+    Settings,
+} from "lucide-react";
 
 import {
     Sidebar,
@@ -32,6 +38,7 @@ const items = [
         url: "/projects",
         icon: FolderOpen,
     },
+    { title: "Board", url: "/board", icon: BrickWall },
     {
         title: "Settings",
         url: "#",
@@ -55,21 +62,6 @@ export function AppSidebar() {
                                             <span>{item.title}</span>
                                         </Link>
                                     </SidebarMenuButton>
-
-                                    {/* {item.subMenu &&
-                                        item.subMenu.map((subItem) => (
-                                            <SidebarMenuSub key={subItem.title}>
-                                                <SidebarMenuSubItem>
-                                                    <SidebarMenuSubButton
-                                                        asChild
-                                                    >
-                                                        <Link to={subItem.url}>
-                                                            {subItem.title}
-                                                        </Link>
-                                                    </SidebarMenuSubButton>
-                                                </SidebarMenuSubItem>
-                                            </SidebarMenuSub>
-                                        ))} */}
                                 </SidebarMenuItem>
                             ))}
                         </SidebarMenu>

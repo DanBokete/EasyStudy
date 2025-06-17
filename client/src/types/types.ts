@@ -24,6 +24,7 @@ export type Task = {
     title: string;
     projectId: string;
     parentTaskId: string | null;
+    position: number;
 };
 
 export type StudySession = {
@@ -47,6 +48,13 @@ export type Module = {
     name: string;
     description: string | null;
     userId: string;
+    createdAt: Date;
+    updatedAt: Date;
+};
+
+export type KanbanTask = {
+    id: string;
+    title: string;
     createdAt: Date;
     updatedAt: Date;
 };

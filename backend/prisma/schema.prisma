@@ -37,8 +37,6 @@ model accessToken {
   valid     Boolean  @default(true)
   createdAt DateTime @default(now())
   expiresAt DateTime
-
-  @@unique([userId, token])
 }
 
 model refreshToken {
@@ -107,6 +105,7 @@ model Task {
   status       TaskStatus @default(TODO)
   dueDate      DateTime?
   time         String?
+  position     Int        @default(0)
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
 }
