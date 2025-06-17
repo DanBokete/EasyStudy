@@ -14,12 +14,14 @@ import { JwtService } from '@nestjs/jwt';
 import { Response, Request } from 'express';
 import { jwtConstants } from './constants';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { TokenService } from './utils';
 
 @Injectable()
 export class AuthService {
   constructor(
     private prisma: PrismaService,
     private jwtService: JwtService,
+    private tokenService: TokenService,
   ) {}
 
   async signup(signupAuthDto: SignupAuthDto) {
@@ -65,53 +67,75 @@ export class AuthService {
       throw new ForbiddenException('Incorrect credentials');
     }
 
-    const payload = {
-      sub: user.id,
-      username: user.email,
-    };
-
-    const refreshToken = this.jwtService.sign(payload, {
-      expiresIn: '2d',
-      secret: jwtConstants.refreshToken,
-    });
-
-    response.cookie('refresh_token', refreshToken, {
-      httpOnly: true,
-      maxAge: 1000 * 60 * 60 * 24,
-      path: '/auth/refresh',
-    });
-
-    const accessToken = this.jwtService.sign(payload, {
-      expiresIn: '60s',
-      secret: jwtConstants.accessToken,
-    });
-
-    response.cookie('access_token', accessToken, {
-      httpOnly: true,
-      maxAge: 1000 * 60 * 60 * 24,
-    });
+    this.tokenService.createAccessToken(user, response);
+    await this.tokenService.createRefreshToken(user, response);
 
     return;
   }
 
-  refreshToken(request: Request, response: Response) {
+  async refreshToken(request: Request, response: Response) {
     if (!request.user) throw new BadRequestException();
 
-    const user = request.user as { id: string; username: string };
+    const requestUser = request.user as { id: string; username: string };
 
-    const accessToken = this.jwtService.sign(
-      { sub: user.id, username: user.username },
-      {
-        expiresIn: '60s',
-        secret: jwtConstants.accessToken,
-      },
-    );
-
-    response.cookie('access_token', accessToken, {
-      httpOnly: true,
-      maxAge: 1000 * 60 * 60 * 24,
+    const user = await this.prisma.user.findUnique({
+      where: { id: requestUser.id },
     });
-    return;
+
+    if (!user) throw new BadRequestException('user does not exist');
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const originalRefreshToken = request.cookies.refresh_token as
+      | string
+      | undefined;
+
+    if (!originalRefreshToken) {
+      throw new BadRequestException('Cannot get refresh token');
+    }
+
+    const storedTokens = await this.prisma.refreshToken.findMany({
+      where: { userId: user.id },
+    });
+
+    for (const storedToken of storedTokens) {
+      const isMatch = await argon2.verify(
+        storedToken.token,
+        originalRefreshToken,
+      );
+
+      // if token is expired, skip
+      if (storedToken.expiresAt < new Date()) continue;
+
+      if (isMatch) {
+        if (!storedToken.valid) {
+          await this.prisma.refreshToken.updateMany({
+            where: { userId: user.id },
+            data: { valid: false },
+          });
+
+          response.clearCookie('access_token', {
+            path: '/',
+            httpOnly: true,
+            sameSite: 'strict',
+            secure: process.env.NODE_ENV === 'production',
+          });
+
+          console.error('refresh token stolen');
+          throw new BadRequestException('possible replay attack detected');
+        }
+
+        await this.prisma.refreshToken.update({
+          where: { userId: user.id, id: storedToken.id },
+          data: { valid: false },
+        });
+
+        this.tokenService.createAccessToken(user, response);
+        await this.tokenService.createRefreshToken(user, response);
+
+        return;
+      }
+    }
+    throw new BadRequestException('Cannot find refresh token session');
   }
 
   async verifyUserJWTRefreshToken(refreshToken: string, userId: string) {
@@ -123,16 +147,4 @@ export class AuthService {
 
     return user;
   }
-
-  // findOne(id: number) {
-  //   return `This action returns a #${id} auth`;
-  // }
-
-  // update(id: number, updateAuthDto: UpdateAuthDto) {
-  //   return `This action updates a #${id} auth`;
-  // }
-
-  // remove(id: number) {
-  //   return `This action removes a #${id} auth`;
-  // }
 }

@@ -25,6 +25,30 @@ model User {
   updatedAt    DateTime       @updatedAt
   Module       Module[]
   StudySession StudySession[]
+  refreshToken refreshToken[]
+  accessToken  accessToken[]
+}
+
+model accessToken {
+  id        Int      @id @default(autoincrement())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  token     String   @unique
+  valid     Boolean  @default(true)
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+
+  @@unique([userId, token])
+}
+
+model refreshToken {
+  id        Int      @id @default(autoincrement())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  token     String   @unique
+  valid     Boolean  @default(true)
+  createdAt DateTime @default(now())
+  expiresAt DateTime
 }
 
 enum ProjectStatus {

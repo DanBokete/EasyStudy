@@ -6,6 +6,7 @@ import { APP_PIPE } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './constants';
 import { JwtRefreshStrategy, JwtStrategy } from './jwt.strategy';
+import { TokenService } from './utils';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { JwtRefreshStrategy, JwtStrategy } from './jwt.strategy';
     { provide: APP_PIPE, useValue: new ValidationPipe({ whitelist: true }) },
     JwtStrategy,
     JwtRefreshStrategy,
+    TokenService,
   ],
   exports: [AuthService],
 })

@@ -6,6 +6,7 @@ import { ProjectsModule } from './projects/projects.module';
 import { StudySessionsModule } from './study-sessions/study-sessions.module';
 import { ModulesModule } from './modules/modules.module';
 import { AuthModule } from './auth/auth.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { AuthModule } from './auth/auth.module';
     ProjectsModule,
     StudySessionsModule,
     ModulesModule,
+    ScheduleModule.forRoot(),
   ],
   controllers: [AppController],
   providers: [AppService],
