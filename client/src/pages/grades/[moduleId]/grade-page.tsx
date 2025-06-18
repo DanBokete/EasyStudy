@@ -11,6 +11,7 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import NewGrade from "@/features/grades/new-grade";
+import { getAverageGrade, getAverageGrades } from "@/features/grades/utils";
 import { format } from "date-fns";
 import { useLoaderData } from "react-router";
 
@@ -55,10 +56,7 @@ function GradePage() {
                                 {grade.score}/{grade.maxScore}
                             </TableCell>
                             <TableCell className="text-right">
-                                {Math.floor(
-                                    (grade.score / grade.maxScore) * 10000
-                                ) / 100}
-                                %
+                                {getAverageGrade(grade)}%
                             </TableCell>
                         </TableRow>
                     ))}
@@ -66,7 +64,9 @@ function GradePage() {
                 <TableFooter>
                     <TableRow>
                         <TableCell colSpan={3}>Average</TableCell>
-                        <TableCell className="text-right">0</TableCell>
+                        <TableCell className="text-right">
+                            {getAverageGrades(grades.data ?? [])}%
+                        </TableCell>
                     </TableRow>
                 </TableFooter>
             </Table>

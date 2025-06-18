@@ -1,4 +1,4 @@
-import { IsNumber, IsString } from 'class-validator';
+import { IsDateString, IsNumber, IsString } from 'class-validator';
 
 export class CreateGradeDto {
   @IsString()
@@ -9,6 +9,9 @@ export class CreateGradeDto {
 
   @IsNumber()
   score: number;
+
+  @IsDateString()
+  date: string;
 
   @IsNumber()
   maxScore: number;
