@@ -27,7 +27,7 @@ function EditGrade({ children, grade }: EditGradeProps) {
                 {children ? (
                     children
                 ) : (
-                    <Button className="ml-auto">
+                    <Button variant={"ghost"} className="ml-auto">
                         <Edit />
                     </Button>
                 )}

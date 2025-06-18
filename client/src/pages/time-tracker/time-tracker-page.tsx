@@ -337,7 +337,7 @@ function StudySession({
             ) : (
                 <Input
                     value={title ? title : "Untitled"}
-                    className="col-span-5 border-white shadow-none"
+                    className="col-span-5 shadow-none"
                     onClick={() => setIsEditingTitle(true)}
                     onKeyDown={(e) => {
                         if (e.key !== "Enter") return;
@@ -388,7 +388,7 @@ function StudySession({
                     />
                 ) : (
                     <Input
-                        className="border-white shadow-none"
+                        className="shadow-none"
                         value={startTime}
                         readOnly
                         onClick={() => setIsEditingStartTime(true)}
@@ -412,7 +412,7 @@ function StudySession({
                     />
                 ) : (
                     <Input
-                        className="border-white shadow-none"
+                        className="shadow-none"
                         value={endTime}
                         readOnly
                         onClick={() => setIsEditingEndTime(true)}

@@ -7,7 +7,10 @@ import { PrismaService } from 'src/prisma.service';
 export class ModulesService {
   constructor(private prisma: PrismaService) {}
   async create(createModuleDto: CreateModuleDto, userId: string) {
-    return this.prisma.module.create({ data: { ...createModuleDto, userId } });
+    return this.prisma.module.create({
+      data: { ...createModuleDto, userId },
+      include: { Grade: true },
+    });
   }
 
   findAll(userId: string) {

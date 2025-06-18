@@ -6,13 +6,17 @@ function GradesPage() {
     const modules = useGetAllModules();
     return (
         <div>
-            <h1>Modules Im taking</h1>
+            <h1 className="text-2xl font-bold">Modules Im taking</h1>
             <ul>
                 {modules.data?.map((module) => (
                     <li key={module.id}>
                         <NavLink to={module.id} className={"grid grid-cols-5"}>
                             <div>{module.name}</div>
-                            <div>{module.averageGrade ?? "---"}</div>
+                            <div>
+                                {module.averageGrade
+                                    ? module.averageGrade + "%"
+                                    : "No grades recorded"}
+                            </div>
                         </NavLink>
                     </li>
                 ))}

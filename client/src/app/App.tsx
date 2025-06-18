@@ -11,6 +11,7 @@ import TimeTracker from "../pages/time-tracker/time-tracker-page";
 import DashboardPage from "../pages/dashboard/dashboard-page";
 import GradesPage from "@/pages/grades/grades-page";
 import GradePage from "@/pages/grades/[moduleId]/grade-page";
+import { ThemeProvider } from "@/components/theme-provier";
 
 const router = createBrowserRouter([
     {
@@ -53,9 +54,11 @@ const queryClient = new QueryClient();
 function App() {
     // const queryClient = new QueryClient();
     return (
-        <QueryClientProvider client={queryClient}>
-            <RouterProvider router={router} />
-        </QueryClientProvider>
+        <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+            <QueryClientProvider client={queryClient}>
+                <RouterProvider router={router} />
+            </QueryClientProvider>
+        </ThemeProvider>
     );
 }
 

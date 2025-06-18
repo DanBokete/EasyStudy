@@ -3,7 +3,7 @@ import type { Module } from "@/types/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 async function getModule(moduleId: string) {
-    const response = await api.get(`v1/modules/${moduleId}`);
+    const response = await api.get(`/v1/modules/${moduleId}`);
     const module: Module = response.data;
     return module;
 }
@@ -29,7 +29,7 @@ export function useGetAllModules() {
 }
 
 async function createModule(data: Partial<Module>) {
-    return api.post("/modules", data).then((response) => response.data);
+    return api.post("/v1/modules", data).then((response) => response.data);
 }
 
 export const useCreateModule = () => {
