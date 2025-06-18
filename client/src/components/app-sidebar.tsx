@@ -23,6 +23,8 @@ import {
 import { Link, NavLink } from "react-router";
 import { SITE_NAME } from "@/constants";
 import { useGetAllProjects } from "@/api/projects";
+import NewProject from "@/features/projects/new-project";
+import { Button } from "./ui/button";
 
 // Menu items.
 const items = [
@@ -75,8 +77,18 @@ export function AppSidebar() {
                 </SidebarGroup>
                 <SidebarGroup>
                     <SidebarGroupLabel>Projects</SidebarGroupLabel>
-                    <SidebarGroupAction title="Add Project">
-                        <Plus /> <span className="sr-only">Add Project</span>
+                    <SidebarGroupAction title="Add Project" asChild>
+                        <div>
+                            <NewProject>
+                                <Button
+                                    variant={"ghost"}
+                                    className="flex p-1 rounded justify-start gap-x-5 w-full"
+                                >
+                                    <Plus />
+                                </Button>
+                            </NewProject>
+                            <span className="sr-only">Add Project</span>
+                        </div>
                     </SidebarGroupAction>
                     <SidebarGroupContent>
                         <SidebarMenu>

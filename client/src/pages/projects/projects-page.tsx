@@ -1,8 +1,8 @@
 import { useGetAllProjects } from "@/api/projects";
 import { Separator } from "@/components/ui/separator";
-import ProjectForm from "../../features/projects/project-form";
 import Project from "../../features/projects/project";
 import NewTask from "@/features/tasks/new-task";
+import NewProject from "../../features/projects/new-project";
 
 function ProjectsPage() {
     const { isPending, error, data } = useGetAllProjects();
@@ -16,7 +16,7 @@ function ProjectsPage() {
             <div className="flex justify-between">
                 <h1 className="text-xl font-extrabold">Projects</h1>
 
-                <ProjectForm />
+                <NewProject />
             </div>
             <Separator className="my-2" />
 

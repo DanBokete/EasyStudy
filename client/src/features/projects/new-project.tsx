@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,7 +15,11 @@ import { format } from "date-fns";
 import { createProject } from "@/api/projects";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-function ProjectForm() {
+interface NewProjectkProps {
+    children?: ReactNode;
+}
+
+function NewProject({ children }: NewProjectkProps) {
     const [name, setName] = useState("");
     const [dueDate, setDueDate] = useState(format(new Date(), "yyyy-MM-dd"));
     const [open, setOpen] = useState(false);
@@ -34,9 +38,13 @@ function ProjectForm() {
     return (
         <Dialog onOpenChange={setOpen} open={open}>
             <DialogTrigger asChild>
-                <Button className="ml-auto">
-                    New Project <Plus />
-                </Button>
+                {children ? (
+                    children
+                ) : (
+                    <Button className="ml-auto">
+                        New Project <Plus />
+                    </Button>
+                )}
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
@@ -96,4 +104,4 @@ function ProjectForm() {
     );
 }
 
-export default ProjectForm;
+export default NewProject;

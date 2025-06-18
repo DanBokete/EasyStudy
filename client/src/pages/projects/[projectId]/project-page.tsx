@@ -2,7 +2,7 @@ import { Separator } from "@/components/ui/separator";
 import { useLoaderData } from "react-router";
 import { format } from "date-fns";
 
-import type { Project, TaskStatus } from "@/types/types";
+import type { TaskStatus } from "@/types/types";
 import DataKanban from "@/features/tasks/data-kanban";
 import { useCallback } from "react";
 import { useUpdateManyTasks } from "@/api/task";
