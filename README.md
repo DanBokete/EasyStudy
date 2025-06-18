@@ -15,7 +15,6 @@ A student companion web application designed to make students life easier.
 * Grade tracker, Track grades for each module and calculate your progress.
 
 ### 🚧 Planned Feature
-* Quick Notes, Markdown support.
 * Study Goals, Set daily/weekly study targets by module or time.
 * Useful Resources, a dedicated page linking useful resources for efficient study.
 * Achievements & Badges, Gamified rewards for hitting study goals, finishing projects, etc.
