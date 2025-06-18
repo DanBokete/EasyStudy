@@ -12,10 +12,10 @@ A student companion web application designed to make students life easier.
 * Track study time.
 * Dashboard page. Graph study sessions by module. Project summary details.
 * Board, Khanban project planning board.
+* Grade tracker, Track grades for each module and calculate your progress.
 
 ### 🚧 Planned Feature
 * Quick Notes, Markdown support.
-* Grade tracker, Track grades for each module and calculate your progress.
 * Study Goals, Set daily/weekly study targets by module or time.
 * Useful Resources, a dedicated page linking useful resources for efficient study.
 * Achievements & Badges, Gamified rewards for hitting study goals, finishing projects, etc.
