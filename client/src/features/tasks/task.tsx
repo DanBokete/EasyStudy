@@ -13,7 +13,7 @@ import type { Task as TaskType } from "@/types/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { useState } from "react";
-import EditTaskForm from "./task-edit-form";
+import EditTaskForm from "./edit-task-form";
 import { Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 

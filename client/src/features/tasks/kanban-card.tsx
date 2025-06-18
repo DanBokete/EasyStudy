@@ -1,7 +1,13 @@
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { DialogContent } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
 import type { Task } from "@/types/types";
+import { Dialog, DialogTrigger } from "@radix-ui/react-dialog";
 import { format } from "date-fns";
+import { MoreVertical } from "lucide-react";
+import EditTaskForm from "./edit-task-form";
+import { useState } from "react";
 // import { MoreHorizontal } from "lucide-react";
 
 interface KanbanCardProps {
@@ -9,6 +15,7 @@ interface KanbanCardProps {
 }
 
 function KanbanCard({ task }: KanbanCardProps) {
+    const [, setOpen] = useState(false);
     return (
         <div className="bg-white p-2.5 mb-1.5 rounded shadow-sm space-y-3">
             <div className="flex items-start justify-between gap-x-2">
@@ -18,12 +25,22 @@ function KanbanCard({ task }: KanbanCardProps) {
                 </TaskAction> */}
             </div>
             <Separator />
-            <div className="flex items-center gap-x-1.5">
+            <div className="flex items-center gap-x-1.5 justify-between">
                 <Badge variant={"outline"}>
                     {task.dueDate
                         ? format(task.dueDate, "dd.MM.yyyy")
                         : "No due date"}
                 </Badge>
+                <Dialog>
+                    <DialogTrigger asChild>
+                        <Button variant={"ghost"}>
+                            <MoreVertical />
+                        </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                        <EditTaskForm task={task} setOpen={setOpen} />
+                    </DialogContent>
+                </Dialog>
             </div>
         </div>
     );

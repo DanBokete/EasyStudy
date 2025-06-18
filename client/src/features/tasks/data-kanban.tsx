@@ -8,7 +8,6 @@ import {
 } from "@hello-pangea/dnd";
 import KanbanColumnHeader from "./kanban-column-header";
 import KanbanCard from "./kanban-card";
-import { useGetAllProjects } from "@/api/projects";
 
 const boards: TaskStatus[] = ["BACKLOG", "TODO", "IN_PROGRESS", "DONE"];
 
