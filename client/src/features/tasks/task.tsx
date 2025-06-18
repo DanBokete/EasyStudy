@@ -1,4 +1,4 @@
-import { deleteTask, editTask } from "@/api/task";
+import { deleteTask, editTask, useDeleteTask } from "@/api/task";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
@@ -14,6 +14,7 @@ function Task({ task }: { task: TaskType }) {
     const [open, setOpen] = useState(false);
 
     const queryClient = useQueryClient();
+    const deleteTask = useDeleteTask();
 
     const mutateTaskDone = useMutation({
         mutationFn: (data: Partial<TaskType>) => {
@@ -26,14 +27,14 @@ function Task({ task }: { task: TaskType }) {
         },
     });
 
-    const onDelete = useMutation({
-        mutationFn: () => {
-            return deleteTask(task.id);
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["projects"] });
-        },
-    });
+    // const onDelete = useMutation({
+    //     mutationFn: () => {
+    //         return deleteTask(task.id);
+    //     },
+    //     onSuccess: () => {
+    //         queryClient.invalidateQueries({ queryKey: ["projects"] });
+    //     },
+    // });
 
     return (
         <Dialog onOpenChange={setOpen} open={open}>
@@ -77,9 +78,9 @@ function Task({ task }: { task: TaskType }) {
                 </DialogTrigger>
                 <Button
                     variant={"ghost"}
-                    disabled={onDelete.isPending}
+                    disabled={deleteTask.isPending}
                     onClick={() => {
-                        onDelete.mutate();
+                        deleteTask.mutate(task.id);
                     }}
                 >
                     <Trash2 />

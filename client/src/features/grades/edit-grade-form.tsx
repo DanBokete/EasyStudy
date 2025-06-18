@@ -14,10 +14,12 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import type { Module } from "@/types/types";
-import { useCreateGrade } from "@/api/grades";
+import type { Grade } from "@/types/types";
+import { useDeleteGrade, useUpdateGrade } from "@/api/grades";
+import { Trash2 } from "lucide-react";
 
 const formSchema = z.object({
+    id: z.string(),
     title: z
         .string()
         .min(2, { message: "Title must contain at least 2 character(s)" })
@@ -26,31 +28,33 @@ const formSchema = z.object({
     date: z.string().date(),
     score: z.coerce.number(),
     maxScore: z.coerce.number().min(1),
-    moduleId: z.string().min(1),
 });
 
-interface NewGradeFormProps {
-    module: Module;
+interface EditGradeFormProps {
+    grade: Grade;
     setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-function NewGradeForm({ module, setOpen }: NewGradeFormProps) {
-    const createGrade = useCreateGrade();
+function EditGradeForm({ setOpen, grade }: EditGradeFormProps) {
+    const updateGrade = useUpdateGrade();
+    const deleteGrade = useDeleteGrade();
+    console.log(new Date(grade.date).toLocaleString());
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            title: "",
-            description: "",
-            date: "2025-21-12",
-            score: 0,
-            maxScore: 100,
-            moduleId: module.id,
+            id: grade.id,
+            title: grade.title,
+            description: grade.description ?? "",
+            date: grade.date,
+            score: grade.score,
+            maxScore: grade.maxScore,
         },
     });
 
     // 2. Define a submit handler.
     function onSubmit(values: z.infer<typeof formSchema>) {
-        createGrade.mutate(values);
+        updateGrade.mutate(values);
         console.log(values);
         setOpen(false);
     }
@@ -145,11 +149,21 @@ function NewGradeForm({ module, setOpen }: NewGradeFormProps) {
                         )}
                     />
                 </div>
-
-                <Button type="submit">Submit</Button>
+                <div className="flex justify-between">
+                    <Button
+                        variant={"ghost"}
+                        onClick={(e) => {
+                            e.preventDefault();
+                            deleteGrade.mutate(grade.id);
+                        }}
+                    >
+                        <Trash2 className="text-red-600" />
+                    </Button>
+                    <Button type="submit">Submit</Button>
+                </div>
             </form>
         </Form>
     );
 }
 
-export default NewGradeForm;
+export default EditGradeForm;

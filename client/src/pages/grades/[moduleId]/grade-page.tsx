@@ -10,6 +10,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
+import EditGrade from "@/features/grades/edit-grade";
 import NewGrade from "@/features/grades/new-grade";
 import { getAverageGrade, getAverageGrades } from "@/features/grades/utils";
 import { format } from "date-fns";
@@ -41,6 +42,7 @@ function GradePage() {
                         <TableHead>Date</TableHead>
                         <TableHead>Score</TableHead>
                         <TableHead className="text-right">Percentage</TableHead>
+                        <TableHead>Action</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -57,6 +59,9 @@ function GradePage() {
                             </TableCell>
                             <TableCell className="text-right">
                                 {getAverageGrade(grade)}%
+                            </TableCell>
+                            <TableCell>
+                                <EditGrade grade={grade} />
                             </TableCell>
                         </TableRow>
                     ))}

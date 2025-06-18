@@ -1,4 +1,4 @@
-import { editTask } from "@/api/task";
+import { editTask, useDeleteTask } from "@/api/task";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -44,6 +44,13 @@ function EditTaskForm({
             queryClient.invalidateQueries({ queryKey: ["projects"] });
         },
     });
+
+    const deleteTask = useDeleteTask();
+
+    function onDeleteTask() {
+        deleteTask.mutate(task.id);
+        setOpen(false);
+    }
     return (
         <form
             className="space-y-2"
@@ -137,9 +144,15 @@ function EditTaskForm({
             <input type="hidden" name="taskId" value={task.id} />
 
             <div className="flex gap-x-2 justify-end">
-                {/* <Button onSubmit={(e) => deleteTask(e)} variant={"destructive"}>
+                <Button
+                    onClick={(e) => {
+                        e.preventDefault();
+                        onDeleteTask();
+                    }}
+                    variant={"destructive"}
+                >
                     Delete
-                </Button> */}
+                </Button>
                 <Button type="submit" disabled={mutateTask.isPending}>
                     Save Changes
                 </Button>

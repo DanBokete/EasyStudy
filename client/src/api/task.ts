@@ -41,6 +41,17 @@ export const useCreateTask = () => {
                     });
                 }
             );
+            // queryClient.setQueryData(
+            //     ["projects", newTask.projectId],
+            //     (old: Project | undefined) => {
+            //         if (!old) return;
+
+            //         return {
+            //             ...old,
+            //             tasks: [...(old.tasks || []), newTask],
+            //         };
+            //     }
+            // );
             console.log(newTask);
             // queryClient.setQueryData(["tasks", newTask.id], () => newTask);
             queryClient.invalidateQueries({
@@ -55,6 +66,39 @@ export async function deleteTask(id: string) {
     const project: Task = response.data;
     return project;
 }
+
+export async function deleteStudySession(data: { projectId: string }) {
+    const { projectId } = data;
+    const response = await api.delete(`/study-sessions/${projectId}`);
+    const deletedProject: Project = response.data;
+    return deletedProject;
+}
+
+export const useDeleteTask = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: deleteTask,
+        onSuccess: (deletedTask) => {
+            // queryClient.invalidateQueries({ queryKey: ["studySessions"] });
+            queryClient.invalidateQueries({
+                queryKey: [["projects", deletedTask.projectId]],
+            });
+
+            queryClient.invalidateQueries({ queryKey: ["projects"] });
+
+            queryClient.setQueryData(["tasks"], (old: Task[]) =>
+                old.filter((session) => session.id !== deletedTask.id)
+            );
+
+            // queryClient.invalidateQueries({
+            //     queryKey: ["tasks", deletedTask.id],
+            // });
+
+            // queryClient.invalidateQueries({ queryKey: ["projects"] });
+        },
+    });
+};
 
 async function updateManyTasksFn(data: Partial<Task>[]) {
     console.log(data);

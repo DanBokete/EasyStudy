@@ -36,3 +36,49 @@ export const useCreateGrade = () => {
         },
     });
 };
+
+async function updateGrade(data: Partial<Grade>) {
+    const response = await api.patch(`v1/grades/${data.id}`, data);
+
+    const updatedStudySession: Grade = response.data;
+    return updatedStudySession;
+}
+
+export const useUpdateGrade = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: updateGrade,
+        onSuccess: (data) => {
+            queryClient.invalidateQueries({
+                queryKey: ["grades", data.moduleId],
+            });
+            queryClient.setQueryData<Grade[]>(["grades"], (oldData) => {
+                return (
+                    oldData?.map((session) =>
+                        session.id === data.id ? data : session
+                    ) || []
+                );
+            });
+        },
+    });
+};
+
+export async function deleteGradeFunc(gradeId: string) {
+    const response = await api.delete(`/v1/grades/${gradeId}`);
+    const deletedGrade: Grade = response.data;
+    return deletedGrade;
+}
+
+export const useDeleteGrade = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: deleteGradeFunc,
+        onSuccess: (deleteGrade) => {
+            queryClient.invalidateQueries({
+                queryKey: ["grades", deleteGrade.moduleId],
+            });
+        },
+    });
+};
