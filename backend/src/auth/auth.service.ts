@@ -1,7 +1,6 @@
 import {
   ForbiddenException,
   Injectable,
-  BadRequestException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { SignupAuthDto } from './dto/signup-auth.dto';
@@ -73,17 +72,20 @@ export class AuthService {
   }
 
   async refreshToken(request: Request, response: Response) {
-    if (!request.user) throw new BadRequestException();
+    if (!request.user) throw new ForbiddenException();
 
-    const requestUser = request.user;
+    // uses JWT REFRESH STRATEGY
+    const requestUser = request.user as unknown as {
+      id: string;
+      username: string;
+    };
 
     const user = await this.prisma.user.findUnique({
-      where: { id: requestUser.userId },
+      where: { id: requestUser.id },
     });
 
     if (!user) throw new ForbiddenException('user does not exist');
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const originalRefreshToken = request.cookies.refresh_token as
       | string
       | undefined;

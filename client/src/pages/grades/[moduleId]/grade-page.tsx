@@ -1,7 +1,5 @@
 import { useGetGradesByModule } from "@/api/grades";
 import { useGetModule } from "@/api/modules";
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import {
     Table,
     TableBody,
@@ -14,22 +12,23 @@ import {
 } from "@/components/ui/table";
 import NewGrade from "@/features/grades/new-grade";
 import { format } from "date-fns";
-import { Plus } from "lucide-react";
 import { useLoaderData } from "react-router";
 
 function GradePage() {
     const moduleId: string = useLoaderData();
     const module = useGetModule(moduleId);
     const grades = useGetGradesByModule(moduleId);
+    if (module.isLoading) return "....";
+    if (module.error || !module.data) return "Module failed to load";
     return (
         <div>
             <div className="flex justify-between">
                 <div>
                     <h1>Your Grade</h1>
-                    <div>Module {module.data?.name}</div>
+                    <div>Module {module.data.name}</div>
                 </div>
                 <div>
-                    <NewGrade />
+                    <NewGrade module={module.data} />
                 </div>
             </div>
 
@@ -67,7 +66,7 @@ function GradePage() {
                 <TableFooter>
                     <TableRow>
                         <TableCell colSpan={3}>Average</TableCell>
-                        <TableCell className="text-right">$2,500.00</TableCell>
+                        <TableCell className="text-right">0</TableCell>
                     </TableRow>
                 </TableFooter>
             </Table>

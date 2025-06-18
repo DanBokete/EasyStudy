@@ -3,15 +3,21 @@ import {
     Dialog,
     DialogContent,
     DialogDescription,
-    DialogHeader,
+    DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
 import { Plus } from "lucide-react";
 import NewGradeForm from "./new-grade-form";
+import type { Module } from "@/types/types";
+import { useState } from "react";
+interface NewGradeProps {
+    module: Module;
+}
 
-function NewGrade() {
+function NewGrade({ module }: NewGradeProps) {
+    const [open, setOpen] = useState(false);
     return (
-        <Dialog>
+        <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 <Button variant={"outline"}>
                     <Plus />
@@ -19,9 +25,9 @@ function NewGrade() {
                 </Button>
             </DialogTrigger>
             <DialogContent>
-                <DialogHeader>Add Grade</DialogHeader>
-                <DialogDescription></DialogDescription>
-                <NewGradeForm />
+                <DialogTitle>Add Grade</DialogTitle>
+                <DialogDescription>Add a grade to record</DialogDescription>
+                <NewGradeForm module={module} setOpen={setOpen} />
             </DialogContent>
         </Dialog>
     );
