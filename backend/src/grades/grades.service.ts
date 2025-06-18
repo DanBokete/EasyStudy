@@ -10,27 +10,41 @@ export class GradesService {
     return this.prisma.grade.create({ data: { ...createGradeDto, userId } });
   }
 
-  findAll(userId: string) {
-    return this.prisma.grade.findMany({ where: { userId } });
+  // getAverageGrade(grade: Grade) {
+  //   return
+  // }
+
+  async findAll(userId: string) {
+    const grades = await this.prisma.grade.findMany({ where: { userId } });
+
+    return grades;
   }
 
-  findOne(gradeId: string, userId: string) {
-    return this.prisma.grade.findUnique({ where: { userId, id: gradeId } });
+  async findOne(gradeId: string, userId: string) {
+    const grade = await this.prisma.grade.findUniqueOrThrow({
+      where: { userId, id: gradeId },
+    });
+
+    return grade;
   }
 
-  findByModule(moduleId: string, userId: string) {
-    return this.prisma.grade.findMany({ where: { userId, moduleId } });
+  async findByModule(moduleId: string, userId: string) {
+    return await this.prisma.grade.findMany({ where: { userId, moduleId } });
   }
 
-  update(gradeId: string, updateGradeDto: UpdateGradeDto, userId: string) {
-    return this.prisma.grade.update({
+  async update(
+    gradeId: string,
+    updateGradeDto: UpdateGradeDto,
+    userId: string,
+  ) {
+    return await this.prisma.grade.update({
       data: updateGradeDto,
       where: { id: gradeId, userId },
     });
   }
 
-  remove(gradeId: string, userId: string) {
-    return this.prisma.grade.delete({
+  async remove(gradeId: string, userId: string) {
+    return await this.prisma.grade.delete({
       where: { id: gradeId, userId },
     });
   }

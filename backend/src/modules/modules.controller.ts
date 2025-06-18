@@ -10,37 +10,50 @@ import {
   UseGuards,
   Req,
   BadRequestException,
+  UseInterceptors,
+  ClassSerializerInterceptor,
 } from '@nestjs/common';
 import { ModulesService } from './modules.service';
 import { CreateModuleDto } from './dto/create-module.dto';
 import { UpdateModuleDto } from './dto/update-module.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { Request } from 'express';
+import { Module } from './entities/module.entity';
+import { plainToInstance } from 'class-transformer';
 
+@UseInterceptors(ClassSerializerInterceptor)
 @UseGuards(JwtAuthGuard)
 @Controller('v1/modules')
 export class ModulesController {
   constructor(private readonly modulesService: ModulesService) {}
 
   @Post()
-  create(@Body() createModuleDto: CreateModuleDto, @Req() req: Request) {
+  async create(@Body() createModuleDto: CreateModuleDto, @Req() req: Request) {
     if (!req.user) throw new BadRequestException();
     const user = req.user;
-    return this.modulesService.create(createModuleDto, user.userId);
+    const module = await this.modulesService.create(
+      createModuleDto,
+      user.userId,
+    );
+    return new Module(module);
   }
 
   @Get()
-  findAll(@Req() req: Request) {
+  async findAll(@Req() req: Request) {
     if (!req.user) throw new BadRequestException();
     const user = req.user;
-    return this.modulesService.findAll(user.userId);
+    return plainToInstance(
+      Module,
+      await this.modulesService.findAll(user.userId),
+    );
   }
 
   @Get(':id')
-  findOne(@Req() req: Request, @Param('id') id: string) {
+  async findOne(@Req() req: Request, @Param('id') id: string) {
     if (!req.user) throw new BadRequestException();
     const user = req.user;
-    return this.modulesService.findOne(user.userId, id);
+    const module = await this.modulesService.findOne(user.userId, id);
+    return new Module(module);
   }
 
   @Patch(':id')
@@ -49,11 +62,11 @@ export class ModulesController {
   }
 
   @Delete(':id')
-  remove(
+  async remove(
     @Param('id') moduleId: string,
     @Session() session: Record<string, any>,
   ) {
     const userId = session.userId as string;
-    return this.modulesService.remove(userId, moduleId);
+    return await this.modulesService.remove(userId, moduleId);
   }
 }

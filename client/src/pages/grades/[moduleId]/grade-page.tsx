@@ -58,7 +58,7 @@ function GradePage() {
                                 {grade.score}/{grade.maxScore}
                             </TableCell>
                             <TableCell className="text-right">
-                                {getAverageGrade(grade)}%
+                                {grade.percent}%
                             </TableCell>
                             <TableCell>
                                 <EditGrade grade={grade} />
@@ -70,7 +70,7 @@ function GradePage() {
                     <TableRow>
                         <TableCell colSpan={3}>Average</TableCell>
                         <TableCell className="text-right">
-                            {getAverageGrades(grades.data ?? [])}%
+                            {module.data.averageGrade}%
                         </TableCell>
                     </TableRow>
                 </TableFooter>

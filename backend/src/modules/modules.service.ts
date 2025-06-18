@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateModuleDto } from './dto/create-module.dto';
 import { UpdateModuleDto } from './dto/update-module.dto';
 import { PrismaService } from 'src/prisma.service';
@@ -13,11 +13,15 @@ export class ModulesService {
   findAll(userId: string) {
     return this.prisma.module.findMany({
       where: { userId },
+      include: { Grade: true },
     });
   }
 
   findOne(userId: string, moduleId: string) {
-    return this.prisma.module.findUnique({ where: { userId, id: moduleId } });
+    return this.prisma.module.findUniqueOrThrow({
+      where: { userId, id: moduleId },
+      include: { Grade: true },
+    });
   }
 
   update(id: number, updateModuleDto: UpdateModuleDto) {
@@ -27,6 +31,7 @@ export class ModulesService {
   remove(userId: string, moduleId: string) {
     return this.prisma.module.delete({
       where: { userId, id: moduleId },
+      include: { Grade: true },
     });
   }
 }

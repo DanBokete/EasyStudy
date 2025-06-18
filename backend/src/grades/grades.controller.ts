@@ -10,57 +10,80 @@ import {
   Req,
   BadRequestException,
   Query,
+  UseInterceptors,
+  ClassSerializerInterceptor,
 } from '@nestjs/common';
 import { GradesService } from './grades.service';
 import { CreateGradeDto } from './dto/create-grade.dto';
 import { UpdateGradeDto } from './dto/update-grade.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { Request } from 'express';
+import { Grade } from './entities/grade.entity';
+import { plainToInstance } from 'class-transformer';
 
+@UseInterceptors(ClassSerializerInterceptor)
 @UseGuards(JwtAuthGuard)
 @Controller('v1/grades')
 export class GradesController {
   constructor(private readonly gradesService: GradesService) {}
 
   @Post()
-  create(@Body() createGradeDto: CreateGradeDto, @Req() req: Request) {
+  async create(@Body() createGradeDto: CreateGradeDto, @Req() req: Request) {
     if (!req.user) throw new BadRequestException();
     const user = req.user;
-    return this.gradesService.create(createGradeDto, user.userId);
+    const grade = await this.gradesService.create(createGradeDto, user.userId);
+
+    return new Grade(grade);
   }
 
   @Get()
-  findAll(@Req() req: Request, @Query('moduleId') moduleId: string) {
+  async findAll(@Req() req: Request, @Query('moduleId') moduleId: string) {
     if (!req.user) throw new BadRequestException();
     const user = req.user;
 
-    if (moduleId) return this.gradesService.findByModule(moduleId, user.userId);
+    if (moduleId) {
+      return plainToInstance(
+        Grade,
+        await this.gradesService.findByModule(moduleId, user.userId),
+      );
+    }
 
-    return this.gradesService.findAll(user.userId);
+    return plainToInstance(
+      Grade,
+      await this.gradesService.findAll(user.userId),
+    );
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string, @Req() req: Request) {
+  async findOne(@Param('id') id: string, @Req() req: Request) {
     if (!req.user) throw new BadRequestException();
     const user = req.user;
-    return this.gradesService.findOne(id, user.userId);
+    const grade = await this.gradesService.findOne(id, user.userId);
+
+    return new Grade(grade);
   }
 
   @Patch(':id')
-  update(
+  async update(
     @Param('id') id: string,
     @Body() updateGradeDto: UpdateGradeDto,
     @Req() req: Request,
   ) {
     if (!req.user) throw new BadRequestException();
     const user = req.user;
-    return this.gradesService.update(id, updateGradeDto, user.userId);
+    const grade = await this.gradesService.update(
+      id,
+      updateGradeDto,
+      user.userId,
+    );
+    return new Grade(grade);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string, @Req() req: Request) {
+  async remove(@Param('id') id: string, @Req() req: Request) {
     if (!req.user) throw new BadRequestException();
     const user = req.user;
-    return this.gradesService.remove(id, user.userId);
+    const grade = await this.gradesService.remove(id, user.userId);
+    return new Grade(grade);
   }
 }

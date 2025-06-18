@@ -50,6 +50,7 @@ export type Module = {
     userId: string;
     createdAt: Date;
     updatedAt: Date;
+    averageGrade: null | number;
 };
 
 export type KanbanTask = {
@@ -69,4 +70,5 @@ export type Grade = {
     maxScore: number;
     createdAt: Date;
     updatedAt: Date;
+    percent: number;
 };

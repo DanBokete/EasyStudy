@@ -1,4 +1,5 @@
 import { useGetAllModules } from "@/api/modules";
+
 import { NavLink } from "react-router";
 
 function GradesPage() {
@@ -9,7 +10,10 @@ function GradesPage() {
             <ul>
                 {modules.data?.map((module) => (
                     <li key={module.id}>
-                        <NavLink to={module.id}>{module.name}</NavLink>
+                        <NavLink to={module.id} className={"grid grid-cols-5"}>
+                            <div>{module.name}</div>
+                            <div>{module.averageGrade ?? "---"}</div>
+                        </NavLink>
                     </li>
                 ))}
             </ul>
