@@ -1,7 +1,7 @@
 import {
-    BrickWall,
     Clock4,
     FolderOpen,
+    GraduationCap,
     LayoutDashboard,
     Plus,
     Settings,
@@ -43,7 +43,7 @@ const items = [
         url: "/projects",
         icon: FolderOpen,
     },
-    { title: "Board", url: "/board", icon: BrickWall },
+    { title: "Grades", url: "/grades", icon: GraduationCap },
     {
         title: "Settings",
         url: "#",

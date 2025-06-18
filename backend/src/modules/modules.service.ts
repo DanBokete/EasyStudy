@@ -16,8 +16,8 @@ export class ModulesService {
     });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} module`;
+  findOne(userId: string, moduleId: string) {
+    return this.prisma.module.findUnique({ where: { userId, id: moduleId } });
   }
 
   update(id: number, updateModuleDto: UpdateModuleDto) {

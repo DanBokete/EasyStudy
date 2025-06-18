@@ -12,7 +12,6 @@ import * as argon2 from 'argon2';
 
 import { JwtService } from '@nestjs/jwt';
 import { Response, Request } from 'express';
-import { jwtConstants } from './constants';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { TokenService } from './utils';
 
@@ -76,10 +75,10 @@ export class AuthService {
   async refreshToken(request: Request, response: Response) {
     if (!request.user) throw new BadRequestException();
 
-    const requestUser = request.user as { id: string; username: string };
+    const requestUser = request.user;
 
     const user = await this.prisma.user.findUnique({
-      where: { id: requestUser.id },
+      where: { id: requestUser.userId },
     });
 
     if (!user) throw new ForbiddenException('user does not exist');

@@ -59,7 +59,7 @@ function ProjectPage() {
                     />
                 </TabsContent>
                 <TabsContent value="list">
-                    <TasksListView tasks={project.tasks} />
+                    <TasksListView tasks={project.tasks} project={project} />
                 </TabsContent>
             </Tabs>
         </div>

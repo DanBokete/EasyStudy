@@ -7,6 +7,7 @@ import { StudySessionsModule } from './study-sessions/study-sessions.module';
 import { ModulesModule } from './modules/modules.module';
 import { AuthModule } from './auth/auth.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { GradesModule } from './grades/grades.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     StudySessionsModule,
     ModulesModule,
     ScheduleModule.forRoot(),
+    GradesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

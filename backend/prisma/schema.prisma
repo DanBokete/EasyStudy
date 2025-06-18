@@ -27,6 +27,7 @@ model User {
   StudySession StudySession[]
   refreshToken refreshToken[]
   accessToken  accessToken[]
+  Grade        Grade[]
 }
 
 model accessToken {
@@ -73,6 +74,22 @@ model Module {
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
   StudySession StudySession[]
+  Grade        Grade[]
+}
+
+model Grade {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  date        DateTime @default(now())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  moduleId    String
+  module      Module   @relation(fields: [moduleId], references: [id])
+  score       Float
+  maxScore    Float
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model Project {

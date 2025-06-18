@@ -58,3 +58,15 @@ export type KanbanTask = {
     createdAt: Date;
     updatedAt: Date;
 };
+export type Grade = {
+    id: string;
+    title: string;
+    description?: string;
+    date: string;
+    userId: string;
+    moduleId: string;
+    score: number;
+    maxScore: number;
+    createdAt: Date;
+    updatedAt: Date;
+};

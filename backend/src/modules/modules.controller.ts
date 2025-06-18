@@ -9,6 +9,7 @@ import {
   Session,
   UseGuards,
   Req,
+  BadRequestException,
 } from '@nestjs/common';
 import { ModulesService } from './modules.service';
 import { CreateModuleDto } from './dto/create-module.dto';
@@ -17,25 +18,29 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { Request } from 'express';
 
 @UseGuards(JwtAuthGuard)
-@Controller('modules')
+@Controller('v1/modules')
 export class ModulesController {
   constructor(private readonly modulesService: ModulesService) {}
 
   @Post()
   create(@Body() createModuleDto: CreateModuleDto, @Req() req: Request) {
-    const user = req.user as { userId: string; username: string };
+    if (!req.user) throw new BadRequestException();
+    const user = req.user;
     return this.modulesService.create(createModuleDto, user.userId);
   }
 
   @Get()
   findAll(@Req() req: Request) {
-    const user = req.user as { userId: string; username: string };
+    if (!req.user) throw new BadRequestException();
+    const user = req.user;
     return this.modulesService.findAll(user.userId);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.modulesService.findOne(+id);
+  findOne(@Req() req: Request, @Param('id') id: string) {
+    if (!req.user) throw new BadRequestException();
+    const user = req.user;
+    return this.modulesService.findOne(user.userId, id);
   }
 
   @Patch(':id')
