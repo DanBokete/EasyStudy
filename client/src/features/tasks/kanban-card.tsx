@@ -1,13 +1,12 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { DialogContent } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
 import type { Task } from "@/types/types";
 import { Dialog, DialogTrigger } from "@radix-ui/react-dialog";
 import { format } from "date-fns";
 import { MoreVertical } from "lucide-react";
-import EditTaskForm from "./edit-task-form";
 import { useState } from "react";
+import EditTaskDialogContent from "./edit-task-dialog-content";
 // import { MoreHorizontal } from "lucide-react";
 
 interface KanbanCardProps {
@@ -37,9 +36,8 @@ function KanbanCard({ task }: KanbanCardProps) {
                             <MoreVertical />
                         </Button>
                     </DialogTrigger>
-                    <DialogContent>
-                        <EditTaskForm task={task} setOpen={setOpen} />
-                    </DialogContent>
+
+                    <EditTaskDialogContent setOpen={setOpen} task={task} />
                 </Dialog>
             </div>
         </div>

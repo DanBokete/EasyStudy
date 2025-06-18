@@ -1,21 +1,14 @@
 import { deleteTask, editTask } from "@/api/task";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import type { Task as TaskType } from "@/types/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { useState } from "react";
-import EditTaskForm from "./edit-task-form";
 import { Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import EditTaskDialogContent from "./edit-task-dialog-content";
 
 function Task({ task }: { task: TaskType }) {
     const [open, setOpen] = useState(false);
@@ -92,18 +85,7 @@ function Task({ task }: { task: TaskType }) {
                     <Trash2 />
                 </Button>
             </div>
-            <DialogContent>
-                <DialogHeader>
-                    <DialogTitle>Task Details</DialogTitle>
-                    <DialogDescription>
-                        Create a task to complete to bring you one step closer
-                        to finishing your project:{" "}
-                        <b className="font-medium">{task.title}</b>
-                    </DialogDescription>
-                </DialogHeader>
-
-                <EditTaskForm task={task} setOpen={setOpen} />
-            </DialogContent>
+            <EditTaskDialogContent setOpen={setOpen} task={task} />
         </Dialog>
     );
 }
