@@ -22,7 +22,11 @@ api.interceptors.response.use(
                     {},
                     { withCredentials: true }
                 );
-                if (response.status !== 401) return api(error.config);
+                if (
+                    response.status !== 401 &&
+                    window.location.pathname !== "/login"
+                )
+                    return api(error.config);
                 return (window.location.pathname = "/login");
             } catch (err) {
                 console.log("error", err);

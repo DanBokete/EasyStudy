@@ -11,7 +11,7 @@ export type Project = {
     tasks: Task[];
 };
 
-export type TaskStatus = "TODO" | "IN_PROGRESS" | "DONE";
+export type TaskStatus = "BACKLOG" | "TODO" | "IN_PROGRESS" | "DONE";
 
 export type Task = {
     id: string;

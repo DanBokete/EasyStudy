@@ -6,7 +6,7 @@ export default function Layout() {
     return (
         <>
             <SidebarProvider>
-                <AppSidebar />
+                {window.location.pathname !== "/login" && <AppSidebar />}
                 <div className="container max-w-7xl px-5 lg:mx-auto">
                     <header className="py-2 flex justify-end">
                         <div className="flex gap-x-1">

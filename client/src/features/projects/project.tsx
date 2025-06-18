@@ -22,7 +22,6 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 import ProjectEditForm from "./project-edit-form";
-import NewTask from "../../pages/projects/new-task";
 import NewTaskForm from "../tasks/new-task-form";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";

@@ -13,14 +13,14 @@ import type { Project, TaskStatus } from "@/types/types";
 import { format } from "date-fns";
 import { useState } from "react";
 
-function NewTaskForm({
-    project,
-    projects,
-}: {
+interface NewTaskFormProps {
     project?: Project;
     projects: Project[];
     setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-}) {
+    status?: TaskStatus;
+}
+
+function NewTaskForm({ project, projects, status }: NewTaskFormProps) {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState<string | null>(null);
     const [dueDate, setDueDate] = useState<string>(
@@ -28,7 +28,7 @@ function NewTaskForm({
     );
     const [time, setTime] = useState<string | null>(null);
     const [projectId, setProjectId] = useState(project ? project.id : "");
-    const [status, setStatus] = useState<TaskStatus>("TODO");
+    const [newStatus, setNewStatus] = useState<TaskStatus>(status ?? "TODO");
 
     const mutateTask = useCreateTask();
 
@@ -41,7 +41,7 @@ function NewTaskForm({
                 mutateTask.mutate({
                     title,
                     description,
-                    status,
+                    status: newStatus,
                     projectId,
                     dueDate: dueDate ? new Date(dueDate).toISOString() : null,
                     time,
@@ -108,8 +108,10 @@ function NewTaskForm({
                 <section className="space-y-2 ">
                     <Label>Status</Label>
                     <Select
-                        defaultValue={status}
-                        onValueChange={(value: TaskStatus) => setStatus(value)}
+                        defaultValue={status ?? newStatus}
+                        onValueChange={(value: TaskStatus) =>
+                            setNewStatus(value)
+                        }
                         name="status"
                         required
                     >
@@ -117,6 +119,7 @@ function NewTaskForm({
                             <SelectValue placeholder="Status" />
                         </SelectTrigger>
                         <SelectContent>
+                            <SelectItem value="BACKLOG">BACKLOG</SelectItem>
                             <SelectItem value="TODO">TODO</SelectItem>
                             <SelectItem value="IN_PROGRESS">
                                 IN PROGRESS

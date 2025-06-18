@@ -9,7 +9,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
-import type { Task } from "@/types/types";
+import type { Task as TaskType } from "@/types/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { useState } from "react";
@@ -17,13 +17,13 @@ import EditTaskForm from "./task-edit-form";
 import { Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-function Task({ task }: { task: Task }) {
+function Task({ task }: { task: TaskType }) {
     const [open, setOpen] = useState(false);
 
     const queryClient = useQueryClient();
 
     const mutateTaskDone = useMutation({
-        mutationFn: (data: Partial<Task>) => {
+        mutationFn: (data: Partial<TaskType>) => {
             return editTask(task.id, data);
         },
         onSuccess: () => {

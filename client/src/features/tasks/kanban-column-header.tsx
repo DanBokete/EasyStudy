@@ -10,6 +10,7 @@ interface KanbanColumnHeaderProps {
 }
 
 const statusIconMap: Record<TaskStatus, React.ReactNode> = {
+    ["BACKLOG"]: <CircleDashed className="text-yellow-400" />,
     ["IN_PROGRESS"]: <CircleDashed className="text-yellow-400" />,
     ["TODO"]: <Circle className="text-red-400" />,
     ["DONE"]: <CircleCheck className="text-emerald-400" />,
@@ -34,7 +35,7 @@ function KanbanColumnHeader({
             </div>
             <div>
                 {" "}
-                <NewTask projects={[project]} project={project}>
+                <NewTask projects={[project]} project={project} status={board}>
                     <Button variant={"ghost"}>
                         <Plus />
                     </Button>

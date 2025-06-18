@@ -1,15 +1,11 @@
-import { getAllProjects } from "@/api/projects";
+import { useGetAllProjects } from "@/api/projects";
 import { Separator } from "@/components/ui/separator";
-import { useQuery } from "@tanstack/react-query";
 import ProjectForm from "../../features/projects/project-form";
 import Project from "../../features/projects/project";
 import NewTask from "@/features/tasks/new-task";
 
 function ProjectsPage() {
-    const { isPending, error, data } = useQuery({
-        queryKey: ["projects"],
-        queryFn: getAllProjects,
-    });
+    const { isPending, error, data } = useGetAllProjects();
 
     if (isPending) return "Loading...";
 
@@ -19,10 +15,7 @@ function ProjectsPage() {
         <div>
             <div className="flex justify-between">
                 <h1 className="text-xl font-extrabold">Projects</h1>
-                {/* <Button variant={"ghost"}>
-                    <PlusCircle />
-                    Create Project
-                </Button> */}
+
                 <ProjectForm />
             </div>
             <Separator className="my-2" />

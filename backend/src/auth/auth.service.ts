@@ -82,7 +82,7 @@ export class AuthService {
       where: { id: requestUser.id },
     });
 
-    if (!user) throw new BadRequestException('user does not exist');
+    if (!user) throw new ForbiddenException('user does not exist');
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const originalRefreshToken = request.cookies.refresh_token as
@@ -90,7 +90,7 @@ export class AuthService {
       | undefined;
 
     if (!originalRefreshToken) {
-      throw new BadRequestException('Cannot get refresh token');
+      throw new ForbiddenException('Cannot get refresh token');
     }
 
     const storedTokens = await this.prisma.refreshToken.findMany({
@@ -121,7 +121,7 @@ export class AuthService {
           });
 
           console.error('refresh token stolen');
-          throw new BadRequestException('possible replay attack detected');
+          throw new ForbiddenException('possible replay attack detected');
         }
 
         await this.prisma.refreshToken.update({
@@ -135,7 +135,7 @@ export class AuthService {
         return;
       }
     }
-    throw new BadRequestException('Cannot find refresh token session');
+    throw new ForbiddenException('Cannot find refresh token session');
   }
 
   async verifyUserJWTRefreshToken(refreshToken: string, userId: string) {

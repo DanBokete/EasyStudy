@@ -110,6 +110,7 @@ function EditTaskForm({
                             <SelectValue placeholder="Status" />
                         </SelectTrigger>
                         <SelectContent>
+                            <SelectItem value="BACKLOG">BACKLOG</SelectItem>
                             <SelectItem value="TODO">TODO</SelectItem>
                             <SelectItem value="IN_PROGRESS">
                                 IN PROGRESS

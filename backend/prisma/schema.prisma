@@ -57,6 +57,7 @@ enum ProjectStatus {
 }
 
 enum TaskStatus {
+  BACKLOG
   TODO
   IN_PROGRESS
   DONE

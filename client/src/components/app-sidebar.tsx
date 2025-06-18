@@ -3,6 +3,7 @@ import {
     Clock4,
     FolderOpen,
     LayoutDashboard,
+    Plus,
     Settings,
 } from "lucide-react";
 
@@ -11,6 +12,7 @@ import {
     SidebarContent,
     SidebarFooter,
     SidebarGroup,
+    SidebarGroupAction,
     SidebarGroupContent,
     SidebarGroupLabel,
     SidebarMenu,
@@ -18,8 +20,9 @@ import {
     SidebarMenuItem,
     SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { Link } from "react-router";
+import { Link, NavLink } from "react-router";
 import { SITE_NAME } from "@/constants";
+import { useGetAllProjects } from "@/api/projects";
 
 // Menu items.
 const items = [
@@ -47,6 +50,9 @@ const items = [
 ];
 
 export function AppSidebar() {
+    const projects = useGetAllProjects();
+
+    if (projects.isLoading) return "loading...";
     return (
         <Sidebar collapsible="icon" variant="floating">
             <SidebarContent>
@@ -64,6 +70,33 @@ export function AppSidebar() {
                                     </SidebarMenuButton>
                                 </SidebarMenuItem>
                             ))}
+                        </SidebarMenu>
+                    </SidebarGroupContent>
+                </SidebarGroup>
+                <SidebarGroup>
+                    <SidebarGroupLabel>Projects</SidebarGroupLabel>
+                    <SidebarGroupAction title="Add Project">
+                        <Plus /> <span className="sr-only">Add Project</span>
+                    </SidebarGroupAction>
+                    <SidebarGroupContent>
+                        <SidebarMenu>
+                            {projects.data ? (
+                                projects.data.map((project) => (
+                                    <SidebarMenuItem key={project.id}>
+                                        <SidebarMenuButton asChild>
+                                            <NavLink
+                                                to={`projects/${project.id}`}
+                                            >
+                                                {project.name}
+                                            </NavLink>
+                                        </SidebarMenuButton>
+                                    </SidebarMenuItem>
+                                ))
+                            ) : (
+                                <SidebarMenuItem>
+                                    You have no projects
+                                </SidebarMenuItem>
+                            )}
                         </SidebarMenu>
                     </SidebarGroupContent>
                 </SidebarGroup>

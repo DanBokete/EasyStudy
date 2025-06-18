@@ -8,7 +8,7 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 
-import type { Project } from "@/types/types";
+import type { Project, TaskStatus } from "@/types/types";
 
 import { Plus } from "lucide-react";
 import { useState, type ReactNode } from "react";
@@ -18,9 +18,10 @@ interface NewTaskProps {
     children?: ReactNode;
     projects: Project[];
     project?: Project;
+    status?: TaskStatus;
 }
 
-function NewTask({ projects, children, project }: NewTaskProps) {
+function NewTask({ projects, children, project, status }: NewTaskProps) {
     const [open, setOpen] = useState(false);
     return (
         <Dialog open={open} onOpenChange={setOpen}>
@@ -50,6 +51,7 @@ function NewTask({ projects, children, project }: NewTaskProps) {
                         project={project}
                         projects={[project]}
                         setOpen={setOpen}
+                        status={status}
                     />
                 ) : (
                     <NewTaskForm projects={projects} setOpen={setOpen} />

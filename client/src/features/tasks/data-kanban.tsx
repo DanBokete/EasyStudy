@@ -10,7 +10,7 @@ import KanbanColumnHeader from "./kanban-column-header";
 import KanbanCard from "./kanban-card";
 import { useGetAllProjects } from "@/api/projects";
 
-const boards: TaskStatus[] = ["TODO", "IN_PROGRESS", "DONE"];
+const boards: TaskStatus[] = ["BACKLOG", "TODO", "IN_PROGRESS", "DONE"];
 
 type TaskState = {
     [key in TaskStatus]: Task[];
@@ -28,6 +28,7 @@ function DataKanban({ data, onChange, project }: DataKanbanProps) {
     // const projects = useGetAllProjects();
     const [tasks, setTasks] = useState<TaskState>(() => {
         const initialTasks: TaskState = {
+            ["BACKLOG"]: [],
             ["TODO"]: [],
             ["IN_PROGRESS"]: [],
             ["DONE"]: [],
@@ -47,6 +48,7 @@ function DataKanban({ data, onChange, project }: DataKanbanProps) {
 
     useEffect(() => {
         const newTasks: TaskState = {
+            ["BACKLOG"]: [],
             ["TODO"]: [],
             ["IN_PROGRESS"]: [],
             ["DONE"]: [],
