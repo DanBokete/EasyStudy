@@ -8,6 +8,7 @@ import { ModulesModule } from './modules/modules.module';
 import { AuthModule } from './auth/auth.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { GradesModule } from './grades/grades.module';
+import { XpModule } from './xp/xp.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { GradesModule } from './grades/grades.module';
     ModulesModule,
     ScheduleModule.forRoot(),
     GradesModule,
+    XpModule,
   ],
   controllers: [AppController],
   providers: [AppService],

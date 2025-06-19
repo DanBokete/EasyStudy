@@ -24,7 +24,7 @@ export class TokenService {
       secret: jwtConstants.refreshToken,
     });
 
-    const expiresAt = jwtConstants.refreshTokenExpiresAtDate;
+    const expiresAt = jwtConstants.refreshTokenExpiresAtDate();
 
     await this.prisma.refreshToken.create({
       data: {

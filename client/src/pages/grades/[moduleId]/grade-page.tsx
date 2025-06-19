@@ -13,12 +13,17 @@ import {
 import EditGrade from "@/features/grades/edit-grade";
 import NewGrade from "@/features/grades/new-grade";
 import { format } from "date-fns";
+import { useEffect } from "react";
 import { useLoaderData } from "react-router";
 
 function GradePage() {
     const moduleId: string = useLoaderData();
     const module = useGetModule(moduleId);
     const grades = useGetGradesByModule(moduleId);
+
+    useEffect(() => {
+        module.refetch();
+    }, [grades.data, module]);
     if (module.isLoading) return "....";
     if (module.error || !module.data) return "Module failed to load";
     return (

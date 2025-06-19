@@ -150,6 +150,9 @@ function EditGradeForm({ setOpen, grade }: EditGradeFormProps) {
                     />
                 </div>
                 <div className="flex justify-between">
+                    <Button type="submit" className="flex-auto">
+                        Submit
+                    </Button>
                     <Button
                         variant={"ghost"}
                         onClick={(e) => {
@@ -159,7 +162,6 @@ function EditGradeForm({ setOpen, grade }: EditGradeFormProps) {
                     >
                         <Trash2 className="text-red-600" />
                     </Button>
-                    <Button type="submit">Submit</Button>
                 </div>
             </form>
         </Form>

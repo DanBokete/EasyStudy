@@ -8,6 +8,7 @@ import {
   HttpCode,
   HttpStatus,
   Res,
+  InternalServerErrorException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignupAuthDto } from './dto/signup-auth.dto';
@@ -37,7 +38,10 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Get('profile')
   getProfile(@Req() req: Request) {
-    return req.user;
+    if (!req.user) {
+      throw new InternalServerErrorException('could not get userId');
+    }
+    return this.authService.getProfile(req.user?.userId);
   }
 
   @UseGuards(JwtRefreshAuthGuard)

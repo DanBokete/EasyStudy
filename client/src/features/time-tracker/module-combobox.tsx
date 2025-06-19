@@ -15,16 +15,14 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { Check, ChevronsUpDown } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 function ModuleCombobox({
-    setModuleId,
-    setValue,
     value,
+    onChange,
 }: {
-    setModuleId: React.Dispatch<React.SetStateAction<string | null>>;
-    setValue: React.Dispatch<React.SetStateAction<string>>;
     value: string;
+    onChange: (value: string) => void;
 }) {
     const [open, setOpen] = useState(false);
 
@@ -32,18 +30,20 @@ function ModuleCombobox({
     const modules = useGetAllModules();
     const createModule = useCreateModule();
 
-    useEffect(() => {
-        if (!modules.data) return;
-        setModuleId(() => {
-            const currentModule = modules.data.find(
-                (module) => module.name === value
-            );
-            if (!currentModule) return null;
-            return currentModule.id;
-        });
-    }, [value]);
+    // useEffect(() => {
+    //     if (!modules.data) return;
+    //     setModuleId(() => {
+    //         const currentModule = modules.data.find(
+    //             (module) => module.name === value
+    //         );
+    //         if (!currentModule) return null;
+    //         return currentModule.id;
+    //     });
+    // }, [value]);
     function onCreateModule() {
-        createModule.mutate({ name });
+        if (/^[a-zA-Z]/.test(name)) {
+            createModule.mutate({ name });
+        }
     }
 
     return (
@@ -56,7 +56,7 @@ function ModuleCombobox({
                     className="w-[200px] justify-between"
                 >
                     {value
-                        ? modules.data?.find((module) => module.name === value)
+                        ? modules.data?.find((module) => module.id === value)
                               ?.name
                         : "Select Module..."}
                     <ChevronsUpDown className="opacity-50" />
@@ -67,7 +67,10 @@ function ModuleCombobox({
                     <CommandInput
                         placeholder="Search Module..."
                         className="h-9"
-                        onValueChange={(e) => setName(e)}
+                        onValueChange={(e) => {
+                            setName(e);
+                            // onChange(e);
+                        }}
                     />
                     <CommandList>
                         <CommandEmpty>
@@ -84,12 +87,20 @@ function ModuleCombobox({
                                     key={module.id}
                                     value={module.name}
                                     onSelect={(currentValue) => {
-                                        setValue(
-                                            currentValue === value
-                                                ? ""
-                                                : currentValue
-                                        );
+                                        // const moduleName =
+                                        //     currentValue === value
+                                        //         ? ""
+                                        //         : currentValue;
 
+                                        const selectedModule =
+                                            modules.data.find(
+                                                (mod) =>
+                                                    mod.name === currentValue
+                                            );
+
+                                        if (!selectedModule) return;
+
+                                        onChange(selectedModule.id);
                                         setOpen(false);
                                     }}
                                 >

@@ -1,5 +1,3 @@
-"use client";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -10,7 +8,6 @@ import {
     FormControl,
     FormField,
     FormItem,
-    FormLabel,
     FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -20,18 +17,16 @@ import { Play, StopCircle } from "lucide-react";
 import { useCreateStudySession } from "@/api/study-session";
 
 const formSchema = z.object({
-    title: z.string().min(1, "A title is required"),
-    moduleId: z.string(),
+    title: z.string().trim().min(1, "A title is required"),
+    moduleId: z.string().min(1, "Module is required"),
 });
 
 export default function TimeTrackForm() {
     const [isPlaying, setIsPlaying] = useState(false);
     const [startTime, setStartTime] = useState<number | null>(null);
     const [timer, setTimer] = useState(0);
-    const [moduleId, setModuleId] = useState<string | null>("");
 
     // Selecting Modules
-    const [value, setValue] = useState("");
 
     const createStudySession = useCreateStudySession();
 
@@ -40,7 +35,7 @@ export default function TimeTrackForm() {
         resolver: zodResolver(formSchema),
         defaultValues: {
             title: "",
-            moduleId: value,
+            moduleId: "",
         },
     });
 
@@ -48,12 +43,12 @@ export default function TimeTrackForm() {
     function onSubmit(values: z.infer<typeof formSchema>) {
         // Do something with the form values.
         // ✅ This will be type-safe and validated.
-        if (!startTime || !moduleId) return;
+        if (!startTime) return;
         const data = {
             activity: values.title ? values.title : undefined,
             startTime: new Date(startTime).toISOString(),
             endTime: new Date().toISOString(),
-            moduleId,
+            moduleId: values.moduleId,
         };
 
         createStudySession.mutate(data);
@@ -61,8 +56,7 @@ export default function TimeTrackForm() {
         setIsPlaying(false);
         setStartTime(null);
         setTimer(0);
-        setModuleId("");
-        setValue("");
+        form.reset();
         console.log(values);
     }
 
@@ -97,14 +91,13 @@ export default function TimeTrackForm() {
         <Form {...form}>
             <form
                 onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-8 flex"
+                className="space-y-2 flex gap-x-2"
             >
                 <FormField
                     control={form.control}
                     name="title"
                     render={({ field }) => (
                         <FormItem className="w-full">
-                            <FormLabel>Title</FormLabel>
                             <FormControl>
                                 <Input
                                     placeholder="What are you doing?"
@@ -120,13 +113,12 @@ export default function TimeTrackForm() {
                     name="moduleId"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Module</FormLabel>
                             <FormControl>
                                 <ModuleCombobox
                                     {...field}
-                                    setModuleId={setModuleId}
-                                    value={value}
-                                    setValue={setValue}
+                                    onChange={(val) => {
+                                        field.onChange(val);
+                                    }}
                                 />
                             </FormControl>
                             <FormMessage />
@@ -137,7 +129,7 @@ export default function TimeTrackForm() {
                     {displayedTimer}
                 </span>
 
-                <div className="flex items-center">
+                <div className="flex">
                     {isPlaying ? (
                         <Button variant={"outline"} type="submit">
                             <StopCircle />

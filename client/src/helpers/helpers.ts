@@ -22,11 +22,6 @@ export function groupStudySessionByDate(studySessions: StudySession[]): {
 }
 
 export function getDisplayedDuration(timeInSeconds: number): string {
-    console.log(
-        "getDisplayedDuration called with timeInSeconds:",
-        timeInSeconds
-    );
-
     if (timeInSeconds <= 0) {
         return "00:00:00";
     }

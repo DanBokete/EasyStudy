@@ -99,13 +99,13 @@ export class AuthService {
     });
 
     for (const storedToken of storedTokens) {
+      // if token is expired, skip
+      if (storedToken.expiresAt < new Date()) continue;
+
       const isMatch = await argon2.verify(
         storedToken.token,
         originalRefreshToken,
       );
-
-      // if token is expired, skip
-      if (storedToken.expiresAt < new Date()) continue;
 
       if (isMatch) {
         if (!storedToken.valid) {
@@ -147,5 +147,9 @@ export class AuthService {
     }
 
     return user;
+  }
+
+  async getProfile(userId: string) {
+    return await this.prisma.user.findUnique({ where: { id: userId } });
   }
 }

@@ -72,3 +72,11 @@ export type Grade = {
     updatedAt: Date;
     percent: number;
 };
+export type User = {
+    id: string;
+    email: string;
+    name: string;
+    createdAt: string;
+    updatedAt: string;
+    totalXp: number;
+};

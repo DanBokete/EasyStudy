@@ -23,11 +23,13 @@ model User {
   projects     Project[]
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
+  totalXp      Int            @default(0)
   Module       Module[]
   StudySession StudySession[]
   refreshToken refreshToken[]
   accessToken  accessToken[]
   Grade        Grade[]
+  XpLog        XpLog[]
 }
 
 model accessToken {
@@ -138,6 +140,17 @@ model StudySession {
   module      Module   @relation(fields: [moduleId], references: [id])
   startTime   DateTime @default(now())
   endTime     DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model XpLog {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  activity    String
+  description String?
+  xp          Int
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }

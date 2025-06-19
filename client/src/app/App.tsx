@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ThemeProvider } from "@/components/theme-provier";
+import { ThemeProvider } from "@/components/theme-provider";
 import React, { Suspense } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router";
 // import BoardPage from "./pages/board-page";
