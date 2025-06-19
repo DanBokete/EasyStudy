@@ -1,9 +1,6 @@
-import { Badge } from "@/components/ui/badge";
 import {
     Card,
-    CardAction,
     CardDescription,
-    CardFooter,
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
@@ -12,7 +9,6 @@ import {
     getHoursStudiedToday,
 } from "@/helpers/helpers";
 import type { Project, StudySession } from "@/types/types";
-import { TrendingUp } from "lucide-react";
 
 interface SectionCardsProp {
     projects: Project[] | [] | undefined;

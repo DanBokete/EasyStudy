@@ -83,12 +83,11 @@ function NewTaskForm({ project, projects, status }: NewTaskFormProps) {
                         <SelectValue placeholder="Projects" />
                     </SelectTrigger>
                     <SelectContent>
-                        {projects &&
-                            projects.map((project) => (
-                                <SelectItem key={project.id} value={project.id}>
-                                    {project.name}
-                                </SelectItem>
-                            ))}
+                        {projects.map((project) => (
+                            <SelectItem key={project.id} value={project.id}>
+                                {project.name}
+                            </SelectItem>
+                        ))}
                     </SelectContent>
                 </Select>
             </section>

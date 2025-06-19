@@ -10,10 +10,6 @@ export class GradesService {
     return this.prisma.grade.create({ data: { ...createGradeDto, userId } });
   }
 
-  // getAverageGrade(grade: Grade) {
-  //   return
-  // }
-
   async findAll(userId: string) {
     const grades = await this.prisma.grade.findMany({ where: { userId } });
 

@@ -35,7 +35,7 @@ function KanbanColumnHeader({
             </div>
             <div>
                 {" "}
-                <NewTask projects={[project]} project={project} status={board}>
+                <NewTask project={project} status={board}>
                     <Button variant={"ghost"}>
                         <Plus />
                     </Button>

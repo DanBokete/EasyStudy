@@ -1,25 +1,38 @@
 import { createBrowserRouter, RouterProvider } from "react-router";
-import HomePage from "../pages";
-import Layout from "../layout";
-import TasksPage from "../pages/tasks-page";
 // import BoardPage from "./pages/board-page";
-import ProjectsPage from "../pages/projects/projects-page";
-import ProjectPage from "../pages/projects/[projectId]/project-page";
-import LoginPage from "../pages/auth/login-page";
+const Layout = React.lazy(() => import("../layout"));
+const TasksPage = React.lazy(() => import("../pages/tasks-page"));
+const DashboardPage = React.lazy(
+    () => import("../pages/dashboard/dashboard-page")
+);
+const ProjectsPage = React.lazy(
+    () => import("../pages/projects/projects-page")
+);
+const ProjectPage = React.lazy(
+    () => import("../pages/projects/[projectId]/project-page")
+);
+const GradesPage = React.lazy(() => import("@/pages/grades/grades-page"));
+const GradePage = React.lazy(
+    () => import("@/pages/grades/[moduleId]/grade-page")
+);
+const TimeTrackerPage = React.lazy(
+    () => import("../pages/time-tracker/time-tracker-page")
+);
+const LoginPage = React.lazy(() => import("../pages/auth/login-page"));
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import TimeTracker from "../pages/time-tracker/time-tracker-page";
-import DashboardPage from "../pages/dashboard/dashboard-page";
-import GradesPage from "@/pages/grades/grades-page";
-import GradePage from "@/pages/grades/[moduleId]/grade-page";
 import { ThemeProvider } from "@/components/theme-provier";
+import React, { Suspense } from "react";
 
 const router = createBrowserRouter([
     {
         path: "/",
         Component: Layout,
         children: [
-            { index: true, Component: HomePage },
-            { path: "dashboard", Component: DashboardPage },
+            { index: true, Component: DashboardPage },
+            {
+                path: "dashboard",
+                Component: DashboardPage,
+            },
             { path: "login", Component: LoginPage },
             { path: "tasks", Component: TasksPage },
             {
@@ -35,8 +48,11 @@ const router = createBrowserRouter([
                 },
                 Component: ProjectPage,
             },
-            { path: "study", Component: TimeTracker },
-            { path: "grades", Component: GradesPage },
+            { path: "study", Component: TimeTrackerPage },
+            {
+                path: "grades",
+                Component: GradesPage,
+            },
             {
                 path: "grades/:moduleId",
                 loader: async ({ params }) => {
@@ -56,7 +72,9 @@ function App() {
     return (
         <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
             <QueryClientProvider client={queryClient}>
-                <RouterProvider router={router} />
+                <Suspense fallback={<div>Loading...</div>}>
+                    <RouterProvider router={router} />
+                </Suspense>
             </QueryClientProvider>
         </ThemeProvider>
     );

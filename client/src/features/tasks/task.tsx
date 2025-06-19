@@ -1,4 +1,4 @@
-import { deleteTask, editTask, useDeleteTask } from "@/api/task";
+import { editTask, useDeleteTask } from "@/api/task";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";

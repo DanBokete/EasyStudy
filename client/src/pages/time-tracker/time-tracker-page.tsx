@@ -378,7 +378,7 @@ function StudySession({
                         }}
                         onKeyDown={(e) => {
                             if (e.key !== "Enter") return;
-                            editStartTime(e.target.value);
+                            editStartTime(startTime);
                         }}
                         value={startTime}
                         onChange={(e) => {
@@ -402,7 +402,7 @@ function StudySession({
                         }}
                         onKeyDown={(e) => {
                             if (e.key !== "Enter") return;
-                            editEndTime(e.target.value);
+                            editEndTime(endTime);
                         }}
                         value={endTime}
                         onChange={(e) => {

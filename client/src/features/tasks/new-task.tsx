@@ -11,15 +11,17 @@ import {
 import type { Project, TaskStatus } from "@/types/types";
 
 import { Plus } from "lucide-react";
-import { useState, type ReactNode } from "react";
+import { useState } from "react";
 import NewTaskForm from "./new-task-form";
 
-interface NewTaskProps {
-    children?: ReactNode;
-    projects: Project[];
-    project?: Project;
+interface BaseProps {
+    children?: React.ReactNode;
     status?: TaskStatus;
 }
+
+type NewTaskProps =
+    | ({ project: Project; projects?: never } & BaseProps)
+    | ({ projects: Project[]; project?: never } & BaseProps);
 
 function NewTask({ projects, children, project, status }: NewTaskProps) {
     const [open, setOpen] = useState(false);

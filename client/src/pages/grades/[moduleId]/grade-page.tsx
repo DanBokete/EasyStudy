@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/table";
 import EditGrade from "@/features/grades/edit-grade";
 import NewGrade from "@/features/grades/new-grade";
-import { getAverageGrade, getAverageGrades } from "@/features/grades/utils";
 import { format } from "date-fns";
 import { useLoaderData } from "react-router";
 

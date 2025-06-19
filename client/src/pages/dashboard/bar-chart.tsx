@@ -82,7 +82,7 @@ export default function ChartBarStacked({
                             // labelFormatter={(value) => {
                             //     return `label: ${value}`;
                             // }}
-                            formatter={(value: number, module, item) => (
+                            formatter={(value: number, module) => (
                                 <div>
                                     {module}:{" "}
                                     {format(new Date(value * 1000), "HH:mm")}
