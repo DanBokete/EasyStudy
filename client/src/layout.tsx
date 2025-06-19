@@ -7,13 +7,8 @@ export default function Layout() {
         <>
             <SidebarProvider>
                 {window.location.pathname !== "/login" && <AppSidebar />}
-                <div className="container max-w-7xl px-5 lg:mx-auto">
-                    <header className="py-2 flex justify-end">
-                        <div className="flex gap-x-1">
-                            <div className="font-bold"></div>
-                        </div>
-                    </header>
-
+                <div className="container max-w-7xl px-5 mt-5 lg:mx-auto">
+                    {/* {window.location.pathname !== "/login" && <Navbar />} */}
                     <div>
                         <Outlet />
                     </div>

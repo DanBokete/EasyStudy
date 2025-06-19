@@ -7,14 +7,12 @@ A student companion web application designed to make students life easier.
 
 ### 🚨 This Project is under development 🚨
 
-### ✅ Current features
+### 🔥 Features
 * Keep track of projects/assignments 
 * Track study time.
 * Dashboard page. Graph study sessions by module. Project summary details.
 * Board, Khanban project planning board.
 * Grade tracker, Track grades for each module and calculate your progress.
 
-### 🚧 Planned Feature
-* Study Goals, Set daily/weekly study targets by module or time.
-* Useful Resources, a dedicated page linking useful resources for efficient study.
-* Achievements & Badges, Gamified rewards for hitting study goals, finishing projects, etc.
+### 📌 Note on Planned Features
+Earlier in development, I explored additional features such as achievements & badges, which you might see referenced in earlier commits. After further consideration, I chose to focus on core functionality and usability, and decided not to pursue those features to keep the project lean and aligned with its main goal.

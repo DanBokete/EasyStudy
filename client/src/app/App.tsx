@@ -1,3 +1,6 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ThemeProvider } from "@/components/theme-provier";
+import React, { Suspense } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router";
 // import BoardPage from "./pages/board-page";
 const Layout = React.lazy(() => import("../layout"));
@@ -19,9 +22,6 @@ const TimeTrackerPage = React.lazy(
     () => import("../pages/time-tracker/time-tracker-page")
 );
 const LoginPage = React.lazy(() => import("../pages/auth/login-page"));
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ThemeProvider } from "@/components/theme-provier";
-import React, { Suspense } from "react";
 
 const router = createBrowserRouter([
     {

@@ -25,7 +25,6 @@ function ProjectPage() {
 
     if (isLoading) return "...";
     if (!project) return "No project";
-    console.log(project);
 
     if (!project.tasks) return "There are no tasks";
 

@@ -120,6 +120,9 @@ export const useUpdateManyTasks = () => {
                     return updated ? { ...task, ...updated } : task;
                 });
             });
+            queryClient.invalidateQueries({
+                queryKey: ["projects", updatedTasks[0].projectId],
+            });
         },
     });
 };
