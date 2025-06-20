@@ -72,6 +72,6 @@ export class StudySessionsService {
   }
 
   getTimeDifferenceInSeconds(startTime: string, endTime: string) {
-    return new Date(endTime).getTime() - new Date(startTime).getTime();
+    return (new Date(endTime).getTime() - new Date(startTime).getTime()) / 1000;
   }
 }

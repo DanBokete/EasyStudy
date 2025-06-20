@@ -3,6 +3,7 @@ import { XP_RULES } from './xp.constants';
 import { User } from '@prisma/client';
 import { PrismaService } from 'src/prisma.service';
 import { XpEventType } from './types';
+import { log } from 'console';
 
 @Injectable()
 export class XpService {
@@ -45,9 +46,10 @@ export class XpService {
   }
 
   calculateStudySessionXP(minutes: number): number {
+    log('minutes: ' + minutes);
     const tiers = XP_RULES.studySession.xpTable
       .filter((tier) => minutes >= tier.duration)
-      .sort((a, b) => b.duration - a.duration);
+      .sort((a, b) => a.duration - b.duration);
 
     return tiers.length ? tiers[0].xp : 0;
   }
