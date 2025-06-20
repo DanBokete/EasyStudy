@@ -49,7 +49,7 @@ export class XpService {
     log('minutes: ' + minutes);
     const tiers = XP_RULES.studySession.xpTable
       .filter((tier) => minutes >= tier.duration)
-      .sort((a, b) => a.duration - b.duration);
+      .sort((a, b) => b.duration - a.duration);
 
     return tiers.length ? tiers[0].xp : 0;
   }
