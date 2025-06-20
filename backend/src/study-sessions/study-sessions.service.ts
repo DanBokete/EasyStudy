@@ -4,6 +4,7 @@ import { UpdateStudySessionDto } from './dto/update-study-session.dto';
 import { PrismaService } from 'src/prisma.service';
 import { formatStudySessions } from 'src/utils/study-sessions';
 import { XpService } from 'src/xp/xp.service';
+import { log } from 'console';
 
 @Injectable()
 export class StudySessionsService {
@@ -19,7 +20,7 @@ export class StudySessionsService {
 
     if (!user) throw new BadRequestException('User not found');
 
-    await this.xpService.applyXP(user, {
+    const xp = await this.xpService.applyXP(user, {
       type: 'study',
       minutes:
         this.getTimeDifferenceInSeconds(
@@ -27,6 +28,8 @@ export class StudySessionsService {
           createStudySessionDto.endTime,
         ) / 60,
     });
+
+    log('xp:', xp);
 
     const studySession = await this.prisma.studySession.create({
       data: { ...createStudySessionDto, userId },

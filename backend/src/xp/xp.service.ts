@@ -22,7 +22,7 @@ export class XpService {
         throw new InternalServerErrorException('minutes not supplied');
       xp = this.calculateStudySessionXP(event.minutes);
     } else if (event.type === 'task') {
-      xp = this.getTaskXP(event.count || 0);
+      xp = await this.getTaskXP(event.count || 0, user.id);
     } else if (event.type === 'project') {
       xp = this.getProjectXP(event.size as 'small' | 'medium' | 'large');
     } else if (event.type === 'login') {
@@ -56,8 +56,14 @@ export class XpService {
     return XP_RULES.project.xp[size] ?? 0;
   }
 
-  getTaskXP(taskCount: number): number {
+  async getTaskXP(taskCount: number, userId: string): Promise<number> {
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0);
+    const tasksLoggedToday = await this.prisma.xpLog.count({
+      where: { userId, createdAt: { gte: startOfDay } },
+    });
     const max = XP_RULES.task.maxPerDay;
+    if (tasksLoggedToday >= max) return 0;
     const xp = Math.min(taskCount, max) * XP_RULES.task.xpPerTask;
     const bonus = taskCount >= max ? XP_RULES.task.bonusForAll : 0;
     return xp + bonus;

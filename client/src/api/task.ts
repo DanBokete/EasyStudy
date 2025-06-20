@@ -123,6 +123,7 @@ export const useUpdateManyTasks = () => {
             queryClient.invalidateQueries({
                 queryKey: ["projects", updatedTasks[0].projectId],
             });
+            queryClient.invalidateQueries({ queryKey: ["user"] });
         },
     });
 };

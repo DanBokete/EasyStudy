@@ -117,6 +117,7 @@ export const useCreateStudySession = () => {
         mutationFn: createStudySession,
         onSuccess: (newStudySession) => {
             queryClient.invalidateQueries({ queryKey: ["studySessions"] });
+            queryClient.invalidateQueries({ queryKey: ["user"] });
 
             queryClient.setQueryData(
                 ["studySessions"],
