@@ -1,4 +1,4 @@
-import { useUpdateProjects } from "@/api/projects";
+import { useUpdateProject } from "@/api/projects";
 import {
     Select,
     SelectContent,
@@ -13,7 +13,7 @@ interface ProjectStatusProps {
 }
 
 function ProjectStatus({ project }: ProjectStatusProps) {
-    const projectMutation = useUpdateProjects();
+    const projectMutation = useUpdateProject();
     function updateProject(newStatus: string) {
         projectMutation.mutate({ id: project.id, status: newStatus });
     }

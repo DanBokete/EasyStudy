@@ -1,10 +1,9 @@
-import { editProject } from "@/api/projects";
+import { useUpdateProject } from "@/api/projects";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import type { Project } from "@/types/types";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns/format";
 import { useState } from "react";
 
@@ -16,23 +15,13 @@ function ProjectEditForm({ project }: { project: Project }) {
     );
     const [name, setName] = useState(project.name);
     const [description, setDescription] = useState(project.description ?? "");
-    const queryClient = useQueryClient();
-
-    const mutate = useMutation({
-        mutationFn: (data: Partial<Project>) => {
-            return editProject(project.id, data);
-        },
-        onSuccess: () => {
-            // Invalidate and refetch
-            queryClient.invalidateQueries({ queryKey: ["projects"] });
-        },
-    });
+    const projectUpdateMutation = useUpdateProject();
 
     return (
         <form
             onSubmit={(e) => {
                 e.preventDefault();
-                mutate.mutate({
+                projectUpdateMutation.mutate({
                     id: project.id,
                     name,
                     dueDate: dueDate

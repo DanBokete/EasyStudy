@@ -44,7 +44,7 @@ async function updateProject(data: Partial<Project>) {
     return updatedStudySession;
 }
 
-export const useUpdateProjects = () => {
+export const useUpdateProject = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
@@ -54,6 +54,7 @@ export const useUpdateProjects = () => {
             //     queryKey: ["studySessions"],
             // });
             queryClient.invalidateQueries({ queryKey: ["user"] });
+            queryClient.invalidateQueries({ queryKey: ["projects", data.id] });
             queryClient.setQueryData<Project[]>(["projects"], (oldData) => {
                 return (
                     oldData?.map((session) =>

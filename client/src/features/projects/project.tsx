@@ -12,15 +12,6 @@ import { useState } from "react";
 import Task from "../tasks/task";
 import { Link } from "react-router";
 import { useDeleteProject } from "@/api/projects";
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "@/components/ui/dialog";
-import NewTaskForm from "../tasks/new-task-form";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
 import ProjectStatus from "./project-status";
@@ -33,12 +24,8 @@ interface ProjectContainerProps {
     unarchivedProjects: Project[];
 }
 
-function ProjectContainer({
-    project,
-    unarchivedProjects,
-}: ProjectContainerProps) {
+function ProjectContainer({ project }: ProjectContainerProps) {
     const [isTasksVisible, setIsTasksVisible] = useState(true);
-    const [open, setOpen] = useState(false);
 
     const projectDeleteMutation = useDeleteProject();
 
