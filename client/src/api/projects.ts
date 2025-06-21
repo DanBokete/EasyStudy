@@ -56,10 +56,9 @@ export const useUpdateProjects = () => {
             queryClient.invalidateQueries({ queryKey: ["user"] });
             queryClient.setQueryData<Project[]>(["projects"], (oldData) => {
                 return (
-                    // oldData?.map((session) =>
-                    //     session.id === data.id ? data : session
-                    // ) || []
-                    oldData?.filter((project) => project.id !== data.id)
+                    oldData?.map((session) =>
+                        session.id === data.id ? data : session
+                    ) || []
                 );
             });
         },

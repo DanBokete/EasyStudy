@@ -150,3 +150,12 @@ export function getComputedTimeIsoString(
 
     return [start.toISOString(), computedEnd.toISOString()];
 }
+
+export function hasDueDatePassed(dueDate: string): boolean {
+    const todayDate = new Date();
+    todayDate.setHours(0, 0, 0, 0);
+
+    const due = new Date(dueDate);
+    due.setHours(0, 0, 0, 0);
+    return due <= todayDate;
+}

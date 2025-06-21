@@ -12,6 +12,7 @@ import TasksListView from "@/features/tasks/tasks-list-view";
 import ProjectStatus from "@/features/projects/project-status";
 import EditProject from "@/features/projects/edit-project";
 import { Button } from "@/components/ui/button";
+import { hasDueDatePassed } from "@/helpers/helpers";
 
 function ProjectPage() {
     const projectId: string = useLoaderData();
@@ -36,7 +37,11 @@ function ProjectPage() {
             <div className="flex justify-between items-center">
                 <div>
                     <h1 className="font-extrabold text-xl">{project.name}</h1>
-                    <div className="text-sm font-bold">
+                    <div
+                        className={`text-sm font-bold ${
+                            hasDueDatePassed(project.dueDate) && "text-red-700"
+                        }`}
+                    >
                         Due Date:{" "}
                         {project.dueDate
                             ? format(project.dueDate, "MMM dd, yyyy")

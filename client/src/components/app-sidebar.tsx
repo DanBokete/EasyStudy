@@ -29,6 +29,7 @@ import NewProject from "@/features/projects/new-project";
 import { Button } from "./ui/button";
 import { useLogoutUser } from "@/api/auth/logout";
 import { format } from "date-fns";
+import { hasDueDatePassed } from "@/helpers/helpers";
 
 // Menu items.
 const items = [
@@ -104,26 +105,41 @@ export function AppSidebar() {
                         <SidebarGroupContent>
                             <SidebarMenu>
                                 {unarchivedProjects.length > 0 ? (
-                                    unarchivedProjects.map((project) => (
-                                        <SidebarMenuItem key={project.id}>
-                                            <SidebarMenuButton asChild>
-                                                <NavLink
-                                                    to={`projects/${project.id}`}
-                                                    className={
-                                                        "justify-between flex"
-                                                    }
-                                                >
-                                                    <span>{project.name}</span>
-                                                    <span>
-                                                        {format(
-                                                            project.dueDate,
-                                                            "dd/MM"
-                                                        )}
-                                                    </span>
-                                                </NavLink>
-                                            </SidebarMenuButton>
-                                        </SidebarMenuItem>
-                                    ))
+                                    unarchivedProjects
+                                        .sort(
+                                            (a, b) =>
+                                                new Date(a.dueDate).getTime() -
+                                                new Date(b.dueDate).getTime()
+                                        )
+                                        .map((project) => (
+                                            <SidebarMenuItem key={project.id}>
+                                                <SidebarMenuButton asChild>
+                                                    <NavLink
+                                                        to={`projects/${project.id}`}
+                                                        className={
+                                                            "justify-between flex"
+                                                        }
+                                                    >
+                                                        <span>
+                                                            {project.name}
+                                                        </span>
+                                                        <span
+                                                            className={`text-sm font-bold ${
+                                                                hasDueDatePassed(
+                                                                    project.dueDate
+                                                                ) &&
+                                                                "text-red-700"
+                                                            }`}
+                                                        >
+                                                            {format(
+                                                                project.dueDate,
+                                                                "dd/MM"
+                                                            )}
+                                                        </span>
+                                                    </NavLink>
+                                                </SidebarMenuButton>
+                                            </SidebarMenuItem>
+                                        ))
                                 ) : (
                                     <SidebarMenuItem>
                                         <SidebarMenuButton disabled>
