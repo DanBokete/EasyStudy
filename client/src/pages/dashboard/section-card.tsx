@@ -11,18 +11,19 @@ import {
 import type { Project, StudySession } from "@/types/types";
 
 interface SectionCardsProp {
-    projects: Project[] | [] | undefined;
+    projects: Project[];
+    unarchivedProjects: Project[];
     studySessions: StudySession[] | [] | undefined;
 }
 
-function SectionCards({ projects, studySessions }: SectionCardsProp) {
+function SectionCards({ unarchivedProjects, studySessions }: SectionCardsProp) {
     return (
         <div className="grid grid-cols-3 gap-x-2">
             <Card className="@container/card">
                 <CardHeader>
                     <CardDescription>Total Projects</CardDescription>
                     <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-                        {projects ? projects.length : "No projects found"}
+                        {unarchivedProjects.length ?? "No projects found"}
                     </CardTitle>
                 </CardHeader>
             </Card>

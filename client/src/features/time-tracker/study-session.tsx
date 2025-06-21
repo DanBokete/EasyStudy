@@ -110,7 +110,7 @@ function StudySession({
     }
 
     return (
-        <div className="grid grid-cols-11 items-center">
+        <div className="grid grid-cols-11 gap-x-2 items-center">
             {isEditingTitle ? (
                 <Input
                     className="col-span-5"
@@ -171,7 +171,7 @@ function StudySession({
                 </Select>
             </div>
 
-            <div className="mx-auto flex col-span-2 items-center text-center">
+            <div className="mx-auto flex items-center text-center">
                 {isEditingStartTime ? (
                     <Input
                         onBlur={(e) => {
@@ -195,7 +195,8 @@ function StudySession({
                         onClick={() => setIsEditingStartTime(true)}
                     />
                 )}
-                -
+            </div>
+            <div>
                 {isEditingEndTime ? (
                     <Input
                         onBlur={(e) => {

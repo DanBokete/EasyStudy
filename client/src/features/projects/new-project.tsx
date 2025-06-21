@@ -15,11 +15,11 @@ import { format } from "date-fns";
 import { createProject } from "@/api/projects";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-interface NewProjectkProps {
+interface NewProjectProps {
     children?: ReactNode;
 }
 
-function NewProject({ children }: NewProjectkProps) {
+function NewProject({ children }: NewProjectProps) {
     const [name, setName] = useState("");
     const [dueDate, setDueDate] = useState(format(new Date(), "yyyy-MM-dd"));
     const [open, setOpen] = useState(false);

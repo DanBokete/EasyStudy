@@ -8,6 +8,7 @@ import {
   Delete,
   UseGuards,
   Req,
+  InternalServerErrorException,
 } from '@nestjs/common';
 import { ProjectsService } from './projects.service';
 import { CreateProjectDto } from './dto/create-project.dto';
@@ -53,7 +54,7 @@ export class ProjectsController {
 
   @Delete(':id')
   remove(@Param('id') projectId: string, @Req() req: Request) {
-    const user = req.user as { userId: string; username: string };
-    return this.projectsService.remove(user.userId, projectId);
+    if (!req.user) throw new InternalServerErrorException('Could not get user');
+    return this.projectsService.remove(req.user.userId, projectId);
   }
 }

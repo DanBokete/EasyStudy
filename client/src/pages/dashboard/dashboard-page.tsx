@@ -38,9 +38,12 @@ function DashboardPage() {
     const projects = useGetAllProjects();
     if (studySessions.isLoading) return "...";
     if (modules.isLoading) return "...";
-    if (projects.isLoading) return "....";
+    if (!projects.data) return "....";
     if (!studySessions.data) return "No session Data";
     if (!modules.data) return "No Modules Data";
+    const unarchivedProjects = projects.data.filter(
+        (project) => project.status !== "ARCHIVED"
+    );
     console.log(initialDate, finalDate);
 
     const chartData =
@@ -53,12 +56,13 @@ function DashboardPage() {
             <div>
                 <SectionCards
                     projects={projects.data}
+                    unarchivedProjects={unarchivedProjects}
                     studySessions={studySessions.data}
                 />
             </div>
             <div className="grid grid-cols-6 gap-x-2 my-2">
                 <div className="col-span-2">
-                    <UpcomingProjects projects={projects.data} />
+                    <UpcomingProjects unarchivedProjects={unarchivedProjects} />
                 </div>
                 <div className="col-span-4">
                     <ChartBarStacked
@@ -73,17 +77,20 @@ function DashboardPage() {
                 </div>
             </div>
             <div>
-                <ProjectTracker projects={projects.data} />
+                <ProjectTracker
+                    projects={projects.data}
+                    unarchivedProjects={unarchivedProjects}
+                />
             </div>
         </div>
     );
 }
 
 interface UpcomingProjectsProp {
-    projects: Project[] | [] | undefined;
+    unarchivedProjects: Project[];
 }
 
-function UpcomingProjects({ projects }: UpcomingProjectsProp) {
+function UpcomingProjects({ unarchivedProjects }: UpcomingProjectsProp) {
     const todayDate = new Date().toISOString().split("T")[0];
     return (
         <Card className="h-full w-full overflow-y-scroll">
@@ -92,8 +99,8 @@ function UpcomingProjects({ projects }: UpcomingProjectsProp) {
             </CardHeader>
             <CardContent>
                 <ul>
-                    {projects
-                        ?.filter(
+                    {unarchivedProjects
+                        .filter(
                             (project) =>
                                 project.dueDate &&
                                 project.dueDate.toString().split("T")[0] >=
@@ -127,10 +134,11 @@ function UpcomingProjects({ projects }: UpcomingProjectsProp) {
 }
 
 interface ProjectTrackerProp {
-    projects: Project[] | [] | undefined;
+    projects: Project[];
+    unarchivedProjects: Project[];
 }
 
-function ProjectTracker({ projects }: ProjectTrackerProp) {
+function ProjectTracker({ unarchivedProjects }: ProjectTrackerProp) {
     return (
         <Card>
             <CardHeader>
@@ -150,39 +158,42 @@ function ProjectTracker({ projects }: ProjectTrackerProp) {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {projects?.map((project) => {
-                            const projectProgress = getProjectProgress(project);
-                            const numberOfOverdueTasks =
-                                getNumberOfOverdueTasks(project);
-                            return (
-                                <TableRow key={project.id}>
-                                    <TableCell className="font-medium">
-                                        {project.name}
-                                    </TableCell>
-                                    <TableCell>
-                                        {projectProgress === 100
-                                            ? "Completed"
-                                            : "In Progress"}
-                                    </TableCell>
-                                    <TableCell>
-                                        {project.tasks.length
-                                            ? projectProgress + "%"
-                                            : "0%"}
-                                    </TableCell>
-                                    <TableCell>
-                                        {numberOfOverdueTasks}
-                                    </TableCell>
-                                    <TableCell>
-                                        {project.dueDate
-                                            ? format(
-                                                  project.dueDate.toString(),
-                                                  "dd LLL yyyy"
-                                              )
-                                            : "No due date"}
-                                    </TableCell>
-                                </TableRow>
-                            );
-                        })}
+                        {unarchivedProjects
+                            .filter((project) => project.status !== "ARCHIVED")
+                            .map((project) => {
+                                const projectProgress =
+                                    getProjectProgress(project);
+                                const numberOfOverdueTasks =
+                                    getNumberOfOverdueTasks(project);
+                                return (
+                                    <TableRow key={project.id}>
+                                        <TableCell className="font-medium">
+                                            {project.name}
+                                        </TableCell>
+                                        <TableCell>
+                                            {projectProgress === 100
+                                                ? "Completed"
+                                                : "In Progress"}
+                                        </TableCell>
+                                        <TableCell>
+                                            {project.tasks.length
+                                                ? projectProgress + "%"
+                                                : "0%"}
+                                        </TableCell>
+                                        <TableCell>
+                                            {numberOfOverdueTasks}
+                                        </TableCell>
+                                        <TableCell>
+                                            {project.dueDate
+                                                ? format(
+                                                      project.dueDate.toString(),
+                                                      "dd LLL yyyy"
+                                                  )
+                                                : "No due date"}
+                                        </TableCell>
+                                    </TableRow>
+                                );
+                            })}
                     </TableBody>
                 </Table>
             </CardContent>

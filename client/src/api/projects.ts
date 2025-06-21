@@ -19,7 +19,7 @@ export async function editProject(projectId: string, data: Partial<Project>) {
 
 export async function getAllProjects() {
     const response = await api.get("v1/projects");
-    const projects: Project[] | [] = response.data;
+    const projects: Project[] = response.data;
     console.log(response.data);
 
     return projects;
@@ -53,11 +53,13 @@ export const useUpdateProjects = () => {
             // queryClient.invalidateQueries({
             //     queryKey: ["studySessions"],
             // });
+            queryClient.invalidateQueries({ queryKey: ["user"] });
             queryClient.setQueryData<Project[]>(["projects"], (oldData) => {
                 return (
-                    oldData?.map((session) =>
-                        session.id === data.id ? data : session
-                    ) || []
+                    // oldData?.map((session) =>
+                    //     session.id === data.id ? data : session
+                    // ) || []
+                    oldData?.filter((project) => project.id !== data.id)
                 );
             });
         },
@@ -101,14 +103,13 @@ export const useCreateProject = () => {
     });
 };
 
-export async function deleteProjectFunc(data: { projectId: string }) {
-    const { projectId } = data;
-    const response = await api.delete(`/study-sessions/${projectId}`);
+export async function deleteProjectFunc(projectId: string) {
+    const response = await api.delete(`/v1/projects/${projectId}`);
     const deletedProject: Project = response.data;
     return deletedProject;
 }
 
-export const useDeleteStudySession = () => {
+export const useDeleteProject = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
@@ -116,8 +117,8 @@ export const useDeleteStudySession = () => {
         onSuccess: (deletedProject) => {
             // queryClient.invalidateQueries({ queryKey: ["studySessions"] });
 
-            queryClient.setQueryData(["studySessions"], (old: Project[]) =>
-                old.filter((session) => session.id !== deletedProject.id)
+            queryClient.setQueryData(["projects"], (old: Project[]) =>
+                old.filter((project) => project.id !== deletedProject.id)
             );
         },
     });

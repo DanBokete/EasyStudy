@@ -11,7 +11,7 @@ import {
 import type { Project, TaskStatus } from "@/types/types";
 
 import { Plus } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import NewTaskForm from "./new-task-form";
 
 interface BaseProps {
@@ -25,6 +25,11 @@ type NewTaskProps =
 
 function NewTask({ projects, children, project, status }: NewTaskProps) {
     const [open, setOpen] = useState(false);
+
+    useEffect(() => {
+        setOpen(false);
+    }, [project, projects]);
+
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>

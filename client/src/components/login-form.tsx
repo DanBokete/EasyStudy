@@ -4,17 +4,18 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
-import { loginUser } from "@/api/auth/login";
+import { loginUser, useLoginUser } from "@/api/auth/login";
+import { Link } from "react-router";
 
 export function LoginForm({
     className,
     ...props
 }: React.ComponentPropsWithoutRef<"div">) {
+    const loginUserMutation = useLoginUser();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     async function onSubmit() {
-        const user = await loginUser(email, password);
-        console.log(user);
+        loginUserMutation.mutate({ username: email, password });
     }
     return (
         <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -106,12 +107,12 @@ export function LoginForm({
                             </div>
                             <div className="text-center text-sm">
                                 Don&apos;t have an account?{" "}
-                                <a
-                                    href="#"
+                                <Link
+                                    to="/signup"
                                     className="underline underline-offset-4"
                                 >
                                     Sign up
-                                </a>
+                                </Link>
                             </div>
                         </div>
                     </form>

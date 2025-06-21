@@ -9,6 +9,8 @@ import { useUpdateManyTasks } from "@/api/task";
 import { useGetProject } from "@/api/projects";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import TasksListView from "@/features/tasks/tasks-list-view";
+import ProjectStatus from "@/features/projects/project-status";
+import EditProject from "@/features/projects/edit-project";
 
 function ProjectPage() {
     const projectId: string = useLoaderData();
@@ -30,7 +32,7 @@ function ProjectPage() {
 
     return (
         <div>
-            <div className="flex">
+            <div className="flex justify-between items-center">
                 <div>
                     <h1 className="font-extrabold text-xl">{project.name}</h1>
                     <div className="text-sm font-bold">
@@ -42,7 +44,10 @@ function ProjectPage() {
 
                     <p className="text-sm">{project.description}</p>
                 </div>
-                <div></div>
+                <div className="flex items-center gap-x-2">
+                    <ProjectStatus project={project} />
+                    <EditProject project={project} />
+                </div>
             </div>
             <Separator className="mb-2" />
             <Tabs defaultValue="board">

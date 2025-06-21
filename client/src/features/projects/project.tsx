@@ -11,8 +11,7 @@ import {
 import { useState } from "react";
 import Task from "../tasks/task";
 import { Link } from "react-router";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { deleteProject } from "@/api/projects";
+import { useDeleteProject } from "@/api/projects";
 import {
     Dialog,
     DialogContent,
@@ -21,37 +20,34 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
-import ProjectEditForm from "./project-edit-form";
 import NewTaskForm from "../tasks/new-task-form";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
+import ProjectStatus from "./project-status";
+import EditProject from "./edit-project";
+import NewTask from "../tasks/new-task";
 
-function ProjectContainer({
-    projects,
-    project,
-}: {
+interface ProjectContainerProps {
     projects: Project[];
     project: Project;
-}) {
+    unarchivedProjects: Project[];
+}
+
+function ProjectContainer({
+    project,
+    unarchivedProjects,
+}: ProjectContainerProps) {
     const [isTasksVisible, setIsTasksVisible] = useState(true);
     const [open, setOpen] = useState(false);
 
-    const queryClient = useQueryClient();
-
-    const mutate = useMutation({
-        mutationFn: () => {
-            return deleteProject(project.id);
-        },
-        onSuccess: () => {
-            // Invalidate and refetch
-            queryClient.invalidateQueries({ queryKey: ["projects"] });
-        },
-    });
+    const projectDeleteMutation = useDeleteProject();
 
     return (
         <li
             key={project.id}
-            className={`mx-10 ${mutate.isPending && "opacity-15"}`}
+            className={`mx-10 ${
+                projectDeleteMutation.isPending && "opacity-15"
+            }`}
         >
             <div className="flex items-center justify-between ">
                 <div className="flex items-center">
@@ -63,37 +59,15 @@ function ProjectContainer({
                     >
                         {isTasksVisible ? <ChevronDown /> : <ChevronRight />}
                     </Button>
-
-                    <Dialog>
-                        <DialogTrigger>{project.name}</DialogTrigger>
-                        <DialogContent>
-                            <DialogHeader>
-                                <DialogTitle>About Project</DialogTitle>
-                                <DialogDescription>
-                                    View project details and for more details{" "}
-                                    <Button
-                                        className="p-0"
-                                        asChild
-                                        variant={"link"}
-                                    >
-                                        <Link
-                                            className="font-medium"
-                                            to={project.id}
-                                        >
-                                            Click here
-                                        </Link>
-                                    </Button>
-                                </DialogDescription>
-                            </DialogHeader>
-                            <ProjectEditForm project={project} />
-                        </DialogContent>
-                    </Dialog>
+                    <div>{project.name}</div>
 
                     <span className="ml-3 text-xs font-bold text-muted-foreground">
                         {project.tasks.length}
                     </span>
                 </div>
-                <div className="space-x-1">
+                <div className="gap-x-1 flex">
+                    <ProjectStatus project={project} />
+
                     <Badge
                         variant={
                             project.dueDate &&
@@ -106,32 +80,22 @@ function ProjectContainer({
                             ? format(project.dueDate, "dd.MM.yyyy")
                             : "No due date"}
                     </Badge>
-                    <Dialog open={open} onOpenChange={setOpen}>
-                        <DialogTrigger asChild>
-                            <Button variant={"ghost"}>
-                                <Plus />
-                            </Button>
-                        </DialogTrigger>
-                        <DialogContent>
-                            <DialogHeader>
-                                <DialogTitle>Add Task</DialogTitle>
-                                <DialogDescription>
-                                    Add a task to your project
-                                </DialogDescription>
-                            </DialogHeader>
-                            <NewTaskForm
-                                projects={projects}
-                                project={project}
-                                setOpen={setOpen}
-                            />
-                        </DialogContent>
-                    </Dialog>
+                    <NewTask project={project}>
+                        <Button variant={"ghost"}>
+                            {" "}
+                            <Plus />
+                        </Button>
+                    </NewTask>
+                    <EditProject project={project} />
                     <Button variant={"ghost"} asChild>
                         <Link className="font-medium" to={project.id}>
                             <ExternalLink />
                         </Link>
                     </Button>
-                    <Button variant={"ghost"} onClick={() => mutate.mutate()}>
+                    <Button
+                        variant={"ghost"}
+                        onClick={() => projectDeleteMutation.mutate(project.id)}
+                    >
                         <Trash2 />
                     </Button>
                 </div>

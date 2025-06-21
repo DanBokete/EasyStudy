@@ -1,6 +1,7 @@
 import {
   ForbiddenException,
   Injectable,
+  InternalServerErrorException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { SignupAuthDto } from './dto/signup-auth.dto';
@@ -13,6 +14,7 @@ import { JwtService } from '@nestjs/jwt';
 import { Response, Request } from 'express';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { TokenService } from './utils';
+import { jwtConstants } from './constants';
 
 @Injectable()
 export class AuthService {
@@ -22,7 +24,7 @@ export class AuthService {
     private tokenService: TokenService,
   ) {}
 
-  async signup(signupAuthDto: SignupAuthDto) {
+  async signup(signupAuthDto: SignupAuthDto, response: Response) {
     const hashPassword = await argon2.hash(signupAuthDto.password);
 
     try {
@@ -36,6 +38,10 @@ export class AuthService {
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { password, ...sanitizedUser } = user;
+      await this.login(
+        { username: signupAuthDto.username, password: signupAuthDto.password },
+        response,
+      );
 
       return sanitizedUser;
     } catch (error) {
@@ -45,6 +51,7 @@ export class AuthService {
         }
       }
     }
+    throw new InternalServerErrorException('Signup failed');
   }
 
   async login(loginAuthDto: LoginAuthDto, response: Response) {
@@ -151,5 +158,32 @@ export class AuthService {
 
   async getProfile(userId: string) {
     return await this.prisma.user.findUnique({ where: { id: userId } });
+  }
+
+  async logout(userId: string, response: Response) {
+    await this.prisma.$transaction([
+      this.prisma.refreshToken.updateMany({
+        where: { userId },
+        data: { valid: false },
+      }),
+      this.prisma.accessToken.updateMany({
+        where: { userId },
+        data: { valid: false },
+      }),
+    ]);
+    response.clearCookie('access_token', {
+      httpOnly: true,
+      path: '/',
+      maxAge: jwtConstants.accessTokenMaxAge,
+      sameSite: 'strict',
+      secure: process.env.NODE_ENV === 'production',
+    });
+    response.clearCookie('refresh_token', {
+      httpOnly: true,
+      maxAge: jwtConstants.refreshTokenMaxAge,
+      path: '/auth/refresh',
+      sameSite: 'strict',
+      secure: process.env.NODE_ENV === 'production',
+    });
   }
 }

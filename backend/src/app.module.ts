@@ -9,9 +9,18 @@ import { AuthModule } from './auth/auth.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { GradesModule } from './grades/grades.module';
 import { XpModule } from './xp/xp.module';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
+    ThrottlerModule.forRoot({
+      throttlers: [
+        {
+          ttl: 60000,
+          limit: 10,
+        },
+      ],
+    }),
     TasksModule,
     AuthModule,
     ProjectsModule,

@@ -25,7 +25,10 @@ export class XpService {
     } else if (event.type === 'task') {
       xp = await this.getTaskXP(event.count || 0, user.id);
     } else if (event.type === 'project') {
-      xp = this.getProjectXP(event.size as 'small' | 'medium' | 'large');
+      xp = await this.getProjectXP(
+        event.size as 'small' | 'medium' | 'large',
+        user.id,
+      );
     } else if (event.type === 'login') {
       xp = this.getDailyLoginXP();
     }
@@ -54,15 +57,22 @@ export class XpService {
     return tiers.length ? tiers[0].xp : 0;
   }
 
-  getProjectXP(size: 'small' | 'medium' | 'large') {
-    return XP_RULES.project.xp[size] ?? 0;
+  async getProjectXP(size: 'small' | 'medium' | 'large', userId: string) {
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0);
+    const tasksLoggedToday = await this.prisma.xpLog.count({
+      where: { userId, createdAt: { gte: startOfDay }, activity: 'project' },
+    });
+
+    if (tasksLoggedToday >= XP_RULES.project.maxPerDay) return 0;
+    return XP_RULES.project.xp[size];
   }
 
   async getTaskXP(taskCount: number, userId: string): Promise<number> {
     const startOfDay = new Date();
     startOfDay.setHours(0, 0, 0, 0);
     const tasksLoggedToday = await this.prisma.xpLog.count({
-      where: { userId, createdAt: { gte: startOfDay } },
+      where: { userId, createdAt: { gte: startOfDay }, activity: 'task' },
     });
     const max = XP_RULES.task.maxPerDay;
     if (tasksLoggedToday >= max) return 0;

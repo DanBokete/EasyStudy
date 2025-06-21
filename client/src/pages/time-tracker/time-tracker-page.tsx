@@ -107,7 +107,7 @@ function TimeTrackerPage() {
                             <div>{formattedDisplayedDuration}</div>
                         </div>
                         <Separator className="mb-2" />
-                        <ul>
+                        <ul className="space-y-2.5">
                             {orderedGroupedStudySession.map((studySession) => {
                                 return (
                                     <li key={studySession.id}>

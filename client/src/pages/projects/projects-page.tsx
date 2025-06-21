@@ -5,11 +5,15 @@ import NewTask from "@/features/tasks/new-task";
 import NewProject from "../../features/projects/new-project";
 
 function ProjectsPage() {
-    const { isPending, error, data } = useGetAllProjects();
+    const { isPending, error, data: projects } = useGetAllProjects();
 
     if (isPending) return "Loading...";
 
     if (error) return "An error has occurred: " + error.message;
+
+    const unarchivedProjects = projects.filter(
+        (project) => project.status !== "ARCHIVED"
+    );
 
     return (
         <div>
@@ -20,17 +24,17 @@ function ProjectsPage() {
             </div>
             <Separator className="my-2" />
 
-            <NewTask projects={data} project={undefined} />
+            <NewTask projects={unarchivedProjects} />
 
             <ul className="space-y-2">
-                {data &&
-                    data.map((project) => (
-                        <Project
-                            key={project.id}
-                            project={project}
-                            projects={data}
-                        />
-                    ))}
+                {unarchivedProjects.map((project) => (
+                    <Project
+                        key={project.id}
+                        project={project}
+                        projects={projects}
+                        unarchivedProjects={unarchivedProjects}
+                    />
+                ))}
             </ul>
         </div>
     );

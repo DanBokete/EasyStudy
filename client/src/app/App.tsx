@@ -1,7 +1,8 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "@/components/theme-provider";
 import React, { Suspense } from "react";
-import { createBrowserRouter, RouterProvider } from "react-router";
+import { createBrowserRouter, redirect, RouterProvider } from "react-router";
+import SignupPage from "@/pages/auth/signup-page";
 // import BoardPage from "./pages/board-page";
 const Layout = React.lazy(() => import("../layout"));
 const TasksPage = React.lazy(() => import("../pages/tasks-page"));
@@ -34,6 +35,7 @@ const router = createBrowserRouter([
                 Component: DashboardPage,
             },
             { path: "login", Component: LoginPage },
+            { path: "signup", Component: SignupPage },
             { path: "tasks", Component: TasksPage },
             {
                 path: "projects",
@@ -60,6 +62,12 @@ const router = createBrowserRouter([
                     return params.moduleId;
                 },
                 Component: GradePage,
+            },
+            {
+                path: "logout",
+                loader: () => {
+                    return redirect("/login");
+                },
             },
         ],
     },

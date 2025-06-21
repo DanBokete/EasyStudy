@@ -7,10 +7,6 @@ const api = axios.create({
 
 api.interceptors.response.use(
     (response) => {
-        if (window.location.pathname === "/login" && response.status === 200) {
-            sessionStorage.setItem("isLoggedIn", "true");
-            window.location.pathname = "/";
-        }
         return response;
     },
     async (error) => {

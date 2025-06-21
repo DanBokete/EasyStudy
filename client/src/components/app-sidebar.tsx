@@ -3,8 +3,9 @@ import {
     FolderOpen,
     GraduationCap,
     LayoutDashboard,
+    LogOut,
     Plus,
-    Settings,
+    X,
 } from "lucide-react";
 
 import {
@@ -25,6 +26,7 @@ import { SITE_NAME } from "@/constants";
 import { useGetAllProjects } from "@/api/projects";
 import NewProject from "@/features/projects/new-project";
 import { Button } from "./ui/button";
+import { useLogoutUser } from "@/api/auth/logout";
 
 // Menu items.
 const items = [
@@ -44,17 +46,24 @@ const items = [
         icon: FolderOpen,
     },
     { title: "Grades", url: "/grades", icon: GraduationCap },
-    {
-        title: "Settings",
-        url: "#",
-        icon: Settings,
-    },
+    // {
+    //     title: "Settings",
+    //     url: "#",
+    //     icon: Settings,
+    // },
 ];
 
 export function AppSidebar() {
-    const projects = useGetAllProjects();
+    const useLogoutMutation = useLogoutUser();
+    const { isLoading, error, data: projects } = useGetAllProjects();
 
-    if (projects.isLoading) return "loading...";
+    if (isLoading) return "loading...";
+    if (!projects) return "loading...";
+    if (error) return "Error loading data";
+
+    const unarchivedProjects = projects.filter(
+        (project) => project.status !== "ARCHIVED"
+    );
     return (
         <Sidebar collapsible="icon" variant="floating">
             <SidebarContent>
@@ -76,24 +85,22 @@ export function AppSidebar() {
                     </SidebarGroupContent>
                 </SidebarGroup>
                 <SidebarGroup>
-                    <SidebarGroupLabel>Projects</SidebarGroupLabel>
+                    <SidebarGroupLabel asChild />
                     <SidebarGroupAction title="Add Project" asChild>
-                        <div>
-                            <NewProject>
-                                <Button
-                                    variant={"ghost"}
-                                    className="flex p-1 rounded justify-start gap-x-5 w-full"
-                                >
-                                    <Plus />
-                                </Button>
-                            </NewProject>
-                            <span className="sr-only">Add Project</span>
-                        </div>
+                        <NewProject>
+                            <Button variant={"ghost"}>
+                                Add Project
+                                <Plus className="ml-auto" />
+                            </Button>
+                        </NewProject>
                     </SidebarGroupAction>
                     <SidebarGroupContent>
+                        <span className="sr-only">Add Project</span>
+                    </SidebarGroupContent>
+                    <SidebarGroupContent>
                         <SidebarMenu>
-                            {projects.data ? (
-                                projects.data.map((project) => (
+                            {unarchivedProjects.length > 0 ? (
+                                unarchivedProjects.map((project) => (
                                     <SidebarMenuItem key={project.id}>
                                         <SidebarMenuButton asChild>
                                             <NavLink
@@ -106,7 +113,10 @@ export function AppSidebar() {
                                 ))
                             ) : (
                                 <SidebarMenuItem>
-                                    You have no projects
+                                    <SidebarMenuButton disabled>
+                                        <X />
+                                        You have no projects
+                                    </SidebarMenuButton>
                                 </SidebarMenuItem>
                             )}
                         </SidebarMenu>
@@ -115,6 +125,14 @@ export function AppSidebar() {
             </SidebarContent>
             <SidebarFooter>
                 <SidebarMenu>
+                    <SidebarMenuItem>
+                        <SidebarMenuButton
+                            onClick={() => useLogoutMutation.mutate()}
+                        >
+                            <LogOut />
+                            Logout
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
                     <SidebarMenuItem>
                         <SidebarTrigger />
                     </SidebarMenuItem>

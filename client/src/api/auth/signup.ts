@@ -2,22 +2,23 @@ import api from "@/api";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router";
 
-type LoginUserType = {
+type CreateUserType = {
     username: string;
+    name: string;
     password: string;
+    confirmPassword: string;
 };
 
-export async function loginUser(data: LoginUserType) {
-    const response = await api.post("/auth/login", data);
-    return response.data;
+async function createUser(data: CreateUserType) {
+    return api.post("/auth/signup", data).then((response) => response.data);
 }
 
-export const useLoginUser = () => {
+export const useCreateUser = () => {
     // const queryClient = useQueryClient();
     const navigate = useNavigate();
 
     return useMutation({
-        mutationFn: loginUser,
+        mutationFn: createUser,
         onSuccess: () => {
             navigate("/");
         },

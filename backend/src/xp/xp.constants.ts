@@ -8,6 +8,7 @@ export const XP_RULES = {
   },
 
   project: {
+    // for flexibility if I use this in the future
     xp: {
       small: 200,
       medium: 400,
