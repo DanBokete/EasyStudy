@@ -170,7 +170,7 @@ function DataKanban({ data, onChange, project }: DataKanbanProps) {
                     return (
                         <div
                             key={board}
-                            className="flex-1 mx-2 bg-muted p-1,5 rounded-md min-w-3xs"
+                            className="flex-1 mx-2 bg-muted p-1.5 rounded-md min-w-3xs"
                         >
                             <KanbanColumnHeader
                                 board={board}
