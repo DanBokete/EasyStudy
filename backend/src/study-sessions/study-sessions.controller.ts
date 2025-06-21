@@ -14,6 +14,7 @@ import { CreateStudySessionDto } from './dto/create-study-session.dto';
 import { UpdateStudySessionDto } from './dto/update-study-session.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { Request } from 'express';
+import { getUserCredentials } from 'src/auth/utils';
 
 @Controller('study-sessions')
 export class StudySessionsController {
@@ -25,21 +26,21 @@ export class StudySessionsController {
     @Body() createStudySessionDto: CreateStudySessionDto,
     @Req() req: Request,
   ) {
-    const user = req.user as { userId: string; username: string };
+    const user = getUserCredentials(req);
     return this.studySessionsService.create(createStudySessionDto, user.userId);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get()
   findAll(@Req() req: Request) {
-    const user = req.user as { userId: string; username: string };
+    const user = getUserCredentials(req);
     return this.studySessionsService.findAll(user.userId);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get(':id')
   findOne(@Param('id') studySessionsId: string, @Req() req: Request) {
-    const user = req.user as { userId: string; username: string };
+    const user = getUserCredentials(req);
     return this.studySessionsService.findOne(user.userId, studySessionsId);
   }
 
@@ -50,7 +51,7 @@ export class StudySessionsController {
     @Body() updateStudySessionDto: UpdateStudySessionDto,
     @Req() req: Request,
   ) {
-    const user = req.user as { userId: string; username: string };
+    const user = getUserCredentials(req);
     return this.studySessionsService.update(
       user.userId,
       updateStudySessionDto,
@@ -61,7 +62,7 @@ export class StudySessionsController {
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
   remove(@Param('id') studySessionId: string, @Req() req: Request) {
-    const user = req.user as { userId: string; username: string };
+    const user = getUserCredentials(req);
     return this.studySessionsService.remove(user.userId, studySessionId);
   }
 }

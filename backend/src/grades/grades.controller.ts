@@ -8,7 +8,6 @@ import {
   Delete,
   UseGuards,
   Req,
-  BadRequestException,
   Query,
   UseInterceptors,
   ClassSerializerInterceptor,
@@ -20,6 +19,7 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { Request } from 'express';
 import { Grade } from './entities/grade.entity';
 import { plainToInstance } from 'class-transformer';
+import { getUserCredentials } from 'src/auth/utils';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @UseGuards(JwtAuthGuard)
@@ -29,8 +29,7 @@ export class GradesController {
 
   @Post()
   async create(@Body() createGradeDto: CreateGradeDto, @Req() req: Request) {
-    if (!req.user) throw new BadRequestException();
-    const user = req.user;
+    const user = getUserCredentials(req);
     const grade = await this.gradesService.create(createGradeDto, user.userId);
 
     return new Grade(grade);
@@ -38,8 +37,7 @@ export class GradesController {
 
   @Get()
   async findAll(@Req() req: Request, @Query('moduleId') moduleId: string) {
-    if (!req.user) throw new BadRequestException();
-    const user = req.user;
+    const user = getUserCredentials(req);
 
     if (moduleId) {
       return plainToInstance(
@@ -56,8 +54,7 @@ export class GradesController {
 
   @Get(':id')
   async findOne(@Param('id') id: string, @Req() req: Request) {
-    if (!req.user) throw new BadRequestException();
-    const user = req.user;
+    const user = getUserCredentials(req);
     const grade = await this.gradesService.findOne(id, user.userId);
 
     return new Grade(grade);
@@ -69,8 +66,7 @@ export class GradesController {
     @Body() updateGradeDto: UpdateGradeDto,
     @Req() req: Request,
   ) {
-    if (!req.user) throw new BadRequestException();
-    const user = req.user;
+    const user = getUserCredentials(req);
     const grade = await this.gradesService.update(
       id,
       updateGradeDto,
@@ -81,8 +77,7 @@ export class GradesController {
 
   @Delete(':id')
   async remove(@Param('id') id: string, @Req() req: Request) {
-    if (!req.user) throw new BadRequestException();
-    const user = req.user;
+    const user = getUserCredentials(req);
     const grade = await this.gradesService.remove(id, user.userId);
     return new Grade(grade);
   }

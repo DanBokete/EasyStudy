@@ -1,10 +1,10 @@
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
-import { jwtConstants } from './constants';
+import { jwtConstants } from './auth.constants';
 import { PrismaService } from 'src/prisma.service';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import * as argon2 from 'argon2';
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 
 @Injectable()
 export class TokenService {
@@ -64,4 +64,10 @@ export class TokenService {
       secure: process.env.NODE_ENV === 'production',
     });
   }
+}
+
+export function getUserCredentials(req: Request) {
+  if (!req.user) throw new BadRequestException();
+  const user = req.user;
+  return user;
 }

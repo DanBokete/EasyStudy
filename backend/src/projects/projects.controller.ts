@@ -8,13 +8,13 @@ import {
   Delete,
   UseGuards,
   Req,
-  InternalServerErrorException,
 } from '@nestjs/common';
 import { ProjectsService } from './projects.service';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { Request } from 'express';
+import { getUserCredentials } from 'src/auth/utils';
 
 @UseGuards(JwtAuthGuard)
 @Controller('v1/projects')
@@ -23,13 +23,13 @@ export class ProjectsController {
 
   @Post()
   create(@Body() createProjectDto: CreateProjectDto, @Req() req: Request) {
-    const user = req.user as { userId: string; username: string };
+    const user = getUserCredentials(req);
     return this.projectsService.create(createProjectDto, user.userId);
   }
 
   @Get()
   findAll(@Req() req: Request) {
-    const user = req.user as { userId: string; username: string };
+    const user = getUserCredentials(req);
     return this.projectsService.findAll(user.userId);
   }
 
@@ -44,7 +44,7 @@ export class ProjectsController {
     @Body() updateProjectDto: UpdateProjectDto,
     @Req() req: Request,
   ) {
-    const user = req.user as { userId: string; username: string };
+    const user = getUserCredentials(req);
     return this.projectsService.update(
       user.userId,
       updateProjectDto,
@@ -54,7 +54,7 @@ export class ProjectsController {
 
   @Delete(':id')
   remove(@Param('id') projectId: string, @Req() req: Request) {
-    if (!req.user) throw new InternalServerErrorException('Could not get user');
-    return this.projectsService.remove(req.user.userId, projectId);
+    const user = getUserCredentials(req);
+    return this.projectsService.remove(user.userId, projectId);
   }
 }

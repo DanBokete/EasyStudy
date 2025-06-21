@@ -8,8 +8,6 @@ import {
   HttpCode,
   HttpStatus,
   Res,
-  InternalServerErrorException,
-  BadRequestException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignupAuthDto } from './dto/signup-auth.dto';
@@ -18,6 +16,7 @@ import { JwtAuthGuard } from './jwt-auth.guard';
 import { Request, Response } from 'express';
 import { JwtRefreshAuthGuard } from './jwt-refresh-auth.guard';
 import { ThrottlerGuard } from '@nestjs/throttler';
+import { getUserCredentials } from './utils';
 
 @Controller('auth')
 export class AuthController {
@@ -46,8 +45,7 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post('logout')
   logout(@Req() req: Request, @Res({ passthrough: true }) response: Response) {
-    if (!req.user) throw new BadRequestException();
-    const user = req.user;
+    const user = getUserCredentials(req);
     return this.authService.logout(user.userId, response);
   }
 
@@ -55,10 +53,8 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Get('profile')
   getProfile(@Req() req: Request) {
-    if (!req.user) {
-      throw new InternalServerErrorException('could not get userId');
-    }
-    return this.authService.getProfile(req.user?.userId);
+    const user = getUserCredentials(req);
+    return this.authService.getProfile(user.userId);
   }
 
   @UseGuards(ThrottlerGuard)

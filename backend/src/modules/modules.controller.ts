@@ -9,7 +9,6 @@ import {
   Session,
   UseGuards,
   Req,
-  BadRequestException,
   UseInterceptors,
   ClassSerializerInterceptor,
 } from '@nestjs/common';
@@ -20,6 +19,7 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { Request } from 'express';
 import { Module } from './entities/module.entity';
 import { plainToInstance } from 'class-transformer';
+import { getUserCredentials } from 'src/auth/utils';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @UseGuards(JwtAuthGuard)
@@ -29,8 +29,7 @@ export class ModulesController {
 
   @Post()
   async create(@Body() createModuleDto: CreateModuleDto, @Req() req: Request) {
-    if (!req.user) throw new BadRequestException();
-    const user = req.user;
+    const user = getUserCredentials(req);
     const module = await this.modulesService.create(
       createModuleDto,
       user.userId,
@@ -40,8 +39,7 @@ export class ModulesController {
 
   @Get()
   async findAll(@Req() req: Request) {
-    if (!req.user) throw new BadRequestException();
-    const user = req.user;
+    const user = getUserCredentials(req);
     return plainToInstance(
       Module,
       await this.modulesService.findAll(user.userId),
@@ -50,8 +48,7 @@ export class ModulesController {
 
   @Get(':id')
   async findOne(@Req() req: Request, @Param('id') id: string) {
-    if (!req.user) throw new BadRequestException();
-    const user = req.user;
+    const user = getUserCredentials(req);
     const module = await this.modulesService.findOne(user.userId, id);
     return new Module(module);
   }

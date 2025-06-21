@@ -4,7 +4,7 @@ import { AuthController } from './auth.controller';
 import { PrismaService } from 'src/prisma.service';
 import { APP_PIPE } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
-import { jwtConstants } from './constants';
+import { jwtConstants } from './auth.constants';
 import { JwtRefreshStrategy, JwtStrategy } from './jwt.strategy';
 import { TokenService } from './utils';
 
