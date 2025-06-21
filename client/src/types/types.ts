@@ -33,8 +33,8 @@ export type StudySession = {
     description: string | null;
     userId: string;
     moduleId: string;
-    startTime: Date | string;
-    endTime: Date | string;
+    startTime: string;
+    endTime: string;
     displayedStartTime: string;
     displayedEndTime: string;
     duration: number;

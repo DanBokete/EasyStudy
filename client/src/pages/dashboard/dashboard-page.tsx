@@ -29,7 +29,13 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { getUnarchivedProjects } from "@/features/projects/utils";
+import {
+    getArchivedProjects,
+    getOverdueProjects,
+    getUnarchivedProjects,
+    getUpcomingProjects,
+} from "@/features/projects/utils";
+import { Separator } from "@/components/ui/separator";
 
 function DashboardPage() {
     const [initialDate, setInitialDate] = useState(getStartOfWeek());
@@ -37,17 +43,18 @@ function DashboardPage() {
     const studySessions = useGetAllStudySessions();
     const modules = useGetAllModules();
     const projects = useGetAllProjects();
-    if (studySessions.isLoading) return "...";
-    if (modules.isLoading) return "...";
-    if (!projects.data) return "....";
-    if (!studySessions.data) return "No session Data";
-    if (!modules.data) return "No Modules Data";
+    if (studySessions.isLoading || !studySessions.data)
+        return "Loading sessions...";
+    if (modules.isLoading || !projects.data) return "Loading modules...";
     const unarchivedProjects = getUnarchivedProjects(projects.data);
+
     console.log(initialDate, finalDate);
 
-    const chartData =
-        studySessions.data &&
-        getBarChartData(studySessions.data, initialDate, finalDate);
+    const chartData = getBarChartData(
+        studySessions.data,
+        initialDate,
+        finalDate
+    );
     const chartConfig = modules.data && getBarChartConfig(modules.data);
 
     return (
@@ -61,7 +68,7 @@ function DashboardPage() {
             </div>
             <div className="grid grid-cols-6 gap-x-2 my-2">
                 <div className="col-span-2">
-                    <UpcomingProjects unarchivedProjects={unarchivedProjects} />
+                    <ProjectsSummary unarchivedProjects={unarchivedProjects} />
                 </div>
                 <div className="col-span-4">
                     <ChartBarStacked
@@ -87,46 +94,55 @@ function DashboardPage() {
 
 interface UpcomingProjectsProp {
     unarchivedProjects: Project[];
+    archivedProjects: Project[];
 }
 
-function UpcomingProjects({ unarchivedProjects }: UpcomingProjectsProp) {
-    const todayDate = new Date().toISOString().split("T")[0];
+function ProjectsSummary({ unarchivedProjects }: UpcomingProjectsProp) {
+    const upcomingProjects = getUpcomingProjects(unarchivedProjects);
+    const overdueProjects = getOverdueProjects(unarchivedProjects);
     return (
         <Card className="h-full w-full overflow-y-scroll">
             <CardHeader>
-                <CardTitle className="text-2xl">Upcoming Projects</CardTitle>
+                <CardTitle className="text-2xl">Projects Summary</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="space-y-2">
+                <div className="text-lg font-semibold">Upcoming Projects</div>
+                <Separator />
                 <ul>
-                    {unarchivedProjects
-                        .filter(
-                            (project) =>
-                                project.dueDate &&
-                                project.dueDate.toString().split("T")[0] >=
-                                    todayDate
-                        )
-                        .sort((a, b) => {
-                            if (!a.dueDate || !b.dueDate) return 0;
-                            return (
-                                new Date(a.dueDate).getTime() -
-                                new Date(b.dueDate).getTime()
-                            );
-                        })
-                        // .slice(0, 5)
-                        .map((project) => (
+                    {upcomingProjects.map((project) => (
+                        <li
+                            key={project.id}
+                            className="grid grid-cols-3 gap-x-2"
+                        >
+                            <div className="col-span-2">{project.name}</div>
+                            <div className="font-bold">
+                                {formatDistanceToNow(
+                                    project.dueDate ?? ""
+                                ).replace("about", "")}
+                            </div>
+                        </li>
+                    ))}
+                </ul>
+
+                <div>
+                    <div className="text-lg text-red-700 font-semibold">
+                        Overdue Projects
+                    </div>
+                    <Separator />
+                    <ul>
+                        {overdueProjects.map((project) => (
                             <li
                                 key={project.id}
                                 className="grid grid-cols-3 gap-x-2"
                             >
                                 <div className="col-span-2">{project.name}</div>
-                                <div className="font-bold">
-                                    {formatDistanceToNow(
-                                        project.dueDate ?? ""
-                                    ).replace("about", "")}
+                                <div className="font-bold text-red-700">
+                                    {format(project.dueDate, "dd.MM")}
                                 </div>
                             </li>
                         ))}
-                </ul>
+                    </ul>
+                </div>
             </CardContent>
         </Card>
     );

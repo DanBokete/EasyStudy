@@ -23,6 +23,16 @@ import { format } from "date-fns";
 
 export const description = "A stacked bar chart with a legend";
 
+const tickFormatter = (value: number) => {
+    const hours = Math.floor(value / 3600);
+    const minutes = Math.floor((value % 3600) / 60);
+
+    const hh = String(hours).padStart(2, "0");
+    const mm = String(minutes).padStart(2, "0");
+
+    return `${hh}:${mm}`;
+};
+
 export default function ChartBarStacked({
     chartData,
     chartConfig,
@@ -47,16 +57,19 @@ export default function ChartBarStacked({
                     <CardTitle>Study</CardTitle>
                     <CardDescription>This Week</CardDescription>
                 </div>
-                <div className="flex items-center gap-x-1">
+                <div className="flex items-center gap-x-2">
                     <Input
                         type="date"
                         value={initialDate}
+                        max={finalDate}
                         onChange={(e) => setInitialDate(e.target.value)}
                     />
-                    -
+
                     <Input
                         type="date"
                         value={finalDate}
+                        min={initialDate}
+                        max={new Date().toISOString().split("T")[0]}
                         onChange={(e) => setFinalDate(e.target.value)}
                     />
                 </div>
@@ -72,11 +85,7 @@ export default function ChartBarStacked({
                             axisLine={false}
                             // tickFormatter={(value) => value.slice(0, 3)}
                         />
-                        <YAxis
-                            tickFormatter={(value: number) =>
-                                format(new Date(value * 1000), "HH:mm")
-                            }
-                        />
+                        <YAxis tickFormatter={tickFormatter} />
                         <ChartTooltip
                             content={<ChartTooltipContent hideLabel />}
                             // labelFormatter={(value) => {
@@ -84,8 +93,7 @@ export default function ChartBarStacked({
                             // }}
                             formatter={(value: number, module) => (
                                 <div>
-                                    {module}:{" "}
-                                    {format(new Date(value * 1000), "HH:mm")}
+                                    {module}: {tickFormatter(value)}
                                 </div>
                             )}
                         />

@@ -39,8 +39,8 @@ export function getDisplayedDuration(timeInSeconds: number): string {
 }
 
 export function getDisplayedDurationFromDate(
-    startTime: string | Date,
-    endTime: string | Date
+    startTime: string,
+    endTime: string
 ): string {
     const timeDifferenceInSeconds = getTimeDifferenceInSeconds(
         startTime,
@@ -50,12 +50,22 @@ export function getDisplayedDurationFromDate(
 }
 
 export function getTimeDifferenceInSeconds(
-    startTime: string | Date,
-    endTime: string | Date
+    startTime: string,
+    endTime: string
 ): number {
     const start = new Date(startTime);
     const end = new Date(endTime);
 
+    return Math.floor((end.getTime() - start.getTime()) / 1000);
+}
+
+export function getTimeDiffAssumeNextDay(
+    startTime: string,
+    endTime: string
+): number {
+    const start = new Date(startTime);
+    const end = new Date(endTime);
+    // Assumption made for session total time
     if (end < start) {
         end.setDate(start.getDate() + 1);
     }
