@@ -1,4 +1,5 @@
 import {
+    Archive,
     Clock4,
     FolderOpen,
     GraduationCap,
@@ -46,6 +47,7 @@ const items = [
         icon: FolderOpen,
     },
     { title: "Grades", url: "/grades", icon: GraduationCap },
+    { title: "Archived Projects", url: "/archived-projects", icon: Archive },
     // {
     //     title: "Settings",
     //     url: "#",

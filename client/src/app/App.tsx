@@ -3,6 +3,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import React, { Suspense } from "react";
 import { createBrowserRouter, redirect, RouterProvider } from "react-router";
 import SignupPage from "@/pages/auth/signup-page";
+import ArchivedProjectsPage from "@/pages/archived-projects/archived-projects-page";
 // import BoardPage from "./pages/board-page";
 const Layout = React.lazy(() => import("../layout"));
 const TasksPage = React.lazy(() => import("../pages/tasks-page"));
@@ -41,6 +42,7 @@ const router = createBrowserRouter([
                 path: "projects",
                 Component: ProjectsPage,
             },
+            { path: "archived-projects", Component: ArchivedProjectsPage },
             {
                 path: "projects/:projectId",
                 loader: async ({ params }) => {

@@ -3,6 +3,7 @@ import { Separator } from "@/components/ui/separator";
 import Project from "../../features/projects/project";
 import NewTask from "@/features/tasks/new-task";
 import NewProject from "../../features/projects/new-project";
+import { getUnarchivedProjects } from "@/features/projects/utils";
 
 function ProjectsPage() {
     const { isPending, error, data: projects } = useGetAllProjects();
@@ -11,9 +12,7 @@ function ProjectsPage() {
 
     if (error) return "An error has occurred: " + error.message;
 
-    const unarchivedProjects = projects.filter(
-        (project) => project.status !== "ARCHIVED"
-    );
+    const unarchivedProjects = getUnarchivedProjects(projects);
 
     return (
         <div>

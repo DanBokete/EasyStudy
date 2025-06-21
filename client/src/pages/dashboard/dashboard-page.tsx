@@ -29,6 +29,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
+import { getUnarchivedProjects } from "@/features/projects/utils";
 
 function DashboardPage() {
     const [initialDate, setInitialDate] = useState(getStartOfWeek());
@@ -41,9 +42,7 @@ function DashboardPage() {
     if (!projects.data) return "....";
     if (!studySessions.data) return "No session Data";
     if (!modules.data) return "No Modules Data";
-    const unarchivedProjects = projects.data.filter(
-        (project) => project.status !== "ARCHIVED"
-    );
+    const unarchivedProjects = getUnarchivedProjects(projects.data);
     console.log(initialDate, finalDate);
 
     const chartData =
