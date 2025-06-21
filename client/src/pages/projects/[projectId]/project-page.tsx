@@ -1,5 +1,5 @@
 import { Separator } from "@/components/ui/separator";
-import { useLoaderData } from "react-router";
+import { Link, useLoaderData } from "react-router";
 import { format } from "date-fns";
 
 import type { TaskStatus } from "@/types/types";
@@ -11,6 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import TasksListView from "@/features/tasks/tasks-list-view";
 import ProjectStatus from "@/features/projects/project-status";
 import EditProject from "@/features/projects/edit-project";
+import { Button } from "@/components/ui/button";
 
 function ProjectPage() {
     const projectId: string = useLoaderData();
@@ -50,11 +51,20 @@ function ProjectPage() {
                 </div>
             </div>
             <Separator className="mb-2" />
+            <div></div>
             <Tabs defaultValue="board">
-                <TabsList>
-                    <TabsTrigger value="board">Board</TabsTrigger>
-                    <TabsTrigger value="list">List</TabsTrigger>
-                </TabsList>
+                <div className="flex justify-between">
+                    <TabsList>
+                        <TabsTrigger value="board">Board</TabsTrigger>
+                        <TabsTrigger value="list">List</TabsTrigger>
+                    </TabsList>
+                    <div>
+                        <Button variant={"link"} asChild>
+                            <Link to={"/projects"}>View All Projects</Link>
+                        </Button>
+                    </div>
+                </div>
+
                 <TabsContent value="board">
                     <DataKanban
                         data={project.tasks}

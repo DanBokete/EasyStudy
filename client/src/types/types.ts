@@ -6,7 +6,7 @@ export type Project = {
     module: string | null;
     createdAt: Date;
     updatedAt: Date;
-    dueDate: Date | string;
+    dueDate: string;
     status: string;
     tasks: Task[];
 };
