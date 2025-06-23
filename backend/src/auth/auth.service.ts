@@ -121,12 +121,7 @@ export class AuthService {
             data: { valid: false },
           });
 
-          response.clearCookie('access_token', {
-            path: '/',
-            httpOnly: true,
-            sameSite: 'strict',
-            secure: process.env.NODE_ENV === 'production',
-          });
+          response.clearCookie('access_token', jwtConstants.accessTokenOptions);
 
           console.error('refresh token stolen');
           throw new ForbiddenException('possible replay attack detected');
@@ -171,19 +166,7 @@ export class AuthService {
         data: { valid: false },
       }),
     ]);
-    response.clearCookie('access_token', {
-      httpOnly: true,
-      path: '/',
-      maxAge: jwtConstants.accessTokenMaxAge,
-      sameSite: 'strict',
-      secure: process.env.NODE_ENV === 'production',
-    });
-    response.clearCookie('refresh_token', {
-      httpOnly: true,
-      maxAge: jwtConstants.refreshTokenMaxAge,
-      path: '/auth/refresh',
-      sameSite: 'strict',
-      secure: process.env.NODE_ENV === 'production',
-    });
+    response.clearCookie('access_token', jwtConstants.accessTokenOptions);
+    response.clearCookie('refresh_token', jwtConstants.refreshTokenOptions);
   }
 }

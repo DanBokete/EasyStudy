@@ -1,7 +1,7 @@
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
 import { jwtConstants } from './auth.constants';
-import { PrismaService } from 'src/prisma.service';
+import { PrismaService } from '../prisma.service';
 import { Request, Response } from 'express';
 import * as argon2 from 'argon2';
 import { BadRequestException, Injectable } from '@nestjs/common';
@@ -34,13 +34,11 @@ export class TokenService {
       },
     });
 
-    response.cookie('refresh_token', refreshToken, {
-      httpOnly: true,
-      maxAge: jwtConstants.refreshTokenMaxAge,
-      path: '/auth/refresh',
-      sameSite: 'strict',
-      secure: process.env.NODE_ENV === 'production',
-    });
+    response.cookie(
+      'refresh_token',
+      refreshToken,
+      jwtConstants.refreshTokenOptions,
+    );
 
     return refreshToken;
   }
@@ -56,13 +54,11 @@ export class TokenService {
       secret: jwtConstants.accessToken,
     });
 
-    response.cookie('access_token', accessToken, {
-      httpOnly: true,
-      path: '/',
-      maxAge: jwtConstants.accessTokenMaxAge,
-      sameSite: 'strict',
-      secure: process.env.NODE_ENV === 'production',
-    });
+    response.cookie(
+      'access_token',
+      accessToken,
+      jwtConstants.accessTokenOptions,
+    );
   }
 }
 

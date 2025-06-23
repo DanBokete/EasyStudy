@@ -4,7 +4,8 @@ import { PrismaService } from '../prisma.service';
 import { JwtService } from '@nestjs/jwt';
 import { ForbiddenException } from '@nestjs/common';
 import * as argon2 from 'argon2';
-import { Response } from 'express';
+import { Response, Request } from 'express';
+import { TokenService } from './utils';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -17,12 +18,25 @@ describe('AuthService', () => {
     user: {
       findUnique: jest.fn(),
       create: jest.fn(),
+      updateMany: jest.fn(),
+    },
+    refreshToken: {
+      create: jest.fn(),
+      findMany: jest.fn(),
+      updateMany: jest.fn(),
+      update: jest.fn(),
+      deleteMany: jest.fn(),
     },
   };
 
-  const mockResponse = {
+  const mockResponse: Partial<Response> = {
     cookie: jest.fn(),
-  } as unknown as Response;
+    clearCookie: jest.fn(),
+  };
+  // const mockTokenService = {
+  //   createAccessToken: jest.fn(),
+  //   createRefreshToken: jest.fn(),
+  // };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -30,6 +44,10 @@ describe('AuthService', () => {
         AuthService,
         { provide: PrismaService, useValue: mockPrismaService },
         { provide: JwtService, useValue: mockJwtService },
+        {
+          provide: TokenService,
+          useClass: TokenService,
+        },
       ],
     }).compile();
 
@@ -51,12 +69,12 @@ describe('AuthService', () => {
       await expect(
         service.login(
           { username: 'test@example.com', password: '1234' },
-          mockResponse,
+          mockResponse as Response,
         ),
       ).rejects.toThrow(ForbiddenException);
     });
 
-    it('should throw if password does not match', async () => {
+    it('should throw ForbiddenException if password does not match', async () => {
       mockPrismaService.user.findUnique.mockResolvedValue({
         email: 'test@example.com',
         password: 'hashed',
@@ -68,7 +86,7 @@ describe('AuthService', () => {
       await expect(
         service.login(
           { username: 'test@example.com', password: 'wrongpass' },
-          mockResponse,
+          mockResponse as Response,
         ),
       ).rejects.toThrow(ForbiddenException);
     });
@@ -81,14 +99,15 @@ describe('AuthService', () => {
       });
 
       jest.spyOn(argon2, 'verify').mockResolvedValue(true);
+      jest.spyOn(argon2, 'hash').mockResolvedValue('hashed');
 
       mockJwtService.sign
-        .mockReturnValueOnce('refreshToken')
-        .mockReturnValueOnce('accessToken');
+        .mockReturnValueOnce('accessToken')
+        .mockReturnValueOnce('refreshToken');
 
       await service.login(
         { username: 'test@example.com', password: 'correct-password' },
-        mockResponse,
+        mockResponse as Response,
       );
 
       // eslint-disable-next-line @typescript-eslint/unbound-method
@@ -116,7 +135,7 @@ describe('AuthService', () => {
       await expect(
         service.login(
           { username: 'test@gmail.com', password: '#Test123' },
-          mockResponse,
+          mockResponse as Response,
         ),
       ).resolves.toBeUndefined();
     });
@@ -139,7 +158,10 @@ describe('AuthService', () => {
       mockPrismaService.user.create.mockResolvedValue(mockUser);
       jest.spyOn(argon2, 'hash').mockResolvedValue('hashedPassword');
 
-      const result = await service.signup(mockSignupDto);
+      const result = await service.signup(
+        mockSignupDto,
+        mockResponse as Response,
+      );
       expect(result).not.toHaveProperty('password');
     });
 
@@ -153,7 +175,7 @@ describe('AuthService', () => {
         mockUser,
       });
 
-      await service.signup(mockSignupDto);
+      await service.signup(mockSignupDto, mockResponse as Response);
 
       expect(argon2.hash).toHaveBeenCalledWith(plainPassword);
 
@@ -164,6 +186,58 @@ describe('AuthService', () => {
           name: mockSignupDto.name,
         },
       });
+    });
+  });
+
+  describe('refreshToken', () => {
+    it('should throw ForbiddenException if user is not authenticated', async () => {
+      await expect(
+        service.refreshToken(
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+          { user: undefined } as any,
+          mockResponse as Response,
+        ),
+      ).rejects.toThrow(ForbiddenException);
+    });
+
+    it('should set new cookies if refresh token is valid', async () => {
+      const mockRefreshToken = '123';
+      const mockUser = { username: 'd@mail.com', id: 'one' };
+
+      const mockRequest = {
+        user: mockUser,
+        cookies: { refresh_token: mockRefreshToken },
+      } as unknown as Request;
+
+      mockPrismaService.refreshToken.findMany.mockResolvedValue([
+        { userId: mockUser.id, token: mockRefreshToken, valid: true },
+      ]);
+      mockPrismaService.user.findUnique.mockResolvedValue(mockUser);
+
+      jest.spyOn(argon2, 'verify').mockResolvedValue(true);
+
+      mockJwtService.sign
+        .mockReturnValueOnce('newAccessToken')
+        .mockReturnValueOnce('newRefreshToken');
+
+      const response = await service.refreshToken(
+        mockRequest,
+        mockResponse as Response,
+      );
+
+      expect(mockResponse.cookie).toHaveBeenCalledWith(
+        'access_token',
+        'newAccessToken',
+        expect.objectContaining({ httpOnly: true }),
+      );
+
+      expect(mockResponse.cookie).toHaveBeenCalledWith(
+        'refresh_token',
+        'newRefreshToken',
+        expect.objectContaining({ httpOnly: true }),
+      );
+
+      expect(response).toBeUndefined();
     });
   });
 });
