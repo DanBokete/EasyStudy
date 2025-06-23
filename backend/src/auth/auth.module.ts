@@ -6,7 +6,7 @@ import { APP_PIPE } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './auth.constants';
 import { JwtRefreshStrategy, JwtStrategy } from './jwt.strategy';
-import { TokenService } from './utils';
+import { TokenService } from 'src/token/token.service';
 
 @Module({
   imports: [

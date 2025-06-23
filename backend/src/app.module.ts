@@ -10,6 +10,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { GradesModule } from './grades/grades.module';
 import { XpModule } from './xp/xp.module';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { TokenModule } from './token/token.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
     ScheduleModule.forRoot(),
     GradesModule,
     XpModule,
+    TokenModule,
   ],
   controllers: [AppController],
   providers: [AppService],

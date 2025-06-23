@@ -13,8 +13,8 @@ import * as argon2 from 'argon2';
 import { JwtService } from '@nestjs/jwt';
 import { Response, Request } from 'express';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
-import { TokenService } from './utils';
 import { jwtConstants } from './auth.constants';
+import { TokenService } from 'src/token/token.service';
 
 @Injectable()
 export class AuthService {

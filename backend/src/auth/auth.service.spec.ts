@@ -5,8 +5,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ForbiddenException } from '@nestjs/common';
 import * as argon2 from 'argon2';
 import { Response, Request } from 'express';
-import { TokenService } from './utils';
-
+import { TokenService } from 'src/token/token.service';
 describe('AuthService', () => {
   let service: AuthService;
 
