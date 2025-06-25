@@ -5,7 +5,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ForbiddenException } from '@nestjs/common';
 import * as argon2 from 'argon2';
 import { Response, Request } from 'express';
-import { TokenService } from 'src/token/token.service';
+import { TokenService } from '../token/token.service';
 describe('AuthService', () => {
   let service: AuthService;
 
@@ -109,14 +109,12 @@ describe('AuthService', () => {
         mockResponse as Response,
       );
 
-      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(mockResponse.cookie).toHaveBeenCalledWith(
         'refresh_token',
         'refreshToken',
         expect.objectContaining({ httpOnly: true }),
       );
 
-      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(mockResponse.cookie).toHaveBeenCalledWith(
         'access_token',
         'accessToken',

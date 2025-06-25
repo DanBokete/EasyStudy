@@ -14,7 +14,7 @@ import { JwtService } from '@nestjs/jwt';
 import { Response, Request } from 'express';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { jwtConstants } from './auth.constants';
-import { TokenService } from 'src/token/token.service';
+import { TokenService } from '../token/token.service';
 
 @Injectable()
 export class AuthService {

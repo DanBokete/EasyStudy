@@ -50,11 +50,14 @@ function DashboardPage() {
 
     console.log(initialDate, finalDate);
 
-    const chartData = getBarChartData(
+    const { chartData, modules: legendModules } = getBarChartData(
         studySessions.data,
         initialDate,
         finalDate
     );
+    console.log("chartData", chartData);
+    console.log("chartData", chartData);
+
     const chartConfig = modules.data && getBarChartConfig(modules.data);
 
     return (
@@ -74,7 +77,7 @@ function DashboardPage() {
                     <ChartBarStacked
                         chartData={chartData}
                         chartConfig={chartConfig}
-                        modules={modules.data}
+                        modules={legendModules}
                         initialDate={initialDate}
                         finalDate={finalDate}
                         setInitialDate={setInitialDate}

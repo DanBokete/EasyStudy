@@ -3,7 +3,7 @@ import { User } from '@prisma/client';
 import { PrismaService } from '../prisma.service';
 import { Response } from 'express';
 import * as argon2 from 'argon2';
-import { jwtConstants } from 'src/auth/auth.constants';
+import { jwtConstants } from '../auth/auth.constants';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()

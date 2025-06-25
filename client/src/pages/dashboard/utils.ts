@@ -2,23 +2,32 @@ import { getTimeDifferenceInSeconds } from "@/helpers/helpers";
 import type { Module, StudySession } from "@/types/types";
 
 export function getBarChartData(
-    studSessions: StudySession[],
+    studySessions: StudySession[],
     initialDate: string,
     finalDate: string
-) {
-    if (!studSessions || studSessions.length === 0) {
-        return [];
+): { chartData: Array<Record<string, number | string>>; modules: Module[] } {
+    if (!studySessions || studySessions.length === 0) {
+        return { chartData: [], modules: [] };
     }
     const dateRange = getTimeRange(initialDate, finalDate);
-    const filteredSessions = studSessions.filter((session) => {
+    const filteredSessions = studySessions.filter((session) => {
         const sessionDate = new Date(session.startTime)
             .toISOString()
             .split("T")[0];
         return sessionDate >= initialDate && sessionDate <= finalDate;
     });
     if (filteredSessions.length === 0) {
-        return [];
+        return { chartData: [], modules: [] };
     }
+
+    const modules: Module[] = filteredSessions.map((session) => session.module);
+    // Remove duplicates from modules
+    const uniqueModuleNames = new Set(modules.map((module) => module.name));
+    const uniqueModules: Module[] = Array.from(uniqueModuleNames).map(
+        (name) => {
+            return modules.find((module) => module.name === name) as Module;
+        }
+    );
 
     const groupedFilteredSessionsByDate: Record<string, StudySession[]> = {};
     filteredSessions.forEach((session) => {
@@ -50,7 +59,6 @@ export function getBarChartData(
             };
         }
     );
-    console.log("chartData", chartData);
 
     const completeChartData = dateRange.map((date) => {
         const dataForDate = chartData.find((data) => data?.day === date);
@@ -62,7 +70,7 @@ export function getBarChartData(
         }
     });
 
-    return completeChartData;
+    return { chartData: completeChartData, modules: uniqueModules };
 }
 
 export function getBarChartConfig(modules: Module[]) {
@@ -92,3 +100,5 @@ export function getTimeRange(initialDate: string, finalDate: string): string[] {
 
     return dateArray;
 }
+
+function GetChartLegendContent(chartData: Record<string, StudySession[]>) {}
