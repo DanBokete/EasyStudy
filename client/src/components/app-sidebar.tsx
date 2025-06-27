@@ -54,7 +54,7 @@ export function AppSidebar() {
     const { state } = useSidebar();
 
     if (isLoading || !projects) return "loading...";
-    if (error) return "Error loading data";
+    if (error) return "err";
 
     const unarchivedProjects = projects.filter(
         (project) => project.status !== "ARCHIVED"
