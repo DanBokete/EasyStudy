@@ -53,8 +53,7 @@ export function AppSidebar() {
     const { isLoading, error, data: projects } = useGetAllProjects();
     const { state } = useSidebar();
 
-    if (isLoading) return "loading...";
-    if (!projects) return "loading...";
+    if (isLoading || !projects) return "loading...";
     if (error) return "Error loading data";
 
     const unarchivedProjects = projects.filter(
@@ -111,35 +110,42 @@ export function AppSidebar() {
                                                 new Date(a.dueDate).getTime() -
                                                 new Date(b.dueDate).getTime()
                                         )
-                                        .map((project) => (
-                                            <SidebarMenuItem key={project.id}>
-                                                <SidebarMenuButton asChild>
-                                                    <NavLink
-                                                        to={`projects/${project.id}`}
-                                                        className={
-                                                            "justify-between flex"
-                                                        }
-                                                    >
-                                                        <span>
-                                                            {project.name}
-                                                        </span>
-                                                        <span
-                                                            className={`text-sm font-bold ${
-                                                                hasDueDatePassed(
-                                                                    project.dueDate
-                                                                ) &&
-                                                                "text-red-700"
-                                                            }`}
+                                        .map((project) => {
+                                            const isDue = hasDueDatePassed(
+                                                project.dueDate
+                                            );
+                                            return (
+                                                <SidebarMenuItem
+                                                    key={project.id}
+                                                >
+                                                    <SidebarMenuButton asChild>
+                                                        <NavLink
+                                                            to={`projects/${project.id}`}
+                                                            className={
+                                                                "justify-between flex"
+                                                            }
                                                         >
-                                                            {format(
-                                                                project.dueDate,
-                                                                "dd/MM"
-                                                            )}
-                                                        </span>
-                                                    </NavLink>
-                                                </SidebarMenuButton>
-                                            </SidebarMenuItem>
-                                        ))
+                                                            <span>
+                                                                {project.name}
+                                                            </span>
+                                                            <span
+                                                                className={`text-sm font-bold ${
+                                                                    isDue &&
+                                                                    "text-red-700"
+                                                                }`}
+                                                            >
+                                                                {isDue
+                                                                    ? "Overdue"
+                                                                    : format(
+                                                                          project.dueDate,
+                                                                          "dd/MM"
+                                                                      )}
+                                                            </span>
+                                                        </NavLink>
+                                                    </SidebarMenuButton>
+                                                </SidebarMenuItem>
+                                            );
+                                        })
                                 ) : (
                                     <SidebarMenuItem>
                                         <SidebarMenuButton disabled>

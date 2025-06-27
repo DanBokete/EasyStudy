@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
-import { loginUser, useLoginUser } from "@/api/auth/login";
+import { useLoginUser } from "@/api/auth/login";
 import { Link } from "react-router";
 
 export function LoginForm({

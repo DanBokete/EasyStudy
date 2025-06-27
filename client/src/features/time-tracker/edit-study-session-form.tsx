@@ -121,7 +121,7 @@ function EditStudySessionForm({
                         setModuleId(value);
                     }}
                 >
-                    <SelectTrigger className="w-full" size="sm" hideIcon={true}>
+                    <SelectTrigger className="w-full" size="sm">
                         <SelectValue placeholder="Status" />
                     </SelectTrigger>
                     <SelectContent>

@@ -30,7 +30,6 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import {
-    getArchivedProjects,
     getOverdueProjects,
     getUnarchivedProjects,
     getUpcomingProjects,
@@ -58,33 +57,41 @@ function DashboardPage() {
     console.log("chartData", chartData);
     console.log("chartData", chartData);
 
-    const chartConfig = modules.data && getBarChartConfig(modules.data);
+    const chartConfig = (modules.data && getBarChartConfig(modules.data)) || {
+        test: { label: "", color: "" },
+    };
+    console.log("chartConfig", chartConfig);
 
     return (
-        <div>
-            <div>
-                <SectionCards
-                    projects={projects.data}
-                    unarchivedProjects={unarchivedProjects}
-                    studySessions={studySessions.data}
-                />
-            </div>
-            <div className="grid grid-cols-6 gap-x-2 my-2">
-                <div className="col-span-2">
+        <div className="space-y-2.5">
+            <div className="flex gap-x-2.5">
+                <div className="columns-md h-full">
                     <ProjectsSummary unarchivedProjects={unarchivedProjects} />
                 </div>
-                <div className="col-span-4">
-                    <ChartBarStacked
-                        chartData={chartData}
-                        chartConfig={chartConfig}
-                        modules={legendModules}
-                        initialDate={initialDate}
-                        finalDate={finalDate}
-                        setInitialDate={setInitialDate}
-                        setFinalDate={setFinalDate}
-                    />
+                <div className="space-y-2.5 w-full">
+                    <div>
+                        <SectionCards
+                            projects={projects.data}
+                            unarchivedProjects={unarchivedProjects}
+                            studySessions={studySessions.data}
+                        />
+                    </div>
+                    <div>
+                        <div>
+                            <ChartBarStacked
+                                chartData={chartData}
+                                chartConfig={chartConfig}
+                                modules={legendModules}
+                                initialDate={initialDate}
+                                finalDate={finalDate}
+                                setInitialDate={setInitialDate}
+                                setFinalDate={setFinalDate}
+                            />
+                        </div>
+                    </div>
                 </div>
             </div>
+
             <div>
                 <ProjectTracker
                     projects={projects.data}
@@ -97,7 +104,7 @@ function DashboardPage() {
 
 interface UpcomingProjectsProp {
     unarchivedProjects: Project[];
-    archivedProjects: Project[];
+    archivedProjects?: Project[];
 }
 
 function ProjectsSummary({ unarchivedProjects }: UpcomingProjectsProp) {

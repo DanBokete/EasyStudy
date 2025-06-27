@@ -19,7 +19,7 @@ interface SectionCardsProp {
 function SectionCards({ unarchivedProjects, studySessions }: SectionCardsProp) {
     return (
         <div className="grid grid-cols-3 gap-x-2">
-            <Card className="py-3">
+            <Card className="py-2">
                 <CardHeader>
                     <CardDescription>Total Projects</CardDescription>
                     <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
@@ -27,7 +27,7 @@ function SectionCards({ unarchivedProjects, studySessions }: SectionCardsProp) {
                     </CardTitle>
                 </CardHeader>
             </Card>
-            <Card className="py-3">
+            <Card className="py-2">
                 <CardHeader>
                     <CardDescription>
                         Total Study Hour This Week
@@ -39,7 +39,7 @@ function SectionCards({ unarchivedProjects, studySessions }: SectionCardsProp) {
                     </CardTitle>
                 </CardHeader>
             </Card>
-            <Card className="py-3">
+            <Card className="py-2">
                 <CardHeader>
                     <CardDescription>Today Study Time</CardDescription>
                     <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">

@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -58,10 +57,7 @@ const formSchema = z
         path: ["confirmPassword"],
     });
 
-export function SignupForm({
-    className,
-    ...props
-}: React.ComponentPropsWithoutRef<"div">) {
+export function SignupForm() {
     const createUserMutation = useCreateUser();
     // 1. Define your form.
     const form = useForm<z.infer<typeof formSchema>>({

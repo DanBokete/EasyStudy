@@ -5,7 +5,7 @@ export function getBarChartData(
     studySessions: StudySession[],
     initialDate: string,
     finalDate: string
-): { chartData: Array<Record<string, number | string>>; modules: Module[] } {
+): { chartData: Array<Record<string, string>>; modules: Module[] } {
     if (!studySessions || studySessions.length === 0) {
         return { chartData: [], modules: [] };
     }
@@ -100,5 +100,3 @@ export function getTimeRange(initialDate: string, finalDate: string): string[] {
 
     return dateArray;
 }
-
-function GetChartLegendContent(chartData: Record<string, StudySession[]>) {}

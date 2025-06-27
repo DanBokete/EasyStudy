@@ -19,7 +19,6 @@ import {
 } from "@/components/ui/chart";
 import type { Module } from "@/types/types";
 import { Input } from "@/components/ui/input";
-import { format } from "date-fns";
 
 export const description = "A stacked bar chart with a legend";
 

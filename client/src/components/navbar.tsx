@@ -1,5 +1,5 @@
 import { useGetUser } from "@/api/user";
-import { UserCircle2 } from "lucide-react";
+import { ChevronDown, UserCircle2 } from "lucide-react";
 import { ModeToggle } from "./mode-toggle";
 import { useEffect, useRef } from "react";
 import { toast } from "sonner";
@@ -29,17 +29,18 @@ function Navbar() {
 
     return (
         <header className="p-2.5 border-b mb-2">
-            <ul className="flex justify-end gap-x-5 items-end">
+            <ul className="flex justify-end gap-x-5 items-center">
                 <li>
                     <ModeToggle />
                 </li>
-                <li>
+                <li className="flex items-center gap-x-1">
+                    <div className="">{user.totalXp}</div>
                     <div className="text-xs text-muted-foreground">XP</div>
-                    <div>{user.totalXp}</div>
                 </li>
-                <li className="bg-muted py-2 max-w-44 px-2.5 rounded-lg flex gap-x-2.5">
-                    <div>{user.name}</div>
+                <li className="py-2 max-w-44 px-2.5 rounded-lg flex gap-x-2.5 items-center">
                     <UserCircle2 />
+                    <div className="text-sm">{user.name}</div>
+                    <ChevronDown className="size-3" />
                 </li>
             </ul>
         </header>
