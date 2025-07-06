@@ -24,8 +24,8 @@ export class GradesService {
     return grade;
   }
 
-  async findByModule(moduleId: string, userId: string) {
-    return await this.prisma.grade.findMany({ where: { userId, moduleId } });
+  async findByModule(subjectId: string, userId: string) {
+    return await this.prisma.grade.findMany({ where: { userId, subjectId } });
   }
 
   async update(

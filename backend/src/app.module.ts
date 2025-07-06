@@ -4,7 +4,7 @@ import { AppService } from './app.service';
 import { TasksModule } from './tasks/tasks.module';
 import { ProjectsModule } from './projects/projects.module';
 import { StudySessionsModule } from './study-sessions/study-sessions.module';
-import { ModulesModule } from './modules/modules.module';
+import { SubjectModule } from './subjects/subjects.module';
 import { AuthModule } from './auth/auth.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { GradesModule } from './grades/grades.module';
@@ -26,7 +26,7 @@ import { TokenModule } from './token/token.module';
     AuthModule,
     ProjectsModule,
     StudySessionsModule,
-    ModulesModule,
+    SubjectModule,
     ScheduleModule.forRoot(),
     GradesModule,
     XpModule,

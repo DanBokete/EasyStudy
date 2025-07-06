@@ -1,5 +1,6 @@
 import {
     Archive,
+    Book,
     Clock4,
     GraduationCap,
     LayoutDashboard,
@@ -30,6 +31,10 @@ import { Button } from "./ui/button";
 import { useLogoutUser } from "@/api/auth/logout";
 import { format } from "date-fns";
 import { hasDueDatePassed } from "@/helpers/helpers";
+import type { Project } from "@/types/types";
+import { useCreateModule, useGetAllModules } from "@/api/modules";
+import { Input } from "./ui/input";
+import { useState } from "react";
 
 // Menu items.
 const items = [
@@ -64,6 +69,7 @@ export function AppSidebar() {
             <SidebarContent>
                 <SidebarGroup>
                     <SidebarGroupLabel>{SITE_NAME}</SidebarGroupLabel>
+
                     <SidebarGroupContent>
                         <SidebarMenu>
                             {items.map((item) => (
@@ -79,85 +85,11 @@ export function AppSidebar() {
                         </SidebarMenu>
                     </SidebarGroupContent>
                 </SidebarGroup>
-                <SidebarGroup>
-                    <SidebarGroupLabel asChild />
-                    <SidebarGroupAction title="Add Project" asChild>
-                        <NewProject>
-                            <Button
-                                variant={`${
-                                    state === "collapsed" ? "outline" : "ghost"
-                                }`}
-                            >
-                                {state === "expanded" && (
-                                    <div className="text-sidebar-foreground/70">
-                                        Add Project
-                                    </div>
-                                )}
-                                <Plus className="ml-auto" />
-                            </Button>
-                        </NewProject>
-                    </SidebarGroupAction>
-                    <SidebarGroupContent>
-                        <span className="sr-only">Add Project</span>
-                    </SidebarGroupContent>
-                    {state === "expanded" && (
-                        <SidebarGroupContent>
-                            <SidebarMenu>
-                                {unarchivedProjects.length > 0 ? (
-                                    unarchivedProjects
-                                        .sort(
-                                            (a, b) =>
-                                                new Date(a.dueDate).getTime() -
-                                                new Date(b.dueDate).getTime()
-                                        )
-                                        .map((project) => {
-                                            const isDue = hasDueDatePassed(
-                                                project.dueDate
-                                            );
-                                            return (
-                                                <SidebarMenuItem
-                                                    key={project.id}
-                                                >
-                                                    <SidebarMenuButton asChild>
-                                                        <NavLink
-                                                            to={`projects/${project.id}`}
-                                                            className={
-                                                                "justify-between flex"
-                                                            }
-                                                        >
-                                                            <span>
-                                                                {project.name}
-                                                            </span>
-                                                            <span
-                                                                className={`text-sm font-bold ${
-                                                                    isDue &&
-                                                                    "text-red-700"
-                                                                }`}
-                                                            >
-                                                                {isDue
-                                                                    ? "Overdue"
-                                                                    : format(
-                                                                          project.dueDate,
-                                                                          "dd/MM"
-                                                                      )}
-                                                            </span>
-                                                        </NavLink>
-                                                    </SidebarMenuButton>
-                                                </SidebarMenuItem>
-                                            );
-                                        })
-                                ) : (
-                                    <SidebarMenuItem>
-                                        <SidebarMenuButton disabled>
-                                            <X />
-                                            You have no projects
-                                        </SidebarMenuButton>
-                                    </SidebarMenuItem>
-                                )}
-                            </SidebarMenu>
-                        </SidebarGroupContent>
-                    )}
-                </SidebarGroup>
+                <ModulesGroup />
+                <ProjectsGroup
+                    state={state}
+                    unarchivedProjects={unarchivedProjects}
+                />
             </SidebarContent>
             <SidebarFooter>
                 <SidebarMenu>
@@ -175,5 +107,161 @@ export function AppSidebar() {
                 </SidebarMenu>
             </SidebarFooter>
         </Sidebar>
+    );
+}
+interface ProjectsGroupProps {
+    state: "expanded" | "collapsed";
+    unarchivedProjects: Project[];
+}
+function ProjectsGroup({ state, unarchivedProjects }: ProjectsGroupProps) {
+    return (
+        <SidebarGroup>
+            <SidebarGroupLabel asChild />
+            <SidebarGroupAction title="Add Project" asChild>
+                <NewProject>
+                    <Button
+                        variant={`${
+                            state === "collapsed" ? "outline" : "ghost"
+                        }`}
+                    >
+                        {state === "expanded" && (
+                            <div className="text-sidebar-foreground/70">
+                                Add Project
+                            </div>
+                        )}
+                        <Plus className="ml-auto" />
+                    </Button>
+                </NewProject>
+            </SidebarGroupAction>
+            <SidebarGroupContent>
+                <span className="sr-only">Add Project</span>
+            </SidebarGroupContent>
+            {state === "expanded" && (
+                <SidebarGroupContent>
+                    <SidebarMenu>
+                        {unarchivedProjects.length > 0 ? (
+                            unarchivedProjects
+                                .sort(
+                                    (a, b) =>
+                                        new Date(a.dueDate).getTime() -
+                                        new Date(b.dueDate).getTime()
+                                )
+                                .map((project) => {
+                                    const isDue = hasDueDatePassed(
+                                        project.dueDate
+                                    );
+                                    return (
+                                        <SidebarMenuItem key={project.id}>
+                                            <SidebarMenuButton asChild>
+                                                <NavLink
+                                                    to={`projects/${project.id}`}
+                                                    className={
+                                                        "justify-between flex"
+                                                    }
+                                                >
+                                                    <span>{project.name}</span>
+                                                    <span
+                                                        className={`text-sm font-bold ${
+                                                            isDue &&
+                                                            "text-red-700"
+                                                        }`}
+                                                    >
+                                                        {isDue
+                                                            ? "Overdue"
+                                                            : format(
+                                                                  project.dueDate,
+                                                                  "dd/MM"
+                                                              )}
+                                                    </span>
+                                                </NavLink>
+                                            </SidebarMenuButton>
+                                        </SidebarMenuItem>
+                                    );
+                                })
+                        ) : (
+                            <SidebarMenuItem>
+                                <SidebarMenuButton disabled>
+                                    <X />
+                                    You have no projects
+                                </SidebarMenuButton>
+                            </SidebarMenuItem>
+                        )}
+                    </SidebarMenu>
+                </SidebarGroupContent>
+            )}
+        </SidebarGroup>
+    );
+}
+
+function ModulesGroup() {
+    const [isAddingModule, setIsAddingModule] = useState(false);
+    const [newModule, setNewModule] = useState("");
+    const createModule = useCreateModule();
+    const { data: modules, error, isLoading } = useGetAllModules();
+    function addModule() {
+        setIsAddingModule(false);
+        if (!modules || !newModule) return;
+        createModule.mutate({ name: newModule });
+    }
+    return (
+        <SidebarGroup>
+            <SidebarGroupLabel>Subjects</SidebarGroupLabel>
+            <SidebarGroupAction onClick={() => setIsAddingModule(true)}>
+                <Plus /> <span className="sr-only">Add Project</span>
+            </SidebarGroupAction>
+            <SidebarGroupContent>
+                <SidebarMenu>
+                    {isAddingModule && (
+                        <Input
+                            value={newModule}
+                            onChange={(e) => {
+                                setNewModule(e.target.value);
+                            }}
+                            autoFocus
+                            onBlur={() => {
+                                addModule();
+                            }}
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                    addModule();
+                                }
+                            }}
+                        />
+                    )}
+                    {createModule.isPending && (
+                        <SidebarMenuItem className="bg-sidebar-accent animate-pulse">
+                            <SidebarMenuButton>
+                                <Book />
+                                <span className="text-sidebar-accent-foreground/50">
+                                    {createModule.variables.name}
+                                </span>
+                            </SidebarMenuButton>
+                        </SidebarMenuItem>
+                    )}
+                    {isLoading && (
+                        <div className="h-16 bg-sidebar-accent animate-pulse"></div>
+                    )}
+                    {modules &&
+                        !isLoading &&
+                        !error &&
+                        modules.map((module) => (
+                            <SidebarMenuItem key={module.name}>
+                                <SidebarMenuButton asChild>
+                                    <Link to={`modules/${module.id}`}>
+                                        <Book />
+                                        <span>{module.name}</span>
+                                    </Link>
+                                </SidebarMenuButton>
+                            </SidebarMenuItem>
+                        ))}
+                    {error && (
+                        <div>
+                            Failed to load modules,{" "}
+                            <Link to={"/login"}>try logging in</Link>
+                        </div>
+                    )}
+                </SidebarMenu>
+            </SidebarGroupContent>
+        </SidebarGroup>
     );
 }

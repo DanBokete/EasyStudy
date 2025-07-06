@@ -1,6 +1,6 @@
 import { IsAlpha, IsString, MinLength } from 'class-validator';
 
-export class CreateModuleDto {
+export class CreateSubjectDto {
   @IsString()
   @IsAlpha()
   @MinLength(1)

@@ -10,7 +10,7 @@ export class CreateStudySessionDto {
   description: string | null;
 
   @IsString()
-  moduleId: string;
+  subjectId: string;
 
   @IsDateString()
   startTime: string;

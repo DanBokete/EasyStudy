@@ -19,5 +19,5 @@ export class CreateProjectDto {
 
   @IsString()
   @IsOptional()
-  moduleId: string;
+  subjectId: string;
 }

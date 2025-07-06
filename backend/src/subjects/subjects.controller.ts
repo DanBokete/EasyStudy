@@ -12,9 +12,9 @@ import {
   UseInterceptors,
   ClassSerializerInterceptor,
 } from '@nestjs/common';
-import { ModulesService } from './modules.service';
-import { CreateModuleDto } from './dto/create-module.dto';
-import { UpdateModuleDto } from './dto/update-module.dto';
+import { SubjectsService } from './subjects.service';
+import { CreateSubjectDto } from './dto/create-subject.dto';
+import { updateSubjectDto } from './dto/update-subject.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { Request } from 'express';
 import { Module } from './entities/module.entity';
@@ -23,15 +23,18 @@ import { getUserCredentials } from 'src/auth/utils';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @UseGuards(JwtAuthGuard)
-@Controller('v1/modules')
-export class ModulesController {
-  constructor(private readonly modulesService: ModulesService) {}
+@Controller('v1/subjects')
+export class SubjectsController {
+  constructor(private readonly SubjectsService: SubjectsService) {}
 
   @Post()
-  async create(@Body() createModuleDto: CreateModuleDto, @Req() req: Request) {
+  async create(
+    @Body() CreateSubjectDto: CreateSubjectDto,
+    @Req() req: Request,
+  ) {
     const user = getUserCredentials(req);
-    const module = await this.modulesService.create(
-      createModuleDto,
+    const module = await this.SubjectsService.create(
+      CreateSubjectDto,
       user.userId,
     );
     return new Module(module);
@@ -42,28 +45,28 @@ export class ModulesController {
     const user = getUserCredentials(req);
     return plainToInstance(
       Module,
-      await this.modulesService.findAll(user.userId),
+      await this.SubjectsService.findAll(user.userId),
     );
   }
 
   @Get(':id')
   async findOne(@Req() req: Request, @Param('id') id: string) {
     const user = getUserCredentials(req);
-    const module = await this.modulesService.findOne(user.userId, id);
+    const module = await this.SubjectsService.findOne(user.userId, id);
     return new Module(module);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateModuleDto: UpdateModuleDto) {
-    return this.modulesService.update(+id, updateModuleDto);
+  update(@Param('id') id: string, @Body() updateSubjectDto: updateSubjectDto) {
+    return this.SubjectsService.update(+id, updateSubjectDto);
   }
 
   @Delete(':id')
   async remove(
-    @Param('id') moduleId: string,
+    @Param('id') subjectId: string,
     @Session() session: Record<string, any>,
   ) {
     const userId = session.userId as string;
-    return await this.modulesService.remove(userId, moduleId);
+    return await this.SubjectsService.remove(userId, subjectId);
   }
 }

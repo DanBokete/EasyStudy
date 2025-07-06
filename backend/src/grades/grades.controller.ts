@@ -36,13 +36,13 @@ export class GradesController {
   }
 
   @Get()
-  async findAll(@Req() req: Request, @Query('moduleId') moduleId: string) {
+  async findAll(@Req() req: Request, @Query('subjectId') subjectId: string) {
     const user = getUserCredentials(req);
 
-    if (moduleId) {
+    if (subjectId) {
       return plainToInstance(
         Grade,
-        await this.gradesService.findByModule(moduleId, user.userId),
+        await this.gradesService.findByModule(subjectId, user.userId),
       );
     }
 

@@ -4,6 +4,7 @@ import React, { Suspense } from "react";
 import { createBrowserRouter, redirect, RouterProvider } from "react-router";
 import SignupPage from "@/pages/auth/signup-page";
 import ArchivedProjectsPage from "@/pages/archived-projects/archived-projects-page";
+import ModulePage from "@/pages/module/module-page";
 // import BoardPage from "./pages/board-page";
 const Layout = React.lazy(() => import("../layout"));
 const TasksPage = React.lazy(() => import("../pages/tasks-page"));
@@ -64,6 +65,14 @@ const router = createBrowserRouter([
                     return params.moduleId;
                 },
                 Component: GradePage,
+            },
+            {
+                path: "modules/:moduleId",
+                loader: async ({ params }) => {
+                    if (!params?.moduleId) throw new Error("Missing moduleId");
+                    return params.moduleId;
+                },
+                Component: ModulePage,
             },
             {
                 path: "logout",

@@ -2,7 +2,7 @@ import { IsDateString, IsNumber, IsString } from 'class-validator';
 
 export class CreateGradeDto {
   @IsString()
-  moduleId: string;
+  subjectId: string;
 
   @IsString()
   title: string;

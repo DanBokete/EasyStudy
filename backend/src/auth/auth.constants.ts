@@ -16,14 +16,14 @@ export const jwtConstants = {
     httpOnly: true,
     path: '/',
     maxAge: accessTokenMaxAge,
-    sameSite: 'none' as const,
+    sameSite: 'lax' as const,
     secure: process.env.NODE_ENV === 'production',
   },
   refreshTokenOptions: {
     httpOnly: true,
     maxAge: refreshTokenMaxAge,
     path: '/auth/refresh',
-    sameSite: 'none' as const,
+    sameSite: 'lax' as const,
     secure: process.env.NODE_ENV === 'production',
   },
 };

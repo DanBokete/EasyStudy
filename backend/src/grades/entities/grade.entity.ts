@@ -6,7 +6,7 @@ export class Grade {
   description: string | null;
   date: string;
   userId: string;
-  moduleId: string;
+  subjectId: string;
   score: number;
   maxScore: number;
   createdAt: Date;

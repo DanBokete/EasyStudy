@@ -24,7 +24,7 @@ model User {
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
   totalXp      Int            @default(0)
-  Module       Module[]
+  Subject      Subject[]
   StudySession StudySession[]
   refreshToken refreshToken[]
   accessToken  accessToken[]
@@ -66,7 +66,7 @@ enum TaskStatus {
   DONE
 }
 
-model Module {
+model Subject {
   id           String         @id @default(cuid())
   name         String         @unique
   description  String?
@@ -86,8 +86,8 @@ model Grade {
   date        String
   userId      String
   user        User     @relation(fields: [userId], references: [id])
-  moduleId    String
-  module      Module   @relation(fields: [moduleId], references: [id])
+  subjectId   String
+  subject     Subject  @relation(fields: [subjectId], references: [id])
   score       Float
   maxScore    Float
   createdAt   DateTime @default(now())
@@ -104,8 +104,8 @@ model Project {
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
   dueDate     DateTime?
-  moduleId    String?
-  module      Module?       @relation(fields: [moduleId], references: [id])
+  subjectId   String?
+  subject     Subject?      @relation(fields: [subjectId], references: [id])
   status      ProjectStatus @default(PENDING)
   archivedAt  DateTime?
   archived    Boolean       @default(false)
@@ -136,8 +136,8 @@ model StudySession {
   description String?
   userId      String
   user        User     @relation(fields: [userId], references: [id])
-  moduleId    String
-  module      Module   @relation(fields: [moduleId], references: [id])
+  subjectId   String
+  subject     Subject  @relation(fields: [subjectId], references: [id])
   startTime   DateTime @default(now())
   endTime     DateTime @default(now())
   createdAt   DateTime @default(now())
