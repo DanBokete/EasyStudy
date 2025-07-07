@@ -20,12 +20,16 @@ import { Request } from 'express';
 import { Module } from './entities/module.entity';
 import { plainToInstance } from 'class-transformer';
 import { getUserCredentials } from 'src/auth/utils';
+import { ProjectsService } from 'src/projects/projects.service';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @UseGuards(JwtAuthGuard)
 @Controller('v1/subjects')
 export class SubjectsController {
-  constructor(private readonly SubjectsService: SubjectsService) {}
+  constructor(
+    private readonly SubjectsService: SubjectsService,
+    private readonly ProjectsService: ProjectsService,
+  ) {}
 
   @Post()
   async create(
@@ -68,5 +72,20 @@ export class SubjectsController {
   ) {
     const userId = session.userId as string;
     return await this.SubjectsService.remove(userId, subjectId);
+  }
+
+  @Get('/overview/:subjectId')
+  async overview(@Req() req: Request, @Param('subjectId') subjectId: string) {
+    const user = getUserCredentials(req);
+    return await this.SubjectsService.getOverview(subjectId, user.userId);
+  }
+
+  @Get(':subjectId/projects')
+  async projects(@Req() req: Request, @Param('subjectId') subjectId: string) {
+    const user = getUserCredentials(req);
+    return await this.ProjectsService.findAllBySubjectId(
+      user.userId,
+      subjectId,
+    );
   }
 }

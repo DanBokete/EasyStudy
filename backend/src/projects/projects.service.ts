@@ -34,6 +34,15 @@ export class ProjectsService {
     return projects;
   }
 
+  async findAllBySubjectId(userId: string, subjectId: string) {
+    const projects = await this.prisma.project.findMany({
+      where: { userId, subjectId },
+      include: { tasks: { orderBy: { dueDate: 'asc' } } },
+    });
+
+    return projects;
+  }
+
   findOne(id: string) {
     return this.prisma.project.findUnique({
       where: { id },

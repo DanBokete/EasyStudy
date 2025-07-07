@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { CreateSubjectDto } from './dto/create-subject.dto';
 import { updateSubjectDto } from './dto/update-subject.dto';
 import { PrismaService } from 'src/prisma.service';
@@ -27,6 +27,7 @@ export class SubjectsService {
     });
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   update(id: number, updateSubjectDto: updateSubjectDto) {
     return `This action updates a #${id} module`;
   }
@@ -36,5 +37,29 @@ export class SubjectsService {
       where: { userId, id: subjectId },
       include: { Grade: true },
     });
+  }
+
+  async getOverview(subjectId: string, userId: string) {
+    const subject = await this.prisma.subject.findFirst({
+      where: { userId, id: subjectId },
+      include: {
+        projects: { where: { dueDate: { gte: new Date() } } },
+        Grade: true,
+      },
+    });
+
+    if (!subject) {
+      throw new ForbiddenException('You cannot access this information');
+    }
+
+    const overview = {
+      subjectName: subject.name,
+      subjectDescription: subject.description,
+      subjectId: subject.id,
+      upcomingProjects: subject.projects,
+      grades: subject.Grade,
+    };
+
+    return overview;
   }
 }

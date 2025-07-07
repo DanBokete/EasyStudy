@@ -18,6 +18,5 @@ export class CreateProjectDto {
   status: ProjectStatus;
 
   @IsString()
-  @IsOptional()
   subjectId: string;
 }
