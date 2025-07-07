@@ -21,7 +21,7 @@ const ProjectPage = React.lazy(
 );
 const GradesPage = React.lazy(() => import("@/pages/grades/grades-page"));
 const GradePage = React.lazy(
-    () => import("@/pages/grades/[moduleId]/grade-page")
+    () => import("@/pages/grades/[subjectId]/grade-page")
 );
 const TimeTrackerPage = React.lazy(
     () => import("../pages/time-tracker/time-tracker-page")
@@ -61,10 +61,11 @@ const router = createBrowserRouter([
                 Component: GradesPage,
             },
             {
-                path: "grades/:moduleId",
+                path: "grades/:subjectId",
                 loader: async ({ params }) => {
-                    if (!params?.moduleId) throw new Error("Missing moduleId");
-                    return params.moduleId;
+                    if (!params?.subjectId)
+                        throw new Error("Missing subjectId");
+                    return params.subjectId;
                 },
                 Component: GradePage,
             },

@@ -1,17 +1,17 @@
 import api from "@/api";
-import type { Module, SubjectOverview } from "@/types/types";
+import type { Subject, SubjectOverview } from "@/types/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-async function getModule(moduleId: string) {
-    const response = await api.get(`/v1/subjects/${moduleId}`);
-    const module: Module = response.data;
+async function getSubject(subjectId: string) {
+    const response = await api.get(`/v1/subjects/${subjectId}`);
+    const module: Subject = response.data;
     return module;
 }
 
-export function useGetModule(subjectId: string) {
+export function useGetSubject(subjectId: string) {
     return useQuery({
         queryKey: ["subjects", subjectId],
-        queryFn: () => getModule(subjectId),
+        queryFn: () => getSubject(subjectId),
         refetchOnWindowFocus: false,
     });
 }
@@ -29,21 +29,21 @@ export function useSubjectOverview(subjectId: string) {
     });
 }
 
-async function getAllModules() {
+async function getAllSubjects() {
     const response = await api.get(`v1/subjects`);
-    const subjects: Module[] | [] = response.data;
+    const subjects: Subject[] | [] = response.data;
     return subjects;
 }
 
 export function useGetAllSubjects() {
     return useQuery({
         queryKey: ["subjects"],
-        queryFn: getAllModules,
+        queryFn: getAllSubjects,
         refetchOnWindowFocus: false,
     });
 }
 
-// async function createModule(data: Partial<Module>) {
+// async function createSubject(data: Partial<Subject>) {
 //     return api.post("/v1/subjects", data).then((response) => response.data);
 // }
 
@@ -51,17 +51,17 @@ export const useCreateSubject = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: async function (data: Partial<Module>) {
+        mutationFn: async function (data: Partial<Subject>) {
             const response = await api.post("/v1/subjects", data);
-            const newSubject: Module = response.data;
+            const newSubject: Subject = response.data;
             return newSubject;
         },
-        onSuccess: (newModule) => {
+        onSuccess: (newSubject) => {
             queryClient.invalidateQueries({ queryKey: ["subjects"] });
 
-            queryClient.setQueryData(["subjects"], (old: Module[]) => [
+            queryClient.setQueryData(["subjects"], (old: Subject[]) => [
                 ...old,
-                { ...newModule },
+                { ...newSubject },
             ]);
         },
     });

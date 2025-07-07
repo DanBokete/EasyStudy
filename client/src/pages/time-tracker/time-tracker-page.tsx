@@ -10,7 +10,7 @@ import {
 import { format } from "date-fns";
 
 function TimeTrackerPage() {
-    // Selecting Modules
+    // Selecting Subjects
 
     const studySessions = useGetAllStudySessions();
     const modules = useGetAllSubjects();
@@ -43,8 +43,8 @@ function TimeTrackerPage() {
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
                     />
-                    <ModuleCombobox
-                        setModuleId={setModuleId}
+                    <SubjectCombobox
+                        setSubjectId={setSubjectId}
                         value={value}
                         setValue={setValue}
                     />

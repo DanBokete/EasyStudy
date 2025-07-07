@@ -7,7 +7,7 @@ function GradesPage() {
     const modules = useGetAllSubjects();
     return (
         <div className="p-6 max-w-4xl mx-auto">
-            <h1 className="text-4xl font-bold mb-6">My Modules</h1>
+            <h1 className="text-4xl font-bold mb-6">My Subjects</h1>
             <div className="space-y-2">
                 {modules.data?.length ? (
                     modules.data.map((module) => (

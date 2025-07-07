@@ -1,14 +1,15 @@
 import { getTimeDifferenceInSeconds } from "@/helpers/helpers";
-import type { Module, StudySession } from "@/types/types";
+import type { Subject, StudySession } from "@/types/types";
 
 export function getBarChartData(
     studySessions: StudySession[],
     initialDate: string,
     finalDate: string
-): { chartData: Array<Record<string, string>>; modules: Module[] } {
+): { chartData: Array<Record<string, string>>; subjects: Subject[] } {
     if (!studySessions || studySessions.length === 0) {
-        return { chartData: [], modules: [] };
+        return { chartData: [], subjects: [] };
     }
+
     const dateRange = getTimeRange(initialDate, finalDate);
     const filteredSessions = studySessions.filter((session) => {
         const sessionDate = new Date(session.startTime)
@@ -17,15 +18,22 @@ export function getBarChartData(
         return sessionDate >= initialDate && sessionDate <= finalDate;
     });
     if (filteredSessions.length === 0) {
-        return { chartData: [], modules: [] };
+        return { chartData: [], subjects: [] };
     }
 
-    const modules: Module[] = filteredSessions.map((session) => session.module);
-    // Remove duplicates from modules
-    const uniqueModuleNames = new Set(modules.map((module) => module.name));
-    const uniqueModules: Module[] = Array.from(uniqueModuleNames).map(
+    console.log(filteredSessions);
+
+    const subjects: Subject[] = filteredSessions.map(
+        (session) => session.subject
+    );
+
+    // Remove duplicates from subjects
+    const uniqueSubjectNames = new Set(subjects.map((subject) => subject.name));
+    const uniqueSubjects: Subject[] = Array.from(uniqueSubjectNames).map(
         (name) => {
-            return modules.find((module) => module.name === name) as Module;
+            return subjects.find(
+                (subject) => subject.name && subject.name === name
+            ) as Subject;
         }
     );
 
@@ -46,13 +54,13 @@ export function getBarChartData(
             return {
                 day: date,
                 ...sessions.reduce((acc: Record<string, number>, curr) => {
-                    if (!curr.module) return {};
+                    if (!curr.subject) return {};
                     const totalTime = getTimeDifferenceInSeconds(
                         curr.startTime,
                         curr.endTime
                     );
-                    acc[curr.module.name.replace(/\s+/g, "-")] =
-                        (acc[curr.module.name.replace(/\s+/g, "-")] || 0) +
+                    acc[curr.subject.name.replace(/\s+/g, "-")] =
+                        (acc[curr.subject.name.replace(/\s+/g, "-")] || 0) +
                         totalTime;
                     return acc;
                 }, {}),
@@ -70,10 +78,10 @@ export function getBarChartData(
         }
     });
 
-    return { chartData: completeChartData, modules: uniqueModules };
+    return { chartData: completeChartData, subjects: uniqueSubjects };
 }
 
-export function getBarChartConfig(modules: Module[]) {
+export function getBarChartConfig(modules: Subject[]) {
     if (!modules || modules.length === 0) {
         return {};
     }

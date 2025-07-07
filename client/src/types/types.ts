@@ -33,7 +33,7 @@ export type StudySession = {
     activity: string;
     description: string | null;
     userId: string;
-    moduleId: string;
+    subjectId: string;
     startTime: string;
     endTime: string;
     displayedStartTime: string;
@@ -41,10 +41,10 @@ export type StudySession = {
     duration: number;
     createdAt: Date;
     updatedAt: Date;
-    module: Module;
+    subject: Subject;
 };
 
-export type Module = {
+export type Subject = {
     id: string;
     name: string;
     description: string | null;
@@ -73,7 +73,7 @@ export type Grade = {
     description?: string;
     date: string;
     userId: string;
-    moduleId: string;
+    subjectId: string;
     score: number;
     maxScore: number;
     createdAt: Date;

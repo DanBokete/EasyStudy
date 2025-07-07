@@ -1,5 +1,5 @@
-import { useGetGradesByModule } from "@/api/grades";
-import { useGetModule } from "@/api/subject";
+import { useGetGradesBySubject } from "@/api/grades";
+import { useGetSubject } from "@/api/subject";
 import {
     Table,
     TableBody,
@@ -18,21 +18,21 @@ import { useRouteLoaderData } from "react-router";
 
 function GradePage() {
     const subjectId = useRouteLoaderData("subjectRouteId") as string;
-    const subject = useGetModule(subjectId);
-    const grades = useGetGradesByModule(subjectId);
+    const subject = useGetSubject(subjectId);
+    const grades = useGetGradesBySubject(subjectId);
 
     useEffect(() => {
         subject.refetch();
     }, [grades.data, subject]);
 
     if (subject.isLoading) return "....";
-    if (subject.error || !subject.data) return "Module failed to load";
+    if (subject.error || !subject.data) return "Subject failed to load";
     return (
         <div>
             <div className="flex justify-between">
                 <div>
                     <h1>Your Grade</h1>
-                    <div>Module {subject.data.name}</div>
+                    <div>Subject {subject.data.name}</div>
                 </div>
                 <div>
                     <NewGrade subject={subject.data} />

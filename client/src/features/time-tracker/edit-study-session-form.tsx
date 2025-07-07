@@ -10,13 +10,13 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { getComputedTimeIsoString } from "@/helpers/helpers";
-import type { Module, StudySession } from "@/types/types";
+import type { Subject, StudySession } from "@/types/types";
 import { setHours, setMinutes } from "date-fns";
 import { useState } from "react";
 
 interface EditStudySessionFormProp {
     studySession: StudySession;
-    modules: Module[] | undefined;
+    modules: Subject[] | undefined;
 }
 function EditStudySessionForm({
     studySession,
@@ -30,7 +30,7 @@ function EditStudySessionForm({
         const date = new Date(studySession.endTime);
         return date.toTimeString().slice(0, 5);
     });
-    const [moduleId, setModuleId] = useState(studySession.moduleId);
+    const [subjectId, setSubjectId] = useState(studySession.subjectId);
     const [date, setDate] = useState(
         studySession.startTime.toString().split("T")[0]
     );
@@ -65,7 +65,7 @@ function EditStudySessionForm({
             activity,
             startTime: isoStringStartTime,
             endTime: isoStringEndTime,
-            moduleId,
+            subjectId,
         });
     }
 
@@ -114,11 +114,11 @@ function EditStudySessionForm({
             </div>
 
             <div className="space-y-2">
-                <Label>Module</Label>
+                <Label>Subject</Label>
                 <Select
-                    defaultValue={studySession.moduleId}
+                    defaultValue={studySession.subjectId}
                     onValueChange={(value) => {
-                        setModuleId(value);
+                        setSubjectId(value);
                     }}
                 >
                     <SelectTrigger className="w-full" size="sm">

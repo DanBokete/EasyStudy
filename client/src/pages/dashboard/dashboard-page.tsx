@@ -49,7 +49,7 @@ function DashboardPage() {
 
     console.log(initialDate, finalDate);
 
-    const { chartData, modules: legendModules } = getBarChartData(
+    const { chartData, subjects: legendSubjects } = getBarChartData(
         studySessions.data,
         initialDate,
         finalDate
@@ -65,9 +65,6 @@ function DashboardPage() {
     return (
         <div className="space-y-2.5">
             <div className="flex gap-x-2.5">
-                <div className="columns-md h-full">
-                    <ProjectsSummary unarchivedProjects={unarchivedProjects} />
-                </div>
                 <div className="space-y-2.5 w-full">
                     <div>
                         <SectionCards
@@ -81,7 +78,7 @@ function DashboardPage() {
                             <ChartBarStacked
                                 chartData={chartData}
                                 chartConfig={chartConfig}
-                                modules={legendModules}
+                                modules={legendSubjects}
                                 initialDate={initialDate}
                                 finalDate={finalDate}
                                 setInitialDate={setInitialDate}
@@ -89,6 +86,9 @@ function DashboardPage() {
                             />
                         </div>
                     </div>
+                </div>
+                <div className="columns-md h-full">
+                    <ProjectsSummary unarchivedProjects={unarchivedProjects} />
                 </div>
             </div>
 

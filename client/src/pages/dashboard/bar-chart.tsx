@@ -17,7 +17,7 @@ import {
     ChartTooltip,
     ChartTooltipContent,
 } from "@/components/ui/chart";
-import type { Module } from "@/types/types";
+import type { Subject } from "@/types/types";
 import { Input } from "@/components/ui/input";
 
 export const description = "A stacked bar chart with a legend";
@@ -43,7 +43,7 @@ export default function ChartBarStacked({
 }: {
     chartData: ({ day: string } | Record<string, string>)[];
     chartConfig: ChartConfig;
-    modules: Module[];
+    modules: Subject[];
     initialDate: string;
     finalDate: string;
     setInitialDate: React.Dispatch<React.SetStateAction<string>>;

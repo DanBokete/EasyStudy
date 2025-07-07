@@ -12,13 +12,13 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useEffect, useState } from "react";
-import ModuleCombobox from "./module-combobox";
+import SubjectCombobox from "./module-combobox";
 import { Play, StopCircle } from "lucide-react";
 import { useCreateStudySession } from "@/api/study-session";
 
 const formSchema = z.object({
     title: z.string().trim().min(1, "A title is required"),
-    moduleId: z.string().min(1, "Module is required"),
+    subjectId: z.string().min(1, "Subject is required"),
 });
 
 export default function TimeTrackForm() {
@@ -26,7 +26,7 @@ export default function TimeTrackForm() {
     const [startTime, setStartTime] = useState<number | null>(null);
     const [timer, setTimer] = useState(0);
 
-    // Selecting Modules
+    // Selecting Subjects
 
     const createStudySession = useCreateStudySession();
 
@@ -35,7 +35,7 @@ export default function TimeTrackForm() {
         resolver: zodResolver(formSchema),
         defaultValues: {
             title: "",
-            moduleId: "",
+            subjectId: "",
         },
     });
 
@@ -48,7 +48,7 @@ export default function TimeTrackForm() {
             activity: values.title ? values.title : undefined,
             startTime: new Date(startTime).toISOString(),
             endTime: new Date().toISOString(),
-            moduleId: values.moduleId,
+            subjectId: values.subjectId,
         };
 
         createStudySession.mutate(data);
@@ -110,11 +110,11 @@ export default function TimeTrackForm() {
                 />
                 <FormField
                     control={form.control}
-                    name="moduleId"
+                    name="subjectId"
                     render={({ field }) => (
                         <FormItem>
                             <FormControl>
-                                <ModuleCombobox
+                                <SubjectCombobox
                                     {...field}
                                     onChange={(val) => {
                                         field.onChange(val);

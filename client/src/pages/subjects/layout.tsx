@@ -1,10 +1,10 @@
-import { useGetModule } from "@/api/subject";
+import { useGetSubject } from "@/api/subject";
 import { NavLink, Outlet, useLoaderData } from "react-router";
 
 export default function SubjectPageLayout() {
     const subjectId = useLoaderData() as string;
 
-    const { data, error, isPending } = useGetModule(subjectId);
+    const { data, error, isPending } = useGetSubject(subjectId);
 
     if (!data || isPending) return "loading";
     if (error) return "error";

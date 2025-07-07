@@ -10,7 +10,7 @@ function TasksPage() {
                 <div className="flex">
                     <div className="space-x-1.5">
                         <Button variant={"ghost"}>+ Tags</Button>
-                        <Button variant={"ghost"}>+ Module</Button>
+                        <Button variant={"ghost"}>+ Subject</Button>
                     </div>
 
                     <Button
@@ -19,7 +19,6 @@ function TasksPage() {
                         className="ml-auto"
                     >
                         Add Task
-                
                     </Button>
                 </div>
             </form>

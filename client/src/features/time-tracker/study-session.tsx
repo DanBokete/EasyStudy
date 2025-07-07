@@ -23,7 +23,7 @@ import {
     getComputedTimeIsoString,
     getDisplayedDurationFromDate,
 } from "@/helpers/helpers";
-import type { Module, StudySession as StudySessionType } from "@/types/types";
+import type { Subject, StudySession as StudySessionType } from "@/types/types";
 import type { UseQueryResult } from "@tanstack/react-query";
 import { format, setHours, setMinutes } from "date-fns";
 import { MoreHorizontal, Trash2 } from "lucide-react";
@@ -35,7 +35,7 @@ function StudySession({
     modules,
 }: {
     studySession: StudySessionType;
-    modules: UseQueryResult<Module[], Error>;
+    modules: UseQueryResult<Subject[], Error>;
 }) {
     const [isEditingTitle, setIsEditingTitle] = useState(false);
     const [isEditingStartTime, setIsEditingStartTime] = useState(false);
@@ -150,11 +150,11 @@ function StudySession({
 
             <div className="col-span-2">
                 <Select
-                    defaultValue={studySession.moduleId}
+                    defaultValue={studySession.subjectId}
                     onValueChange={(value) => {
                         updateStudySession.mutate({
                             id: studySession.id,
-                            moduleId: value,
+                            subjectId: value,
                         });
                     }}
                 >

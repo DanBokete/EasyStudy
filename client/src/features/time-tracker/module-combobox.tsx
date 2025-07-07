@@ -17,7 +17,7 @@ import { cn } from "@/lib/utils";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { useState } from "react";
 
-function ModuleCombobox({
+function SubjectCombobox({
     value,
     onChange,
 }: {
@@ -28,21 +28,21 @@ function ModuleCombobox({
 
     const [name, setName] = useState("");
     const modules = useGetAllSubjects();
-    const createModule = useCreateSubject();
+    const createSubject = useCreateSubject();
 
     // useEffect(() => {
     //     if (!modules.data) return;
-    //     setModuleId(() => {
-    //         const currentModule = modules.data.find(
+    //     setSubjectId(() => {
+    //         const currentSubject = modules.data.find(
     //             (module) => module.name === value
     //         );
-    //         if (!currentModule) return null;
-    //         return currentModule.id;
+    //         if (!currentSubject) return null;
+    //         return currentSubject.id;
     //     });
     // }, [value]);
-    function onCreateModule() {
+    function onCreateSubject() {
         if (/^[a-zA-Z]/.test(name)) {
-            createModule.mutate({ name });
+            createSubject.mutate({ name });
         }
     }
 
@@ -58,14 +58,14 @@ function ModuleCombobox({
                     {value
                         ? modules.data?.find((module) => module.id === value)
                               ?.name
-                        : "Select Module..."}
+                        : "Select Subject..."}
                     <ChevronsUpDown className="opacity-50" />
                 </Button>
             </PopoverTrigger>
             <PopoverContent className="w-[200px] p-0">
                 <Command>
                     <CommandInput
-                        placeholder="Search Module..."
+                        placeholder="Search Subject..."
                         className="h-9"
                         onValueChange={(e) => {
                             setName(e);
@@ -76,9 +76,9 @@ function ModuleCombobox({
                         <CommandEmpty>
                             <Button
                                 variant={"outline"}
-                                onClick={onCreateModule}
+                                onClick={onCreateSubject}
                             >
-                                Create Module
+                                Create Subject
                             </Button>
                         </CommandEmpty>
                         <CommandGroup>
@@ -92,15 +92,15 @@ function ModuleCombobox({
                                         //         ? ""
                                         //         : currentValue;
 
-                                        const selectedModule =
+                                        const selectedSubject =
                                             modules.data.find(
                                                 (mod) =>
                                                     mod.name === currentValue
                                             );
 
-                                        if (!selectedModule) return;
+                                        if (!selectedSubject) return;
 
-                                        onChange(selectedModule.id);
+                                        onChange(selectedSubject.id);
                                         setOpen(false);
                                     }}
                                 >
@@ -123,4 +123,4 @@ function ModuleCombobox({
     );
 }
 
-export default ModuleCombobox;
+export default SubjectCombobox;

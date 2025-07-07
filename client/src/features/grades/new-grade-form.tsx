@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import type { Module } from "@/types/types";
+import type { Subject } from "@/types/types";
 import { useCreateGrade } from "@/api/grades";
 
 const formSchema = z.object({
@@ -30,7 +30,7 @@ const formSchema = z.object({
 });
 
 interface NewGradeFormProps {
-    module: Module;
+    module: Subject;
     setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 

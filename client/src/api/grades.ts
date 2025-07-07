@@ -2,16 +2,16 @@ import api from "@/api";
 import type { Grade } from "@/types/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-async function getGradeByModule(moduleId: string) {
-    const response = await api.get(`v1/grades?moduleId=${moduleId}`);
+async function getGradeBySubject(subjectId: string) {
+    const response = await api.get(`v1/grades?subjectId=${subjectId}`);
     const grades: Grade[] = response.data;
     return grades;
 }
 
-export function useGetGradesByModule(moduleId: string) {
+export function useGetGradesBySubject(subjectId: string) {
     return useQuery({
-        queryKey: ["grades", moduleId],
-        queryFn: () => getGradeByModule(moduleId),
+        queryKey: ["grades", subjectId],
+        queryFn: () => getGradeBySubject(subjectId),
         refetchOnWindowFocus: false,
     });
 }
@@ -32,7 +32,7 @@ export const useCreateGrade = () => {
             queryClient.invalidateQueries({ queryKey: ["grades"] });
 
             queryClient.invalidateQueries({
-                queryKey: ["grades", newGrade.moduleId],
+                queryKey: ["grades", newGrade.subjectId],
             });
         },
     });
@@ -52,7 +52,7 @@ export const useUpdateGrade = () => {
         mutationFn: updateGrade,
         onSuccess: (data) => {
             queryClient.invalidateQueries({
-                queryKey: ["grades", data.moduleId],
+                queryKey: ["grades", data.subjectId],
             });
             queryClient.setQueryData<Grade[]>(["grades"], (oldData) => {
                 return (
@@ -78,7 +78,7 @@ export const useDeleteGrade = () => {
         mutationFn: deleteGradeFunc,
         onSuccess: (deleteGrade) => {
             queryClient.invalidateQueries({
-                queryKey: ["grades", deleteGrade.moduleId],
+                queryKey: ["grades", deleteGrade.subjectId],
             });
         },
     });

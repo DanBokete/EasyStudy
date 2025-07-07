@@ -8,10 +8,10 @@ import {
 } from "@/components/ui/dialog";
 import { Plus } from "lucide-react";
 import NewGradeForm from "./new-grade-form";
-import type { Module } from "@/types/types";
+import type { Subject } from "@/types/types";
 import { useState } from "react";
 interface NewGradeProps {
-    subject: Module;
+    subject: Subject;
 }
 
 function NewGrade({ subject }: NewGradeProps) {

@@ -49,8 +49,8 @@ const items = [
         icon: Clock4,
     },
 
-    { title: "Grades", url: "/grades", icon: GraduationCap },
-    { title: "Archived Projects", url: "/archived-projects", icon: Archive },
+    // { title: "Grades", url: "/grades", icon: GraduationCap },
+    // { title: "Archived Projects", url: "/archived-projects", icon: Archive },
 ];
 
 export function AppSidebar() {
@@ -85,11 +85,11 @@ export function AppSidebar() {
                         </SidebarMenu>
                     </SidebarGroupContent>
                 </SidebarGroup>
-                <ModulesGroup />
-                <ProjectsGroup
+                <SubjectsGroup />
+                {/* <ProjectsGroup
                     state={state}
                     unarchivedProjects={unarchivedProjects}
-                />
+                /> */}
             </SidebarContent>
             <SidebarFooter>
                 <SidebarMenu>
@@ -193,47 +193,47 @@ function ProjectsGroup({ state, unarchivedProjects }: ProjectsGroupProps) {
     );
 }
 
-function ModulesGroup() {
-    const [isAddingModule, setIsAddingModule] = useState(false);
-    const [newModule, setNewModule] = useState("");
-    const createModule = useCreateSubject();
+function SubjectsGroup() {
+    const [isAddingSubject, setIsAddingSubject] = useState(false);
+    const [newSubject, setNewSubject] = useState("");
+    const createSubject = useCreateSubject();
     const { data: modules, error, isLoading } = useGetAllSubjects();
-    function addModule() {
-        setIsAddingModule(false);
-        if (!modules || !newModule) return;
-        createModule.mutate({ name: newModule });
+    function addSubject() {
+        setIsAddingSubject(false);
+        if (!modules || !newSubject) return;
+        createSubject.mutate({ name: newSubject });
     }
     return (
         <SidebarGroup>
             <SidebarGroupLabel>Subjects</SidebarGroupLabel>
-            <SidebarGroupAction onClick={() => setIsAddingModule(true)}>
+            <SidebarGroupAction onClick={() => setIsAddingSubject(true)}>
                 <Plus /> <span className="sr-only">Add Project</span>
             </SidebarGroupAction>
             <SidebarGroupContent>
                 <SidebarMenu>
-                    {isAddingModule && (
+                    {isAddingSubject && (
                         <Input
-                            value={newModule}
+                            value={newSubject}
                             onChange={(e) => {
-                                setNewModule(e.target.value);
+                                setNewSubject(e.target.value);
                             }}
                             autoFocus
                             onBlur={() => {
-                                addModule();
+                                addSubject();
                             }}
                             onKeyDown={(e) => {
                                 if (e.key === "Enter") {
-                                    addModule();
+                                    addSubject();
                                 }
                             }}
                         />
                     )}
-                    {createModule.isPending && (
+                    {createSubject.isPending && (
                         <SidebarMenuItem className="bg-sidebar-accent animate-pulse">
                             <SidebarMenuButton>
                                 <Book />
                                 <span className="text-sidebar-accent-foreground/50">
-                                    {createModule.variables.name}
+                                    {createSubject.variables.name}
                                 </span>
                             </SidebarMenuButton>
                         </SidebarMenuItem>
