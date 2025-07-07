@@ -7,6 +7,7 @@ import ArchivedProjectsPage from "@/pages/archived-projects/archived-projects-pa
 import SubjectPage from "@/pages/subjects/layout";
 import SubjectOverview from "@/pages/subjects/overview/overview";
 import SubjectProjects from "@/pages/subjects/projects/projects";
+import Study from "@/pages/subjects/study/study";
 // import BoardPage from "./pages/board-page";
 const Layout = React.lazy(() => import("../layout"));
 const TasksPage = React.lazy(() => import("../pages/tasks-page"));
@@ -97,7 +98,7 @@ const router = createBrowserRouter([
                     },
                     {
                         path: "study",
-                        Component: TimeTrackerPage,
+                        Component: Study,
                     },
                     {
                         path: "projects/:projectId",

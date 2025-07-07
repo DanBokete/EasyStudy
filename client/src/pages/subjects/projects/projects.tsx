@@ -25,7 +25,7 @@ export default function SubjectProjects() {
         error,
     } = useGetAllProjectsBySubjectId(subjectId!);
     const updateProjectFn = useUpdateProject();
-    if (isPending || !projects) return "loading...";
+    if (isPending || !projects) return <SubjectProjectsLoader />;
     if (error) return "error";
     return (
         <>
@@ -72,6 +72,22 @@ export default function SubjectProjects() {
                     </Popover>
                 ))}
             </ul>
+        </>
+    );
+}
+
+function SubjectProjectsLoader() {
+    return (
+        <>
+            <div className="bg-accent w-32 h-10 animate-pulse"></div>
+            <div className="grid grid-cols-3 gap-3">
+                <div className="bg-accent w-full h-52 animate-pulse"></div>
+                <div className="bg-accent w-full h-52 animate-pulse"></div>
+                <div className="bg-accent w-full h-52 animate-pulse"></div>
+                <div className="bg-accent w-full h-52 animate-pulse"></div>
+                <div className="bg-accent w-full h-52 animate-pulse"></div>
+                <div className="bg-accent w-full h-52 animate-pulse"></div>
+            </div>
         </>
     );
 }

@@ -28,8 +28,7 @@ function ProjectPage() {
         []
     );
 
-    if (isLoading) return "...";
-    if (!project) return "No project";
+    if (isLoading || !project) return <ProjectPageLoader />;
 
     if (!project.tasks) return "There are no tasks";
 
@@ -64,3 +63,20 @@ function ProjectPage() {
 }
 
 export default ProjectPage;
+
+function ProjectPageLoader() {
+    return (
+        <>
+            <div className="flex justify-between">
+                <div className="bg-accent animate-pulse h-8 w-40"></div>
+                <div className="bg-accent animate-pulse h-8 w-80"></div>
+            </div>
+            <div className="grid grid-cols-4 gap-3">
+                <div className="h-96 bg-accent"></div>
+                <div className="h-96 bg-accent"></div>
+                <div className="h-96 bg-accent"></div>
+                <div className="h-96 bg-accent"></div>
+            </div>
+        </>
+    );
+}

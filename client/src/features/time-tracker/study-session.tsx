@@ -30,13 +30,12 @@ import { MoreHorizontal, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import EditStudySessionForm from "./edit-study-session-form";
 
-function StudySession({
-    studySession,
-    modules,
-}: {
+interface StudySessionProps {
     studySession: StudySessionType;
     modules: UseQueryResult<Subject[], Error>;
-}) {
+    subjectId?: string;
+}
+function StudySession({ studySession, modules, subjectId }: StudySessionProps) {
     const [isEditingTitle, setIsEditingTitle] = useState(false);
     const [isEditingStartTime, setIsEditingStartTime] = useState(false);
     const [isEditingEndTime, setIsEditingEndTime] = useState(false);
@@ -110,10 +109,14 @@ function StudySession({
     }
 
     return (
-        <div className="grid grid-cols-11 gap-x-2 items-center">
+        <div
+            className={`grid ${
+                subjectId ? "grid-cols-9" : "grid-cols-11"
+            } gap-x-2 items-center`}
+        >
             {isEditingTitle ? (
                 <Input
-                    className="col-span-5"
+                    className={"col-span-5"}
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     onBlur={() => {
@@ -148,28 +151,30 @@ function StudySession({
                 />
             )}
 
-            <div className="col-span-2">
-                <Select
-                    defaultValue={studySession.subjectId}
-                    onValueChange={(value) => {
-                        updateStudySession.mutate({
-                            id: studySession.id,
-                            subjectId: value,
-                        });
-                    }}
-                >
-                    <SelectTrigger className="w-full" size="sm">
-                        <SelectValue placeholder="Status" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        {modules.data?.map((module) => (
-                            <SelectItem key={module.id} value={module.id}>
-                                {module.name}
-                            </SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>
-            </div>
+            {!subjectId && (
+                <div className="col-span-2">
+                    <Select
+                        defaultValue={studySession.subjectId}
+                        onValueChange={(value) => {
+                            updateStudySession.mutate({
+                                id: studySession.id,
+                                subjectId: value,
+                            });
+                        }}
+                    >
+                        <SelectTrigger className="w-full" size="sm">
+                            <SelectValue placeholder="Status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {modules.data?.map((module) => (
+                                <SelectItem key={module.id} value={module.id}>
+                                    {module.name}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                </div>
+            )}
 
             <div className="mx-auto flex items-center text-center">
                 {isEditingStartTime ? (

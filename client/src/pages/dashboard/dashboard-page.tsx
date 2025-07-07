@@ -87,7 +87,7 @@ function DashboardPage() {
                         </div>
                     </div>
                 </div>
-                <div className="columns-md h-full">
+                <div className="w-96 flex">
                     <ProjectsSummary unarchivedProjects={unarchivedProjects} />
                 </div>
             </div>
@@ -111,7 +111,7 @@ function ProjectsSummary({ unarchivedProjects }: UpcomingProjectsProp) {
     const upcomingProjects = getUpcomingProjects(unarchivedProjects);
     const overdueProjects = getOverdueProjects(unarchivedProjects);
     return (
-        <Card className="h-full w-full overflow-y-scroll">
+        <Card className="w-full">
             <CardHeader>
                 <CardTitle className="text-2xl">Projects Summary</CardTitle>
             </CardHeader>

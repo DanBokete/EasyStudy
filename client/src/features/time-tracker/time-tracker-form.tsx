@@ -20,8 +20,10 @@ const formSchema = z.object({
     title: z.string().trim().min(1, "A title is required"),
     subjectId: z.string().min(1, "Subject is required"),
 });
-
-export default function TimeTrackForm() {
+interface TimeTrackFormProps {
+    subjectId?: string;
+}
+export default function TimeTrackForm({ subjectId }: TimeTrackFormProps) {
     const [isPlaying, setIsPlaying] = useState(false);
     const [startTime, setStartTime] = useState<number | null>(null);
     const [timer, setTimer] = useState(0);
@@ -35,7 +37,7 @@ export default function TimeTrackForm() {
         resolver: zodResolver(formSchema),
         defaultValues: {
             title: "",
-            subjectId: "",
+            subjectId: subjectId ?? "",
         },
     });
 
@@ -97,7 +99,7 @@ export default function TimeTrackForm() {
                     control={form.control}
                     name="title"
                     render={({ field }) => (
-                        <FormItem className="w-full">
+                        <FormItem className={`w-full`}>
                             <FormControl>
                                 <Input
                                     placeholder="What are you doing?"
@@ -108,23 +110,25 @@ export default function TimeTrackForm() {
                         </FormItem>
                     )}
                 />
-                <FormField
-                    control={form.control}
-                    name="subjectId"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormControl>
-                                <SubjectCombobox
-                                    {...field}
-                                    onChange={(val) => {
-                                        field.onChange(val);
-                                    }}
-                                />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
+                {!subjectId && (
+                    <FormField
+                        control={form.control}
+                        name="subjectId"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormControl>
+                                    <SubjectCombobox
+                                        {...field}
+                                        onChange={(val) => {
+                                            field.onChange(val);
+                                        }}
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                )}
                 <span className="w-36 text-center border py-1 rounded-lg h-fit">
                     {displayedTimer}
                 </span>
