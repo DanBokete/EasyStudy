@@ -55,6 +55,9 @@ export const useUpdateProject = () => {
             // });
             queryClient.invalidateQueries({ queryKey: ["user"] });
             queryClient.invalidateQueries({ queryKey: ["projects", data.id] });
+            queryClient.invalidateQueries({
+                queryKey: ["projects", data.subjectId],
+            });
             queryClient.setQueryData<Project[]>(["projects"], (oldData) => {
                 return (
                     oldData?.map((session) =>
@@ -76,6 +79,21 @@ export function useGetAllProjects() {
     return useQuery({
         queryKey: ["projects"],
         queryFn: getAllProjects,
+        refetchOnWindowFocus: false,
+    });
+}
+
+export function useGetAllProjectsBySubjectId(subjectId: string) {
+    return useQuery({
+        queryKey: ["projects", subjectId],
+        queryFn: async () => {
+            const response = await api.get(`v1/subjects/${subjectId}/projects`);
+            const projects: Project[] = response.data;
+            console.log(response.data);
+
+            return projects;
+        },
+        refetchOnWindowFocus: false,
     });
 }
 
@@ -88,6 +106,9 @@ export const useCreateProject = () => {
             queryClient.invalidateQueries({ queryKey: ["projects"] });
             queryClient.invalidateQueries({
                 queryKey: ["projects", newProject.id],
+            });
+            queryClient.invalidateQueries({
+                queryKey: ["subjects", newProject.subjectId],
             });
 
             // queryClient.setQueryData(["projects"], (old: Project[]) => [

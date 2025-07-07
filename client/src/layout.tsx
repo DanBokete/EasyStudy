@@ -9,11 +9,9 @@ export default function Layout() {
     return (
         <>
             <SidebarProvider>
-                {route.pathname !== "/login" &&
-                    route.pathname !== "/signup" && <AppSidebar />}
+                <AppSidebar />
                 <div className="w-full">
-                    {route.pathname !== "/login" &&
-                        route.pathname !== "/signup" && <Navbar />}
+                    <Navbar />
                     <div className="container max-w-7xl px-5 mt-5 lg:mx-auto">
                         <Outlet />
                     </div>

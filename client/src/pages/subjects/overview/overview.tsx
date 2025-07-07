@@ -1,3 +1,4 @@
+import { useSubjectOverview } from "@/api/subject";
 import {
     Card,
     CardContent,
@@ -5,9 +6,22 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
+import type { SubjectOverview } from "@/types/types";
+import { format } from "date-fns";
 import { Activity, Flag, Library, Timer } from "lucide-react";
+import { useParams } from "react-router";
 
-function ModuleOverview() {
+export default function SubjectOverview() {
+    const { subjectId } = useParams();
+    const {
+        data: subjectOverview,
+        error,
+        isPending,
+    } = useSubjectOverview(subjectId!);
+
+    if (!subjectOverview || isPending || !subjectOverview.upcomingProjects)
+        return "loading";
+    if (error) return "error";
     return (
         <>
             <div className="grid grid-cols-3 border-y-2 py-3 mb-3">
@@ -17,7 +31,7 @@ function ModuleOverview() {
                         <div>
                             <CardTitle>Projects</CardTitle>
                             <CardDescription>Projects Due</CardDescription>
-                            <div>{12}</div>
+                            <div>{subjectOverview.upcomingProjects.length}</div>
                         </div>
                     </CardContent>
                 </Card>
@@ -59,8 +73,8 @@ function ModuleOverview() {
                         <CardTitle>Upcoming Projects</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        {/* <ul>
-                            {data.upcomingProjects.map((project) => (
+                        <ul>
+                            {subjectOverview.upcomingProjects.map((project) => (
                                 <li
                                     key={project.id}
                                     className="flex justify-between"
@@ -68,18 +82,16 @@ function ModuleOverview() {
                                     <div>{project.name}</div>
                                     <div>
                                         {format(
-                                            project.due_date,
+                                            project.dueDate,
                                             "MMM dd, yyyy"
                                         )}
                                     </div>
                                 </li>
                             ))}
-                        </ul> */}
+                        </ul>
                     </CardContent>
                 </Card>
             </div>
         </>
     );
 }
-
-export default ModuleOverview;

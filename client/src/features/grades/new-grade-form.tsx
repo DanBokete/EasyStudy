@@ -26,7 +26,7 @@ const formSchema = z.object({
     date: z.string().date(),
     score: z.coerce.number(),
     maxScore: z.coerce.number().min(1),
-    moduleId: z.string().min(1),
+    subjectId: z.string().min(1),
 });
 
 interface NewGradeFormProps {
@@ -44,7 +44,7 @@ function NewGradeForm({ module, setOpen }: NewGradeFormProps) {
             date: "2025-21-12",
             score: 0,
             maxScore: 100,
-            moduleId: module.id,
+            subjectId: module.id,
         },
     });
 

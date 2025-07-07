@@ -4,7 +4,9 @@ import React, { Suspense } from "react";
 import { createBrowserRouter, redirect, RouterProvider } from "react-router";
 import SignupPage from "@/pages/auth/signup-page";
 import ArchivedProjectsPage from "@/pages/archived-projects/archived-projects-page";
-import ModulePage from "@/pages/module/module-page";
+import SubjectPage from "@/pages/subjects/layout";
+import SubjectOverview from "@/pages/subjects/overview/overview";
+import SubjectProjects from "@/pages/subjects/projects/projects";
 // import BoardPage from "./pages/board-page";
 const Layout = React.lazy(() => import("../layout"));
 const TasksPage = React.lazy(() => import("../pages/tasks-page"));
@@ -36,8 +38,8 @@ const router = createBrowserRouter([
                 path: "dashboard",
                 Component: DashboardPage,
             },
-            { path: "login", Component: LoginPage },
-            { path: "signup", Component: SignupPage },
+            // { path: "login", Component: LoginPage },
+            // { path: "signup", Component: SignupPage },
             { path: "tasks", Component: TasksPage },
             {
                 path: "projects",
@@ -47,9 +49,9 @@ const router = createBrowserRouter([
             {
                 path: "projects/:projectId",
                 loader: async ({ params }) => {
-                    if (!params?.projectId)
-                        throw new Error("Missing projectId");
-                    return params.projectId;
+                    if (!params?.subjectId)
+                        throw new Error("Missing subjectId");
+                    return params.subjectId;
                 },
                 Component: ProjectPage,
             },
@@ -67,12 +69,45 @@ const router = createBrowserRouter([
                 Component: GradePage,
             },
             {
-                path: "modules/:moduleId",
+                id: "subjectRouteId",
+                path: "subjects/:subjectId",
                 loader: async ({ params }) => {
-                    if (!params?.moduleId) throw new Error("Missing moduleId");
-                    return params.moduleId;
+                    if (!params.subjectId) throw new Error("Missing subjectId");
+                    return params.subjectId;
                 },
-                Component: ModulePage,
+                Component: SubjectPage,
+                children: [
+                    {
+                        path: "overview",
+                        Component: SubjectOverview,
+                    },
+                    {
+                        path: "projects",
+                        Component: SubjectProjects,
+                    },
+                    {
+                        path: "grades",
+                        loader: async ({ params }) => {
+                            if (!params?.subjectId)
+                                throw new Error("Missing subjectId");
+                            return params.subjectId;
+                        },
+                        Component: GradePage,
+                    },
+                    {
+                        path: "study",
+                        Component: TimeTrackerPage,
+                    },
+                    {
+                        path: "projects/:projectId",
+                        loader: async ({ params }) => {
+                            if (!params?.projectId)
+                                throw new Error("Missing projectId");
+                            return params.projectId;
+                        },
+                        Component: ProjectPage,
+                    },
+                ],
             },
             {
                 path: "logout",
@@ -82,6 +117,8 @@ const router = createBrowserRouter([
             },
         ],
     },
+    { path: "login", Component: LoginPage },
+    { path: "signup", Component: SignupPage },
 ]);
 
 const queryClient = new QueryClient();

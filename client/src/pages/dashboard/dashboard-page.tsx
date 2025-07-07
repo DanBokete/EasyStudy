@@ -1,7 +1,7 @@
 import { useGetAllStudySessions } from "@/api/study-session";
 import ChartBarStacked from "./bar-chart";
 import { getBarChartConfig, getBarChartData } from "./utils";
-import { useGetAllModules } from "@/api/modules";
+import { useGetAllSubjects } from "@/api/subject";
 import { useState } from "react";
 import {
     getEndOfWeek,
@@ -40,7 +40,7 @@ function DashboardPage() {
     const [initialDate, setInitialDate] = useState(getStartOfWeek());
     const [finalDate, setFinalDate] = useState(getEndOfWeek());
     const studySessions = useGetAllStudySessions();
-    const modules = useGetAllModules();
+    const modules = useGetAllSubjects();
     const projects = useGetAllProjects();
     if (studySessions.isLoading || !studySessions.data)
         return "Loading sessions...";

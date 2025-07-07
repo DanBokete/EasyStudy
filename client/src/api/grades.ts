@@ -12,6 +12,7 @@ export function useGetGradesByModule(moduleId: string) {
     return useQuery({
         queryKey: ["grades", moduleId],
         queryFn: () => getGradeByModule(moduleId),
+        refetchOnWindowFocus: false,
     });
 }
 

@@ -32,7 +32,7 @@ import { useLogoutUser } from "@/api/auth/logout";
 import { format } from "date-fns";
 import { hasDueDatePassed } from "@/helpers/helpers";
 import type { Project } from "@/types/types";
-import { useCreateModule, useGetAllModules } from "@/api/modules";
+import { useCreateSubject, useGetAllSubjects } from "@/api/subject";
 import { Input } from "./ui/input";
 import { useState } from "react";
 
@@ -196,8 +196,8 @@ function ProjectsGroup({ state, unarchivedProjects }: ProjectsGroupProps) {
 function ModulesGroup() {
     const [isAddingModule, setIsAddingModule] = useState(false);
     const [newModule, setNewModule] = useState("");
-    const createModule = useCreateModule();
-    const { data: modules, error, isLoading } = useGetAllModules();
+    const createModule = useCreateSubject();
+    const { data: modules, error, isLoading } = useGetAllSubjects();
     function addModule() {
         setIsAddingModule(false);
         if (!modules || !newModule) return;
@@ -247,7 +247,7 @@ function ModulesGroup() {
                         modules.map((module) => (
                             <SidebarMenuItem key={module.name}>
                                 <SidebarMenuButton asChild>
-                                    <Link to={`modules/${module.id}`}>
+                                    <Link to={`subjects/${module.id}/overview`}>
                                         <Book />
                                         <span>{module.name}</span>
                                     </Link>

@@ -1,5 +1,5 @@
 import { useGetGradesByModule } from "@/api/grades";
-import { useGetModule } from "@/api/modules";
+import { useGetModule } from "@/api/subject";
 import {
     Table,
     TableBody,
@@ -14,27 +14,28 @@ import EditGrade from "@/features/grades/edit-grade";
 import NewGrade from "@/features/grades/new-grade";
 import { format } from "date-fns";
 import { useEffect } from "react";
-import { useLoaderData } from "react-router";
+import { useRouteLoaderData } from "react-router";
 
 function GradePage() {
-    const moduleId: string = useLoaderData();
-    const module = useGetModule(moduleId);
-    const grades = useGetGradesByModule(moduleId);
+    const subjectId = useRouteLoaderData("subjectRouteId") as string;
+    const subject = useGetModule(subjectId);
+    const grades = useGetGradesByModule(subjectId);
 
     useEffect(() => {
-        module.refetch();
-    }, [grades.data, module]);
-    if (module.isLoading) return "....";
-    if (module.error || !module.data) return "Module failed to load";
+        subject.refetch();
+    }, [grades.data, subject]);
+
+    if (subject.isLoading) return "....";
+    if (subject.error || !subject.data) return "Module failed to load";
     return (
         <div>
             <div className="flex justify-between">
                 <div>
                     <h1>Your Grade</h1>
-                    <div>Module {module.data.name}</div>
+                    <div>Module {subject.data.name}</div>
                 </div>
                 <div>
-                    <NewGrade module={module.data} />
+                    <NewGrade subject={subject.data} />
                 </div>
             </div>
 
@@ -74,7 +75,7 @@ function GradePage() {
                     <TableRow>
                         <TableCell colSpan={3}>Average</TableCell>
                         <TableCell className="text-right">
-                            {module.data.averageGrade}%
+                            {subject.data.averageGrade}%
                         </TableCell>
                     </TableRow>
                 </TableFooter>

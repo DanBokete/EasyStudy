@@ -11,10 +11,10 @@ import NewGradeForm from "./new-grade-form";
 import type { Module } from "@/types/types";
 import { useState } from "react";
 interface NewGradeProps {
-    module: Module;
+    subject: Module;
 }
 
-function NewGrade({ module }: NewGradeProps) {
+function NewGrade({ subject }: NewGradeProps) {
     const [open, setOpen] = useState(false);
     return (
         <Dialog open={open} onOpenChange={setOpen}>
@@ -27,7 +27,7 @@ function NewGrade({ module }: NewGradeProps) {
             <DialogContent>
                 <DialogTitle>Add Grade</DialogTitle>
                 <DialogDescription>Add a grade to record</DialogDescription>
-                <NewGradeForm module={module} setOpen={setOpen} />
+                <NewGradeForm module={subject} setOpen={setOpen} />
             </DialogContent>
         </Dialog>
     );

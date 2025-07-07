@@ -1,4 +1,4 @@
-import { useGetAllModules } from "@/api/modules";
+import { useGetAllSubjects } from "@/api/subject";
 import { useGetAllStudySessions } from "@/api/study-session";
 import { Separator } from "@/components/ui/separator";
 import StudySession from "@/features/time-tracker/study-session";
@@ -13,7 +13,7 @@ function TimeTrackerPage() {
     // Selecting Modules
 
     const studySessions = useGetAllStudySessions();
-    const modules = useGetAllModules();
+    const modules = useGetAllSubjects();
 
     if (studySessions.isPending) {
         return "Loading...";

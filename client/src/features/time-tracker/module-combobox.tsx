@@ -1,4 +1,4 @@
-import { useCreateModule, useGetAllModules } from "@/api/modules";
+import { useCreateSubject, useGetAllSubjects } from "@/api/subject";
 import { Button } from "@/components/ui/button";
 import {
     Command,
@@ -27,8 +27,8 @@ function ModuleCombobox({
     const [open, setOpen] = useState(false);
 
     const [name, setName] = useState("");
-    const modules = useGetAllModules();
-    const createModule = useCreateModule();
+    const modules = useGetAllSubjects();
+    const createModule = useCreateSubject();
 
     // useEffect(() => {
     //     if (!modules.data) return;

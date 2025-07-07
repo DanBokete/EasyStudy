@@ -13,6 +13,7 @@ import ProjectStatus from "@/features/projects/project-status";
 import EditProject from "@/features/projects/edit-project";
 import { Button } from "@/components/ui/button";
 import { hasDueDatePassed } from "@/helpers/helpers";
+import ProjectTabs from "@/features/projects/project-tabs";
 
 function ProjectPage() {
     const projectId: string = useLoaderData();
@@ -56,31 +57,8 @@ function ProjectPage() {
                 </div>
             </div>
             <Separator className="mb-2" />
-            <div></div>
-            <Tabs defaultValue="board">
-                <div className="flex justify-between">
-                    <TabsList>
-                        <TabsTrigger value="board">Board</TabsTrigger>
-                        <TabsTrigger value="list">List</TabsTrigger>
-                    </TabsList>
-                    <div>
-                        <Button variant={"link"} asChild>
-                            <Link to={"/projects"}>View All Projects</Link>
-                        </Button>
-                    </div>
-                </div>
-
-                <TabsContent value="board">
-                    <DataKanban
-                        data={project.tasks}
-                        onChange={onKanbanChange}
-                        project={project}
-                    />
-                </TabsContent>
-                <TabsContent value="list">
-                    <TasksListView tasks={project.tasks} project={project} />
-                </TabsContent>
-            </Tabs>
+            {/* <div></div> */}
+            <ProjectTabs project={project} />
         </div>
     );
 }

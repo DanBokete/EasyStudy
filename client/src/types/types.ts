@@ -4,11 +4,12 @@ export type Project = {
     name: string;
     description: string | null;
     module: string | null;
-    createdAt: Date;
+    createdAt: string;
     updatedAt: Date;
     dueDate: string;
     status: string;
     tasks: Task[];
+    subjectId: string;
 };
 
 export type TaskStatus = "BACKLOG" | "TODO" | "IN_PROGRESS" | "DONE";
@@ -51,6 +52,13 @@ export type Module = {
     createdAt: Date;
     updatedAt: Date;
     averageGrade: null | number;
+};
+
+export type SubjectOverview = {
+    subjectName: string;
+    subjectDescription: string | null;
+    subjectId: string;
+    upcomingProjects: Project[];
 };
 
 export type KanbanTask = {
