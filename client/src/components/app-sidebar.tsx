@@ -1,13 +1,4 @@
-import {
-    Archive,
-    Book,
-    Clock4,
-    GraduationCap,
-    LayoutDashboard,
-    LogOut,
-    Plus,
-    X,
-} from "lucide-react";
+import { Book, Clock4, LayoutDashboard, LogOut, Plus } from "lucide-react";
 
 import {
     Sidebar,
@@ -21,17 +12,11 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
     SidebarTrigger,
-    useSidebar,
 } from "@/components/ui/sidebar";
-import { Link, NavLink } from "react-router";
+import { Link } from "react-router";
 import { SITE_NAME } from "@/constants";
 import { useGetAllProjects } from "@/api/projects";
-import NewProject from "@/features/projects/new-project";
-import { Button } from "./ui/button";
 import { useLogoutUser } from "@/api/auth/logout";
-import { format } from "date-fns";
-import { hasDueDatePassed } from "@/helpers/helpers";
-import type { Project } from "@/types/types";
 import { useCreateSubject, useGetAllSubjects } from "@/api/subject";
 import { Input } from "./ui/input";
 import { useState } from "react";
@@ -56,14 +41,12 @@ const items = [
 export function AppSidebar() {
     const useLogoutMutation = useLogoutUser();
     const { isLoading, error, data: projects } = useGetAllProjects();
-    const { state } = useSidebar();
 
-    if (isLoading || !projects) return "loading...";
+    if (isLoading || !projects)
+        return (
+            <div className="h-screen w-(--sidebar-width) bg-sidebar animate-pulse"></div>
+        );
     if (error) return "err";
-
-    const unarchivedProjects = projects.filter(
-        (project) => project.status !== "ARCHIVED"
-    );
     return (
         <Sidebar collapsible="icon" variant="floating">
             <SidebarContent>
@@ -107,89 +90,6 @@ export function AppSidebar() {
                 </SidebarMenu>
             </SidebarFooter>
         </Sidebar>
-    );
-}
-interface ProjectsGroupProps {
-    state: "expanded" | "collapsed";
-    unarchivedProjects: Project[];
-}
-function ProjectsGroup({ state, unarchivedProjects }: ProjectsGroupProps) {
-    return (
-        <SidebarGroup>
-            <SidebarGroupLabel asChild />
-            <SidebarGroupAction title="Add Project" asChild>
-                <NewProject>
-                    <Button
-                        variant={`${
-                            state === "collapsed" ? "outline" : "ghost"
-                        }`}
-                    >
-                        {state === "expanded" && (
-                            <div className="text-sidebar-foreground/70">
-                                Add Project
-                            </div>
-                        )}
-                        <Plus className="ml-auto" />
-                    </Button>
-                </NewProject>
-            </SidebarGroupAction>
-            <SidebarGroupContent>
-                <span className="sr-only">Add Project</span>
-            </SidebarGroupContent>
-            {state === "expanded" && (
-                <SidebarGroupContent>
-                    <SidebarMenu>
-                        {unarchivedProjects.length > 0 ? (
-                            unarchivedProjects
-                                .sort(
-                                    (a, b) =>
-                                        new Date(a.dueDate).getTime() -
-                                        new Date(b.dueDate).getTime()
-                                )
-                                .map((project) => {
-                                    const isDue = hasDueDatePassed(
-                                        project.dueDate
-                                    );
-                                    return (
-                                        <SidebarMenuItem key={project.id}>
-                                            <SidebarMenuButton asChild>
-                                                <NavLink
-                                                    to={`projects/${project.id}`}
-                                                    className={
-                                                        "justify-between flex"
-                                                    }
-                                                >
-                                                    <span>{project.name}</span>
-                                                    <span
-                                                        className={`text-sm font-bold ${
-                                                            isDue &&
-                                                            "text-red-700"
-                                                        }`}
-                                                    >
-                                                        {isDue
-                                                            ? "Overdue"
-                                                            : format(
-                                                                  project.dueDate,
-                                                                  "dd/MM"
-                                                              )}
-                                                    </span>
-                                                </NavLink>
-                                            </SidebarMenuButton>
-                                        </SidebarMenuItem>
-                                    );
-                                })
-                        ) : (
-                            <SidebarMenuItem>
-                                <SidebarMenuButton disabled>
-                                    <X />
-                                    You have no projects
-                                </SidebarMenuButton>
-                            </SidebarMenuItem>
-                        )}
-                    </SidebarMenu>
-                </SidebarGroupContent>
-            )}
-        </SidebarGroup>
     );
 }
 

@@ -8,6 +8,8 @@ import SubjectPage from "@/pages/subjects/layout";
 import SubjectOverview from "@/pages/subjects/overview/overview";
 import SubjectProjects from "@/pages/subjects/projects/projects";
 import Study from "@/pages/subjects/study/study";
+import { SITE_NAME } from "@/constants";
+import { ClipLoader } from "react-spinners";
 // import BoardPage from "./pages/board-page";
 const Layout = React.lazy(() => import("../layout"));
 const TasksPage = React.lazy(() => import("../pages/tasks-page"));
@@ -130,7 +132,22 @@ function App() {
     return (
         <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
             <QueryClientProvider client={queryClient}>
-                <Suspense fallback={<div>Loading...</div>}>
+                <Suspense
+                    fallback={
+                        <div className="flex flex-col h-screen justify-center items-center">
+                            <div className="text-xl">
+                                {" "}
+                                Welcome to {SITE_NAME}
+                            </div>
+                            <div>Loading Application</div>
+                            <ClipLoader
+                                loading={true}
+                                size={80}
+                                color="orange"
+                            />
+                        </div>
+                    }
+                >
                     <RouterProvider router={router} />
                 </Suspense>
             </QueryClientProvider>

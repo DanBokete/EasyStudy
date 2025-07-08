@@ -177,6 +177,7 @@ function DataKanban({ data, onChange, project }: DataKanbanProps) {
                                 taskCount={tasks[board].length}
                                 project={project}
                             />
+
                             <Droppable droppableId={board}>
                                 {(provided) => (
                                     <div
