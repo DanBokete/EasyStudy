@@ -13,11 +13,11 @@ api.interceptors.response.use(
         if (error.response?.status === 401) {
             try {
                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                const response = await axios.post(
-                    `${BASE_URL}/auth/refresh`,
-                    {},
-                    { withCredentials: true }
-                );
+                // const response = await axios.post(
+                //     `${BASE_URL}/auth/refresh`,
+                //     {},
+                //     { withCredentials: true }
+                // );
                 // if (
                 //     response.status !== 401 &&
                 //     window.location.pathname !== "/login"

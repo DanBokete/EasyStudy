@@ -15,7 +15,6 @@ import {
 } from "@/components/ui/sidebar";
 import { Link } from "react-router";
 import { SITE_NAME } from "@/constants";
-import { useGetAllProjects } from "@/api/projects";
 import { useLogoutUser } from "@/api/auth/logout";
 import { useCreateSubject, useGetAllSubjects } from "@/api/subject";
 import { Input } from "./ui/input";
