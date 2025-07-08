@@ -1,32 +1,17 @@
 import { Separator } from "@/components/ui/separator";
-import { Link, useLoaderData } from "react-router";
+import { useLoaderData } from "react-router";
 import { format } from "date-fns";
-
-import type { TaskStatus } from "@/types/types";
-import DataKanban from "@/features/tasks/data-kanban";
-import { useCallback } from "react";
-import { useUpdateManyTasks } from "@/api/task";
 import { useGetProject } from "@/api/projects";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import TasksListView from "@/features/tasks/tasks-list-view";
+
 import ProjectStatus from "@/features/projects/project-status";
 import EditProject from "@/features/projects/edit-project";
-import { Button } from "@/components/ui/button";
+
 import { hasDueDatePassed } from "@/helpers/helpers";
 import ProjectTabs from "@/features/projects/project-tabs";
 
 function ProjectPage() {
     const projectId: string = useLoaderData();
     const { data: project, isLoading } = useGetProject(projectId);
-    const useTasks = useUpdateManyTasks();
-
-    const onKanbanChange = useCallback(
-        (tasks: { id: string; status: TaskStatus; position: number }[]) => {
-            useTasks.mutate(tasks);
-            console.log(tasks);
-        },
-        []
-    );
 
     if (isLoading || !project) return <ProjectPageLoader />;
 

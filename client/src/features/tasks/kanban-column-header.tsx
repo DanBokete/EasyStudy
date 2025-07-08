@@ -1,11 +1,9 @@
 import { Button } from "@/components/ui/button";
-import NewTask from "./new-task";
 import type { Project, TaskStatus } from "@/types/types";
 import { Circle, CircleCheck, CircleDashed, Plus } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useCreateTask } from "@/api/task";
-import { useEffect, useState } from "react";
-import Task from "./task";
+import { useState } from "react";
 
 interface KanbanColumnHeaderProps {
     board: TaskStatus;

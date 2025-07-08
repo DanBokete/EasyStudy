@@ -1,11 +1,10 @@
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
-import { Outlet, useLocation } from "react-router";
+import { Outlet } from "react-router";
 import Navbar from "./components/navbar";
 import { Toaster } from "@/components/ui/sonner";
 
 export default function Layout() {
-    const route = useLocation();
     return (
         <>
             <SidebarProvider>
