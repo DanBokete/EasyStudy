@@ -13,6 +13,7 @@ async function bootstrap() {
       'http://localhost:5173',
       'http://localhost:4173',
       'https://easy-study-8idasq6kr-dan-boketes-projects.vercel.app',
+      'https://easy-study-git-production-dan-boketes-projects.vercel.app',
     ],
     credentials: true,
   });
