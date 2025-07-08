@@ -22,8 +22,8 @@ api.interceptors.response.use(
                 //     response.status !== 401 &&
                 //     window.location.pathname !== "/login"
                 // )
-                return api(error.config);
-                return (window.location.pathname = "/login");
+                // return api(error.config);
+                // return (window.location.pathname = "/login");
             } catch (err) {
                 console.log("error", err);
                 // return (window.location.pathname = "/login");
