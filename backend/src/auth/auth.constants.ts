@@ -22,7 +22,7 @@ export const jwtConstants = {
   refreshTokenOptions: {
     httpOnly: true,
     maxAge: refreshTokenMaxAge,
-    path: '/auth/refresh',
+    path: '/',
     sameSite: 'lax' as const,
     secure: process.env.NODE_ENV === 'production',
   },
