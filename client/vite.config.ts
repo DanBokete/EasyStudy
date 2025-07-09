@@ -11,18 +11,4 @@ export default defineConfig({
             "@": path.resolve(__dirname, "./src"),
         },
     },
-    server: {
-        proxy: {
-            "/api": {
-                target: "https://easystudy-9bie.onrender.com",
-                changeOrigin: true,
-                rewrite: (path) => path.replace(/^\/api/, ""),
-            },
-            "/auth": {
-                target: "https://easystudy-9bie.onrender.com",
-                changeOrigin: true,
-                rewrite: (path) => path.replace(/^\/api/, ""),
-            },
-        },
-    },
 });
