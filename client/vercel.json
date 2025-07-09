@@ -1,6 +1,7 @@
 {
   "rewrites": [
     { "source": "/(.*)", "destination": "/" },
-    { "source": "/api/(.*)", "destination": "https://easystudy-9bie.onrender.com" }
+    { "source": "/api/(.*)", "destination": "https://easystudy-9bie.onrender.com" },
+    { "source": "/auth/(.*)", "destination": "https://easystudy-9bie.onrender.com" }
   ]
 }
