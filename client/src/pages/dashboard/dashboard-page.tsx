@@ -43,7 +43,7 @@ function DashboardPage() {
     const modules = useGetAllSubjects();
     const projects = useGetAllProjects();
     if (studySessions.isLoading || !studySessions.data)
-        return "Loading sessions...";
+        return <DashboardLoader />;
     if (modules.isLoading || !projects.data) return "Loading modules...";
     const unarchivedProjects = getUnarchivedProjects(projects.data);
 
@@ -223,6 +223,22 @@ function ProjectTracker({ unarchivedProjects }: ProjectTrackerProp) {
                 </Table>
             </CardContent>
         </Card>
+    );
+}
+
+function DashboardLoader() {
+    return (
+        <div className="flex gap-x-2.5">
+            <div className="flex-3/4 space-y-3">
+                <div className="grid grid-cols-3 min-h-20 gap-x-3 animate-pulse ">
+                    <div className="bg-accent rounded"></div>
+                    <div className="bg-accent rounded"></div>
+                    <div className="bg-accent rounded"></div>
+                </div>
+                <div className="h-96 gap-x-5 animate-pulse w-full bg-accent"></div>
+            </div>
+            <div className="flex-1/4 bg-accent"></div>
+        </div>
     );
 }
 
