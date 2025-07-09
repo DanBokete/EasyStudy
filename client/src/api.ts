@@ -10,6 +10,15 @@ api.interceptors.response.use(
         return response;
     },
     async (error) => {
+        const originalRequest = error.config;
+
+        if (
+            originalRequest.url?.includes("/auth/login") ||
+            originalRequest.url?.includes("/auth/refresh")
+        ) {
+            return Promise.reject(error);
+        }
+
         if (error.response?.status === 401) {
             try {
                 const response = await axios.post(
