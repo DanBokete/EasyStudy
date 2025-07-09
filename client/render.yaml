@@ -1,8 +1,0 @@
-staticSites:
-  - name: easystudy-frontend
-    buildCommand: npm run build
-    publishPath: dist
-    redirects:
-      - source: /(.*)
-        destination: /index.html
-        statusCode: 200
