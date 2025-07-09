@@ -15,7 +15,6 @@ import {
 } from "@/components/ui/sidebar";
 import { Link } from "react-router";
 import { SITE_NAME } from "@/constants";
-import { useGetAllProjects } from "@/api/projects";
 import { useLogoutUser } from "@/api/auth/logout";
 import { useCreateSubject, useGetAllSubjects } from "@/api/subject";
 import { Input } from "./ui/input";
@@ -40,13 +39,6 @@ const items = [
 
 export function AppSidebar() {
     const useLogoutMutation = useLogoutUser();
-    const { isLoading, error, data: projects } = useGetAllProjects();
-
-    if (isLoading || !projects)
-        return (
-            <div className="h-screen w-(--sidebar-width) bg-sidebar animate-pulse"></div>
-        );
-    if (error) return "err";
     return (
         <Sidebar collapsible="icon" variant="floating">
             <SidebarContent>
