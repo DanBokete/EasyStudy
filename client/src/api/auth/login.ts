@@ -1,5 +1,6 @@
 import api from "@/api";
 import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
 import { useNavigate } from "react-router";
 
 type LoginUserType = {
@@ -8,8 +9,17 @@ type LoginUserType = {
 };
 
 export async function loginUser(data: LoginUserType) {
-    const response = await api.post("/auth/login", data);
-    return response.data;
+    try {
+        const response = await api.post("/auth/login", data);
+        return response.data;
+    } catch (err) {
+        if (axios.isAxiosError(err)) {
+            const message =
+                err.response?.data?.message || "Unexpected error during login";
+            throw new Error(message);
+        }
+        throw err;
+    }
 }
 
 export const useLoginUser = () => {

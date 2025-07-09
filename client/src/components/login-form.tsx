@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { useLoginUser } from "@/api/auth/login";
 import { Link } from "react-router";
+import { ClipLoader } from "react-spinners";
 
 export function LoginForm({
     className,
@@ -101,8 +102,20 @@ export function LoginForm({
                                         required
                                     />
                                 </div>
-                                <Button type="submit" className="w-full">
-                                    Login
+                                <Button
+                                    type="submit"
+                                    className="w-full"
+                                    disabled={loginUserMutation.isPending}
+                                >
+                                    {loginUserMutation.isPending ? (
+                                        <ClipLoader
+                                            loading={true}
+                                            size={30}
+                                            color="orange"
+                                        />
+                                    ) : (
+                                        "Login"
+                                    )}
                                 </Button>
                             </div>
                             <div className="text-center text-sm">
@@ -116,6 +129,11 @@ export function LoginForm({
                             </div>
                         </div>
                     </form>
+                    {loginUserMutation.isError && (
+                        <div className="text-center text-red-500">
+                            {loginUserMutation.error.message}
+                        </div>
+                    )}
                 </CardContent>
             </Card>
             <div className="text-balance text-center text-xs text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 [&_a]:hover:text-primary  ">

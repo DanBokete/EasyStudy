@@ -165,9 +165,21 @@ export function SignupForm() {
                                 </FormItem>
                             )}
                         />
-                        <Button type="submit">Submit</Button>
+                        <Button
+                            type="submit"
+                            disabled={createUserMutation.isPending}
+                        >
+                            Submit
+                        </Button>
                     </form>
                 </Form>
+                <div>
+                    {createUserMutation.isError && (
+                        <div className="text-center text-red-500">
+                            {createUserMutation.error.message}
+                        </div>
+                    )}
+                </div>
             </CardContent>
         </Card>
     );
