@@ -12,21 +12,20 @@ api.interceptors.response.use(
     async (error) => {
         if (error.response?.status === 401) {
             try {
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                // const response = await axios.post(
-                //     `${BASE_URL}/auth/refresh`,
-                //     {},
-                //     { withCredentials: true }
-                // );
-                // if (
-                //     response.status !== 401 &&
-                //     window.location.pathname !== "/login"
-                // )
-                // return api(error.config);
-                // return (window.location.pathname = "/login");
+                const response = await axios.post(
+                    `${BASE_URL}/auth/refresh`,
+                    {},
+                    { withCredentials: true }
+                );
+                if (
+                    response.status !== 401 &&
+                    window.location.pathname !== "/login"
+                )
+                    return api(error.config);
+                return (window.location.pathname = "/login");
             } catch (err) {
                 console.log("error", err);
-                // return (window.location.pathname = "/login");
+                return (window.location.pathname = "/login");
             }
         }
         return Promise.reject(error);
