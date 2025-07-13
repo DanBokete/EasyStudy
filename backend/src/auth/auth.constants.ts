@@ -13,15 +13,21 @@ export const jwtConstants = {
   accessTokenMaxAge: accessTokenMaxAge,
   refreshTokenMaxAge: refreshTokenMaxAge,
   accessTokenOptions: {
-    httpOnly: true,
+    httpOnly: process.env.NODE_ENV === 'production',
     maxAge: accessTokenMaxAge,
-    sameSite: 'none' as const,
+    sameSite:
+      process.env.NODE_ENV === 'production'
+        ? ('none' as const)
+        : ('lax' as const),
     secure: process.env.NODE_ENV === 'production',
   },
   refreshTokenOptions: {
-    httpOnly: true,
+    httpOnly: process.env.NODE_ENV === 'production',
     maxAge: refreshTokenMaxAge,
-    sameSite: 'none' as const,
+    sameSite:
+      process.env.NODE_ENV === 'production'
+        ? ('none' as const)
+        : ('lax' as const),
     secure: process.env.NODE_ENV === 'production',
   },
 };

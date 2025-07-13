@@ -102,20 +102,23 @@ export class AuthService {
     }
 
     const storedTokens = await this.prisma.refreshToken.findMany({
-      where: { userId: user.id },
+      where: { userId: user.id, expiresAt: { gt: new Date() } },
     });
 
     for (const storedToken of storedTokens) {
-      // if token is expired, skip
-      if (storedToken.expiresAt < new Date()) continue;
-
       const isMatch = await argon2.verify(
         storedToken.token,
         originalRefreshToken,
       );
 
-      if (isMatch) {
-        if (!storedToken.valid) {
+      if (!isMatch) continue;
+
+      if (!storedToken.valid) {
+        // grace period for cases such as slow request/ tab syncing delays/page reload before a new token is stored
+        const withinGracePeriod =
+          Date.now() - storedToken.createdAt.getTime() < 1_000 * 60 * 60;
+
+        if (!withinGracePeriod) {
           await this.prisma.refreshToken.updateMany({
             where: { userId: user.id },
             data: { valid: false },
@@ -127,18 +130,23 @@ export class AuthService {
           throw new ForbiddenException('possible replay attack detected');
         }
 
-        await this.prisma.refreshToken.update({
-          where: { userId: user.id, id: storedToken.id },
-          data: { valid: false },
-        });
-
-        this.tokenService.createAccessToken(user, response);
-        await this.tokenService.createRefreshToken(user, response);
-
-        return;
+        console.warn('token reuse within grace period');
       }
+
+      await this.prisma.refreshToken.update({
+        where: { userId: user.id, id: storedToken.id },
+        data: { valid: false },
+      });
+
+      this.tokenService.createAccessToken(user, response);
+      await this.tokenService.createRefreshToken(user, response);
+
+      return;
     }
     throw new ForbiddenException('Cannot find refresh token session');
+
+    // this.tokenService.createAccessToken(user, response);
+    // await this.tokenService.createRefreshToken(user, response);
   }
 
   async verifyUserJWTRefreshToken(refreshToken: string, userId: string) {

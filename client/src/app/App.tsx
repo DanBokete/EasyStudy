@@ -125,7 +125,15 @@ const router = createBrowserRouter([
     { path: "signup", Component: SignupPage },
 ]);
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+    defaultOptions: {
+        queries: {
+            retry: 1,
+            refetchOnWindowFocus: false,
+            staleTime: 1000 * 60, // 1 min
+        },
+    },
+});
 
 function App() {
     // const queryClient = new QueryClient();
